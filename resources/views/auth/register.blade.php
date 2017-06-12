@@ -109,7 +109,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group {{ $errors->has('passport_no') ? ' has-error' : '' }}">
                                                             <label class="control-label">NRIC/Passport No.</label>
-                                                            <input type="text" class="form-control" name="passport_no" placeholder="0000-00-0000" pattern="^\d{4}-\d{2}-\d{4}$"
+                                                            <input type="text" class="form-control" name="passport_no" placeholder="000000-0000" pattern="^\d{6}-\d{4}$"
                                                                    value="{{old('passport_no')}}" required>
                                                             @if ($errors->has('passport_no'))
                                                                 <span class="help-block">

@@ -10,7 +10,7 @@ class File_Subcategory extends Model
 
     protected $primaryKey = "subcategory_id";
 
-    protected $fillable = ['category_id', 'title'];
+    protected $fillable = ['category_id', 'name', 'template'];
 
     public $timestamps = null;
 }

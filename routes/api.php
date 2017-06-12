@@ -15,8 +15,8 @@ use Illuminate\Http\Request;
 
 
 
-Route::group(['namespace' => 'Admin'], function() {
-    Route::get('/test', 'FileController@searchFileAjax');
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function() {
+    Route::get('test11', 'FileController@getSubCategoriesAjax');
 });
 
 

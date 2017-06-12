@@ -18,19 +18,37 @@
                     <li class="navigation-header"><span>Menu</span> <i class="icon-menu" title="" data-original-title="Main pages"></i></li>
 
                     <!-- Dashboard -->
+                    @role('admin')
                     <li class="{{ Request::is('admin/dashboard*')? 'active': '' }}">
                         <a href="{{URL::to('admin/dashboard')}}"><span>Overview</span></a>
                     </li>
+                    @endrole
 
-                    <!-- Files -->
+                    <!-- Main Page -->
+                    @role('lawyer')
+                    <li class="{{ Request::is('admin/overview*')? 'active': '' }}">
+                        <a href="{{URL::to('admin/overview')}}"><span>Main</span></a>
+                    </li>
+                    @endrole
+                    @role('staff')
+                    <li class="{{ Request::is('admin/overview*')? 'active': '' }}">
+                        <a href="{{URL::to('admin/overview')}}"><span>Main</span></a>
+                    </li>
+                    @endrole
+
+                    <!-- Users -->
+                    @role('admin')
                     <li class="{{ Request::is('admin/users*')? 'active': '' }}">
                         <a href="{{URL::to('admin/users')}}"><span>Users</span></a>
                     </li>
+                    @endrole
 
                     <!-- Files -->
+                    @role('admin')
                     <li class="{{ Request::is('admin/files*')? 'active': '' }}">
                         <a href="{{URL::to('admin/files')}}"><span>Files</span></a>
                     </li>
+                    @endrole
 
                     <!-- Logistics Page -->
                     <li class="{{ Request::is('admin/logistics*')? 'active': '' }}">
@@ -49,9 +67,11 @@
                     </li>
 
                     <!-- Announcements -->
+                    @role('admin')
                     <li class="{{ Request::is('admin/announcements*')? 'active': '' }}">
                         <a href="{{URL::to('admin/announcements')}}"><span>Announcement</span></a>
                     </li>
+                    @endrole
 
                     <!-- Templates -->
                     <li class="{{ Request::is('admin/templates*')? 'active': '' }}">

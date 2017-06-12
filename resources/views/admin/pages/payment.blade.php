@@ -112,7 +112,7 @@
                             <th class="col-md-4">Remarks</th>
                             <th class="col-md-2">Amount</th>
                             <th class="col-md-2">Status</th>
-                            {{--<th class="col-md-1">Actions</th>--}}
+                            <th class="col-md-1">Actions</th>
                         </tr>
                         </thead>
 
@@ -134,14 +134,16 @@
                                     <td>
                                         <span class="label {{ $payment->getStatusClass() }}">{{ $payment->status }}</span>
                                     </td>
-                                    {{--<td>--}}
-                                        {{--<div class="btn-group btn-group-fade">--}}
-                                            {{--<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>--}}
-                                            {{--<ul class="dropdown-menu">--}}
-                                                {{--<li><a href="#" data-toggle="modal" data-target="#modal_request_payment">Request Payment</a></li>--}}
-                                            {{--</ul>--}}
-                                        {{--</div>--}}
-                                    {{--</td>--}}
+                                    <td>
+                                        <div class="btn-group btn-group-fade">
+                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>
+                                            <ul class="dropdown-menu">
+                                                @if ($payment->status == "BANK DEPOSIT")
+                                                    <li><a href="{{ url('admin/files/' . $file->file_id . '/payments/' . $payment->payment_id) }}">Confirmed</a></li>
+                                                @endif
+                                            </ul>
+                                        </div>
+                                    </td>
                             @endforeach
                         </tr>
                         </tbody>

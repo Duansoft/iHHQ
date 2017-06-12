@@ -22,5 +22,4 @@ class PaymentController extends Controller
 
         return View('admin.pages.payment', compact('files'));
     }
-
 }

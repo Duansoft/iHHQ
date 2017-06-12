@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use App\File;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Department;
 
 class TicketController extends Controller
 {
@@ -24,11 +25,38 @@ class TicketController extends Controller
 
     public function index()
     {
-        $activeTickets = Ticket::where('status_id', 2)->count();
-        $pendingTickets = Ticket::where('status_id', 1)->count();
-        $completedTickets = Ticket::where('status_id', 0)->count();
+        if (Auth::user()->hasRole('admin')) {
+            $activeTickets = Ticket::where('status_id', 2)->count();
+            $pendingTickets = Ticket::where('status_id', 1)->count();
+            $completedTickets = Ticket::where('status_id', 0)->count();
 
-        return View('admin.pages.tickets', compact('activeTickets', 'completedTickets', 'pendingTickets'));
+            return View('admin.pages.tickets', compact('activeTickets', 'completedTickets', 'pendingTickets'));
+
+        } else {
+            $myID = Auth::id();
+            $departments = Department::get();
+            $files = File::whereHas('participants', function ($query) use($myID) {
+                $query->where('user_id', '=', $myID);
+            })
+                ->where('status', 0)
+                ->get();
+            $tickets = Ticket::where('client_id', $myID)
+                ->where('status_id', '!=', 0)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $messages = [];
+            if (sizeof($tickets) > 0) {
+                $ticket = $tickets[0];
+                $messages = Ticket_Message::where('ticket_id', $ticket->ticket_id)
+                    ->select('ticket_messages.*', 'users.name', 'users.photo')
+                    ->join('users', 'users.id', 'ticket_messages.sender_id')
+                    ->orderBy('ticket_messages.created_at')
+                    ->get();
+            }
+
+            return View('admin.pages.tickets', compact('departments', 'files', 'tickets', 'messages', 'ticket'));
+        }
     }
 
     public function getActiveTicketsAjax()

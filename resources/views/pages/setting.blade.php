@@ -198,17 +198,6 @@
                                 </div>
                             </fieldset>
 
-                            <fieldset class="content-group no-margin">
-                                <div class="form-group no-margin">
-                                    <div class="checkbox checkbox-right checkbox-switchery">
-                                        <label class="display-block">
-                                            <input type="checkbox" class="switchery" name="is_enable_push" {{ $me->is_enable_push ? 'checked="checked"' : ''}}>
-                                            Push Notification
-                                        </label>
-                                    </div>
-                                </div>
-                            </fieldset>
-
                             <div class="text-right">
                                 <button type="submit" class="btn btn-primary mt-20">Save changes<i class="icon-arrow-right14 position-right"></i></button>
                             </div>

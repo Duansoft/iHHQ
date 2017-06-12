@@ -6,7 +6,7 @@
 
 
 @section("js")
-    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/tables/datatables/datatables.min.js') }}" xmlns="http://www.w3.org/1999/html"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/selects/select2.min.js') }}"></script>
     {{--<script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/uploaders/dropzone.min.js') }}"></script>--}}
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/uploaders/fileinput.min.js') }}"></script>
@@ -26,6 +26,17 @@
             },
             initialCaption: "No Document selected"
         });
+
+        // When upload Upload Document, init Modal Dialog
+        $('.btn-dlg').on('click', function(){
+            $('.reset_control').val("");
+        });
+        $('.btn-upload-doc').on('click', function(){
+            var index = $(this).data("info");
+            var activity = $(this).data("activity");
+            $('#input_activity').val(activity);
+            $('#modal_complete_case #index').val(index);
+        });
     });
     </script>
 @endsection
@@ -34,20 +45,14 @@
 @section("page-header")
     <!-- Page header -->
     <div class="page-header">
-        <div class="page-header-content">
+        <div class="page-header-content col-lg-11">
             <div class="page-title">
                 <h2>Files</h2>
             </div>
-        </div>
 
-        <div class="breadcrumb-line breadcrumb-line-component">
-            <ul class="breadcrumb">
-                <li><a href="{{ url('admin/files') }}"><i class="icon-home2 position-left"></i> Files</a></li>
-            </ul>
-
-            <ul class="breadcrumb-elements">
-                <li><a href="{{ url('admin/files/create') }}"><i class="icon-add position-left"></i> New File</a></li>
-            </ul>
+            <div class="heading-elements">
+                <a href="{{url('admin/files')}}"><button type="button" class="btn btn-default heading-btn"><i class="icon-circle-left2 position-left"></i> BACK</button></a>
+            </div>
         </div>
     </div>
     <!-- /page header -->
@@ -57,7 +62,7 @@
 @section("content")
 
     <!-- Content area -->
-    <div class="content">
+    <div class="content col-lg-11">
 
         <!-- Error Message -->
         @if (count($errors) > 0)
@@ -82,7 +87,7 @@
         @endif
 
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-9">
                 <!-- My messages -->
                 <div class="panel panel-flat">
                     <div class="panel-heading">
@@ -115,7 +120,24 @@
                     <!-- Tabs content -->
                     <div class="tab-content">
                         <div class="tab-pane active fade in has-padding" id="tab-status">
-
+                            <table class="table text-nowrap">
+                                @foreach(json_decode($file->cases) as $index => $case)
+                                <tr class="no-border">
+                                    <td class="no-border"><span class="text-size-large">{{ $case->activity }}</span></td>
+                                    <td class="no-border"><span>RM{{ $case->milestone }}</span></td>
+                                    <td class="no-border pull-right">
+                                        @if ($case->status == "Completed")
+                                            <button type="button" class="btn pl-10 pr-10 bg-slate" readonly="readonly"> Completed</button>
+                                        @else
+                                            <button type="button" class="btn-upload-doc btn-dlg btn pl-20 pr-20 bg-danger-400" data-toggle="modal" data-target="#modal_complete_case" data-info="{{$index}}" data-activity="{{ $case->activity }}"> Upload</button>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </table>
+                            <div class="text-right">
+                                <button type="button" class="btn btn-dlg btn-success pl-20 pr-20 mt-20" data-toggle="modal" data-target="#modal_create_milestone"><i class="icon-plus22 position-left"></i> Add Milestone</button>
+                            </div>
                         </div>
 
                         <div class="tab-pane fade has-padding" id="tab-payment">
@@ -126,13 +148,14 @@
                                         <td class="no-border"><span> {!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $payment->created_at)->toFormattedDateString() !!}</span></td>
                                         <td class="no-border"><span> {{ $payment->remarks }}</span></td>
                                         <td class="no-border"><span> RM{{ $payment->amount }}</span></td>
-                                        <td class="no-border text-center"><span class="label bg-blue"> {{ $payment->status }}</span></td>
+                                        <td class="no-border text-center"><span class="label {{ $payment->getStatusClass() }}"> {{ $payment->status }}</span></td>
                                         <td class="no-border pull-right">
                                             <div class="btn-group btn-group-fade">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="#" data-toggle="modal" data-target="#modal_make_payment">Make Payment</a></li>
-                                                    <li><a href="#" data-toggle="modal" data-target="#modal_request_payment">Request Payment</a></li>
+                                                    @if ($payment->status == "BANK DEPOSIT")
+                                                        <li><a href="{{ url('admin/files/' . $file->file_id . '/payments/' . $payment->payment_id) }}">Confirmed</a></li>
+                                                    @endif
                                                 </ul>
                                             </div>
                                         </td>
@@ -140,7 +163,7 @@
                                 @endforeach
                             </table>
                             <div class="text-right">
-                                <button type="button" class="btn btn-success pl-20 pr-20 mt-20" data-toggle="modal" data-target="#modal_create_payment"><i class="icon-plus3 position-left"></i> Request Payment</button>
+                                <button type="button" class="btn btn-dlg btn-success pl-20 pr-20 mt-20" data-toggle="modal" data-target="#modal_create_payment"><i class="icon-plus22 position-left"></i> Request Payment</button>
                             </div>
                         </div>
 
@@ -163,40 +186,13 @@
                                             </div>
                                         </td>
                                         <td class="no-border"><span> {!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $document->created_at)->toFormattedDateString() !!}</span></td>
-                                        <td class="no-border pull-right">
-                                            <div class="btn-group btn-group-fade">
-                                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a href="#" data-toggle="modal" data-target="#modal_make_payment">Make Payment</a></li>
-                                                    <li><a href="#" data-toggle="modal" data-target="#modal_request_payment">Request Payment</a></li>
-                                                </ul>
-                                            </div>
-                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
-                            {{--<ul class="media-list">--}}
-                                {{--@foreach($documents as $document)--}}
-                                    {{--<li class="media">--}}
-                                        {{--<div class="media-left">--}}
-                                            {{--@if ($document->extension == "pdf")--}}
-                                                {{--<a href="{{url('admin/files/documents/'.$document->document_id .'/download')}}" download><img src="{{ asset('admin_assets\images\extensions\pdf.png') }}" class="img-sm" alt=""></a>--}}
-                                            {{--@else--}}
-                                                {{--<a href="{{url('admin/files/documents/'.$document->document_id .'/download')}}" download><img src="{{ asset('admin_assets\images\extensions\doc.png') }}" class="img-sm" alt=""></a>--}}
-                                            {{--@endif--}}
-                                        {{--</div>--}}
 
-                                        {{--<div class="media-body text-size-large">--}}
-                                            {{--{{ $document->name }}--}}
-                                            {{--<span class="display-block text-muted"> By {{ $document->owner }}</span>--}}
-                                            {{--<span class="media-annotation pull-right"> {!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $document->created_at)->toFormattedDateString() !!}</span>--}}
-                                        {{--</div>--}}
-                                    {{--</li>--}}
-                                {{--@endforeach--}}
-                            {{--</ul>--}}
                             <div class="text-right">
-                                <button type="button" class="btn btn-success pl-20 pr-20 mt-20" data-toggle="modal" data-target="#modal_upload_document"><i class="icon-plus3 position-left"></i> Upload</button>
+                                <button type="button" class="btn btn-dlg btn-success pl-20 pr-20 mt-20" data-toggle="modal" data-target="#modal_upload_document"><i class="icon-plus22 position-left"></i> Upload</button>
                             </div>
                         </div>
                     </div>
@@ -204,7 +200,7 @@
                 </div>
                 <!-- /my messages -->
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <div class="panel panel-flat">
                     <div class="panel-heading">
                         <h5 class="panel-title">File Information</h5>
@@ -284,91 +280,181 @@
                 </div>
             </div>
         </div>
-
-        <!-- Upload Modal Dialog -->
-        <div id="modal_upload_document" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-yellow-800">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Upload A New Document</h4>
-                    </div>
-
-                    <form id="modal_upload" class="form-horizontal" action="{{ url('admin/files/' . $file->file_id . '/documents') }}"  method="post" enctype="multipart/form-data">
-                        {{ csrf_field() }}
-
-                        <fieldset class="ml-20 mr-20 p-10">
-                            <div class="form-group">
-                                <label>File Name</label>
-                                <input class="form-control" name="name" placeholder="Name of document" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label>File Ref</label>
-                                <input class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly="readonly">
-                            </div>
-
-                            <div class="form-group">
-                                <label>File</label>
-                                <input type="file" class="file-input" name="file" accept=".pdf, .doc, .docx" data-allowed-file-extensions='["pdf", "doc", "docx"]' data-show-caption="true">
-                            </div>
-                        </fieldset>
-                        <div class="form-group bg-grey-F8FAFC no-margin p-15 text-grey-300">
-                            <div class="col-md-4 col-md-offset-4">
-                                <button type="submit" class="btn btn-success form-control text-size-large">Upload Now</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- /Upload Modal Dialog -->
-
-        <!-- Create Payment Dialog -->
-        <div id="modal_create_payment" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-yellow-800">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Request Payment</h4>
-                    </div>
-
-                    <form id="modal_upload" class="form-horizontal" action="{{ url('admin/files/' . $file->file_id . '/payments') }}"  method="post" enctype="multipart/form-data">
-                        {{ csrf_field() }}
-
-                        <fieldset class="ml-20 mr-20 p-10">
-                            <div class="form-group">
-                                <label>Purpose</label>
-                                <input class="form-control" name="purpose" placeholder="" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Amount</label>
-                                <input class="form-control" name="amount" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Remarks<span class="text-muted"> (optional)</span></label>
-                                <input class="form-control" name="remarks" placeholder="">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Reconfirm Ref File</label>
-                                <input class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly required>
-                            </div>
-                        </fieldset>
-
-                        <div class="form-group bg-grey-F8FAFC no-margin p-15 text-grey-300">
-                            <div class="col-md-4 col-md-offset-4">
-                                <button type="submit" class="btn btn-success form-control text-size-large">Create</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- /Upload Modal Dialog -->
     </div>
     <!-- /content area -->
+
+    <!-- Upload Modal Dialog -->
+    <div id="modal_upload_document" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-yellow-800">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Upload A New Document</h4>
+                </div>
+
+                <form id="modal_upload" class="form-horizontal" action="{{ url('admin/files/' . $file->file_id . '/documents') }}"  method="post" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+
+                    <fieldset class="ml-20 mr-20 p-10">
+                        <div class="form-group">
+                            <label>File Name</label>
+                            <input class="form-control reset_control" name="name" placeholder="Name of document" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>File Ref</label>
+                            <input class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly="readonly">
+                        </div>
+
+                        <div class="form-group">
+                            <label>File</label>
+                            <input type="file" class="file-input reset_control" name="file" accept=".pdf, .doc, .docx" data-allowed-file-extensions='["pdf", "doc", "docx"]' data-show-caption="true">
+                        </div>
+                    </fieldset>
+                    <div class="form-group bg-grey-F8FAFC no-margin p-15 text-grey-300">
+                        <div class="col-md-4 col-md-offset-4">
+                            <button type="submit" class="btn btn-success form-control text-size-large">Upload Now</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /Upload Modal Dialog -->
+
+    <!-- Create Payment Dialog -->
+    <div id="modal_create_payment" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-yellow-800">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Request Payment</h4>
+                </div>
+
+                <form id="modal_upload" class="form-horizontal" action="{{ url('admin/files/' . $file->file_id . '/payments') }}"  method="post" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+
+                    <fieldset class="ml-20 mr-20 p-10">
+                        <div class="form-group">
+                            <label>Purpose</label>
+                            <input class="form-control reset_control" name="purpose" placeholder="" required/>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input class="form-control reset_control" name="amount" required/>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Remarks<span class="text-muted"> (optional)</span></label>
+                            <input class="form-control reset_control" name="remarks" placeholder="">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Reconfirm Ref File</label>
+                            <input class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly required>
+                        </div>
+                    </fieldset>
+
+                    <div class="form-group bg-grey-F8FAFC no-margin p-15 text-grey-300">
+                        <div class="col-md-4 col-md-offset-4">
+                            <button type="submit" class="btn btn-success form-control text-size-large">Create</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /Upload Modal Dialog -->
+
+    <!-- New Milestone Modal Dialog -->
+    <div id="modal_create_milestone" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-yellow-800">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Create New Milestone</h4>
+                </div>
+
+                <form class="form-horizontal" action="{{ url('admin/files/' . $file->file_id . '/milestone') }}"  method="post">
+                    {{ csrf_field() }}
+
+                    <fieldset class="ml-20 mr-20 p-10">
+                        <div class="form-group">
+                            <label>Activity Description</label>
+                            <input type="text" class="form-control reset_control" name="activity" placeholder="" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Milestone</label>
+                            <input type="number" step="1" class="form-control reset_control" name="milestone" placeholder="RM 1,000.00" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Duration</label>
+                            <input type="number" step="1" class="form-control reset_control" name="duration" placeholder="5 days" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>File Ref</label>
+                            <input class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly="readonly">
+                        </div>
+                    </fieldset>
+                    <div class="form-group bg-grey-F8FAFC no-margin p-15 text-grey-300">
+                        <div class="col-md-4 col-md-offset-4">
+                            <button type="submit" class="btn btn-success form-control text-size-large">Create Milestone</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /Upload Modal Dialog -->
+
+    <!-- Upload Modal Dialog -->
+    <div id="modal_complete_case" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-yellow-800">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Upload A New Document</h4>
+                </div>
+
+                <form id="modal_upload" class="form-horizontal" action="{{ url('admin/files/' . $file->file_id . '/cases/documents') }}"  method="post" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+
+                    <input id="index" type="hidden" name="index" value="">
+
+                    <fieldset class="ml-20 mr-20 p-10">
+                        <div class="form-group">
+                            <label>Activity</label>
+                            <input id="input_activity" class="form-control reset_control" placeholder="activity" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label>File Name</label>
+                            <input class="form-control reset_control" name="name" placeholder="Name of document" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>File Ref</label>
+                            <input class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly="readonly">
+                        </div>
+
+                        <div class="form-group">
+                            <label>File</label>
+                            <input type="file" class="file-input reset_control" name="file" accept=".pdf, .doc, .docx" data-allowed-file-extensions='["pdf", "doc", "docx"]' data-show-caption="true">
+                        </div>
+                    </fieldset>
+                    <div class="form-group bg-grey-F8FAFC no-margin p-15 text-grey-300">
+                        <div class="col-md-4 col-md-offset-4">
+                            <button type="submit" class="btn btn-success form-control text-size-large">Upload Now</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /Upload Modal Dialog -->
 @endsection
 

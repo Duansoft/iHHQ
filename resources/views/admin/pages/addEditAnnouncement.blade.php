@@ -17,17 +17,14 @@
     @section("page-header")
             <!-- Page header -->
     <div class="page-header">
-        <div class="page-header-content">
+        <div class="page-header-content col-lg-11">
             <div class="page-title">
                 <h2><span>Announcements</span></h2>
             </div>
-        </div>
 
-        <div class="breadcrumb-line breadcrumb-line-component">
-            <ul class="breadcrumb">
-                <li><a href="{{ url('admin/announcements') }}"><i class="icon-home2 position-left"></i> Announcements</a></li>
-                <li class="active">{{isset($announcement) ? "Edit" : "Create" }}</li>
-            </ul>
+            <div class="heading-elements">
+                <a href="{{url('admin/announcements')}}"><button type="button" class="btn btn-default heading-btn"><i class="icon-circle-left2 position-left"></i> BACK</button></a>
+            </div>
         </div>
     </div>
     <!-- /page header -->
@@ -36,7 +33,7 @@
 
 @section("content")
     <!-- Content area -->
-    <div class="content">
+    <div class="content col-lg-11">
 
         <!-- Error Message -->
         @if (count($errors) > 0)

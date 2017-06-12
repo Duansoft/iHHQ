@@ -20,17 +20,14 @@
 @section("page-header")
     <!-- Page header -->
     <div class="page-header">
-        <div class="page-header-content">
+        <div class="page-header-content col-lg-11">
             <div class="page-title">
                 <h2>Logistics</h2>
             </div>
-        </div>
 
-        <div class="breadcrumb-line breadcrumb-line-component">
-            <ul class="breadcrumb">
-                <li><a href="{{ url('admin/logistics') }}"><i class="icon-home2 position-left"></i> Logistics</a></li>
-                <li class="active"> {{ isset($dispatch) ? 'Edit' : 'Create' }}</li>
-            </ul>
+            <div class="heading-elements">
+                <a href="{{url('admin/logistics')}}"><button type="button" class="btn btn-default heading-btn"><i class="icon-circle-left2 position-left"></i> BACK</button></a>
+            </div>
         </div>
     </div>
     <!-- /page header -->
@@ -43,7 +40,7 @@
     <meta name="_searchClients" content="{{ url('admin/users/clients/search') }}"/>
     <meta name="_searchFiles" content="{{ url('admin/files/search') }}"/>
 
-    <div class="content">
+    <div class="content col-lg-11">
         <!-- Error Message -->
         @if (count($errors) > 0)
             <div class="alert alert-danger no-border">

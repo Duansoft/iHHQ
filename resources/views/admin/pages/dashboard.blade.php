@@ -44,7 +44,7 @@
                                 </ul>
                             </div>
                             <span class="text-white-opacity-70">DISPATCH</span>
-                            <h1 class="no-margin" style="font-size: 40px;">2</h1>
+                            <h1 class="no-margin" style="font-size: 40px;">{{$dispatches}}</h1>
                             <div class="border-top border-white-30 mt-10">
                                 <span class="mt-10 display-block text-white-opacity-80">RESPONSE REQUIRED</span>
                             </div>
@@ -61,7 +61,7 @@
                                 </ul>
                             </div>
                             <span class="text-white-opacity-70">PAYMENTS(S)</span>
-                            <h1 class="no-margin" style="font-size: 40px;">9</h1>
+                            <h1 class="no-margin" style="font-size: 40px;">{{ $payments }}</h1>
                             <div class="border-top border-white-30 mt-10">
                                 <span class="mt-10 display-block text-white-opacity-80">VERIFICATION REQUIRED</span>
                             </div>
@@ -94,8 +94,8 @@
                                     <li><a class="icon-arrow-up52"></a></li>
                                 </ul>
                             </div>
-                            <span class="text-white-opacity-70">TICKES</span>
-                            <h1 class="no-margin" style="font-size: 40px;">3</h1>
+                            <span class="text-white-opacity-70">TICKETS</span>
+                            <h1 class="no-margin" style="font-size: 40px;">{{ $tickets }}</h1>
                             <div class="border-top border-white-30 mt-10">
                                 <span class="mt-10 display-block text-white-opacity-80">RESPONSE REQUIRED</span>
                             </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Country;
+use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -32,8 +33,7 @@ class UserController extends Controller
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="admins/users" class="edit_user" data-toggle="modal" data-value="' . $user->id . '"
-                                            data-info="">Edit</a>
+                                        <a href="users/' . $user->id . '">Edit</a>
                                     </li>
                                 </ul>
                             </div>';
@@ -126,69 +126,6 @@ class UserController extends Controller
         return $results;
     }
 
-    public function getUser($user_id)
-    {
-
-    }
-
-    public function postUser(Request $request)
-    {
-        $data = $request->all();
-        $validator = Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
-            'mobile' => 'required|unique:users',
-            'passport_no' => 'required|max:50|unique:users',
-            'country_id' => 'required|numeric'
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator->messages());
-        }
-
-        $user = new User();
-        $user->fillable($data);
-
-        $clientRole = Role::where('name', 'client')->first();
-        $user->attachRole($clientRole);
-        $user->save();
-
-        return response()->json($user);
-    }
-
-    public function getAdmin()
-    {
-        $user_id = Input::get('id');
-        if (!empty($user_id)) {
-            $user = User::findOrFail($user_id);
-            return View('admin.pages.addEditUser', compact($user));
-        }
-
-        return View('admin.pages.addEditUser');
-    }
-
-    public function getLawyer()
-    {
-        $user_id = Input::get('id');
-        if (!empty($user_id)) {
-            $user = User::findOrFail($user_id);
-            return View('admin.pages.addEditUser', compact($user));
-        }
-
-        return View('admin.pages.addEditUser');
-    }
-
-    public function getStaff()
-    {
-        $user_id = Input::get('id');
-        if (!empty($user_id)) {
-            $user = User::findOrFail($user_id);
-            return View('admin.pages.addEditUser', compact($user));
-        }
-
-        return View('admin.pages.addEditUser');
-    }
-
     public function getClientAjax()
     {
         $user_id = Input::get('id');
@@ -200,5 +137,110 @@ class UserController extends Controller
         }
 
         return View('admin.pages.addEditUser', compact('countries'));
+    }
+
+    /**
+     * Add, Edit User Functions
+     */
+    public function getCreateAdmin()
+    {
+        $countries = Country::all();
+        $role = Role::where('name', 'admin')->first();
+
+        return View('admin.pages.addEditUser', compact('countries', 'role'));
+    }
+
+    public function getCreateLawyer()
+    {
+        $countries = Country::all();
+        $role = Role::where('name', 'lawyer')->first();
+
+        return View('admin.pages.addEditUser', compact('countries', 'role'));
+    }
+
+    public function getCreateStaff()
+    {
+        $countries = Country::all();
+        $role = Role::where('name', 'staff')->first();
+
+        return View('admin.pages.addEditUser', compact('countries', 'role'));
+    }
+
+    public function getCreateClient()
+    {
+        $countries = Country::all();
+        $role = Role::where('name', 'client')->first();
+
+        return View('admin.pages.addEditUser', compact('countries', 'role'));
+    }
+
+    public function postUser(Request $request)
+    {
+        $data = $request->all();
+
+        if ($request->get('id')) {
+            $role =  [
+                'name' => 'required|max:255',
+                'email' => 'required|email|max:255',
+                'mobile' => 'required',
+                'passport_no' => 'required|max:50',
+                'country_id' => 'required|numeric'
+            ];
+        } else {
+            $role =  [
+                'name' => 'required|max:255',
+                'email' => 'required|email|max:255|unique:users',
+                'password' => 'required|min:6|confirmed',
+                'mobile' => 'required|unique:users',
+                'passport_no' => 'required|max:50|unique:users',
+                'country_id' => 'required|numeric'
+            ];
+        }
+
+        $validator = Validator::make($data, $role);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->messages())->withInput();
+        }
+
+        if ($request->get('id')) {
+            $user = User::findOrFail($request->get('id'));
+            $user->fill($data);
+            $user->save();
+
+            return redirect('admin/users')->with('flash_message', 'The user have been updated successfully');
+        } else {
+            $user = new User();
+            $user->fill($data);
+            $user->verified = true;
+            $user->is_allow = true;
+            $user->password = bcrypt($data['password']);
+            $user->save();
+
+            $role = Role::where('name', $request->get('role'))->first();
+            $user->attachRole($role);
+            return redirect('admin/users')->with('flash_message', 'The user have been created successfully');
+        }
+    }
+
+    public function getUser($id)
+    {
+        $user = User::findOrFail($id);
+        $countries = Country::all();
+        $role = $user->roles()->first();
+
+        return View('admin.pages.addEditUser', compact('user', 'countries', 'role'));
+    }
+
+    /**
+     * User Detail
+     */
+    public function getUserDetail($id)
+    {
+        if (!empty($id)) {
+            $user = User::findOrFail($id);
+            return View('admin.pages.addEditUser', compact($user));
+        }
+
+        return View('admin.pages.addEditUser');
     }
 }

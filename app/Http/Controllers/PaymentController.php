@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Payment;
+use Billplz\Three\Collection;
 use Illuminate\Support\Facades\Auth;
 use App\File;
 use Money\Money;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\DB;
+use App\File_Document;
 
 class PaymentController extends Controller
 {
@@ -33,17 +34,34 @@ class PaymentController extends Controller
     public function proceedPay()
     {
         $data = Input::all();
+
         $user = Auth::user();
-        $method = Input::get('method');
-        $fileRef = Input::get('file_ref');
         $payment_id = Input::get('payment_id');
+        $method = Input::get('method');
 
-        $validator = Validator::make($data, [
-            'amount' => 'required|numeric',
-            'password' => 'required',
-            'method' => 'required'
-        ]);
+        $payment = Payment::findOrFail($payment_id);
+        $fileRef = $payment->file_ref;
+        $file = File::where('file_ref', $fileRef)->first();
+        if (empty($file)) {
+            abort(402);
+        }
 
+        if ($method == "bank") {
+            $roles = [
+                'amount' => 'required|numeric',
+                'password' => 'required',
+                'method' => 'required',
+                'receipt' => 'required|file'
+            ];
+        } else {
+            $roles = [
+                'amount' => 'required|numeric',
+                'password' => 'required',
+                'method' => 'required'
+            ];
+        }
+
+        $validator = Validator::make($data, $roles);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator->messages());
         }
@@ -52,16 +70,6 @@ class PaymentController extends Controller
             return redirect()->back()->withErrors('error', 'Password is not matched');
         }
 
-        $payment = Payment::findOrFail($payment_id);
-
-        $file = File::where('file_ref', $fileRef)->first();
-        if (empty($file)) {
-            abort(402);
-        }
-        if ($file->status != 0) {
-            $message = $file->file_ref . ' - ' . ' is not opened.';
-            return redirect()->back()->withErrors('error', $message);
-        }
 
         // Proceed billplz payment
         if ($method == 'billplz') {
@@ -70,7 +78,7 @@ class PaymentController extends Controller
             $collection = $billplz->collection();
 
             $title = $file->project_name . '(File Ref-' . $fileRef . ')';
-            $response = $collection->create($title, $file->remarks, Money::MYR($payment->amount));
+            $response = $collection->create($title);
 
             // Create Bill
             if (!empty($response[id])) {
@@ -92,9 +100,35 @@ class PaymentController extends Controller
 
             return Redirect::to($response1['url']);
 
-        } else if ($message = "bank") {
+        } else if ($method == "bank") {
 
-            return redirect()->back()->with('flash_message', "Please upload bank's receipt for verification of payment");
+            $receipt = Input::file('receipt');
+            $file_ref = $file->file_ref;
+            $fileName = $payment_id . '_bank_receipt.pdf';
+            $filePath = 'files/' . $file_ref . '/payments';
+
+            DB::beginTransaction();
+            try {
+                $path = $receipt->storeAs($filePath, $fileName);
+
+                $document = new File_Document();
+                $document->fill($data);
+                $document->path = $path;
+                $document->created_by = Auth::id();
+                $document->extension = $this->getExtensionType('pdf');
+                $document->save();
+
+                $payment->status = 2;
+                $payment->paid_by = $user->id;
+                $payment->save();
+
+                DB::commit();
+            } catch (\Exception $exception) {
+                DB::rollBack();
+                return redirect()->back()->withInput()->withErrors(['errors' => 'Failed to proceed']);
+            }
+
+            return redirect()->back()->with('flash_message', 'Thanks, Our staff will be confirm the receipt');
         }
     }
 

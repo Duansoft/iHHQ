@@ -41,7 +41,7 @@ class LoginController extends Controller
         if ($user->hasRole('admin')) {
             return '/admin/dashboard';
         } else if ($user->hasRole('staff') || $user->hasRole('lawyer') || $user->hasRole('logistics') || $user->hasRole('billing')) {
-            return '/hhq/dashboard';
+            return '/admin/overview';
         } else if ($user->hasRole('client')) {
             return '/overview';
         }

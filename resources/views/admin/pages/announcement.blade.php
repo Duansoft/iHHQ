@@ -77,20 +77,14 @@
 @section("page-header")
     <!-- Page header -->
     <div class="page-header">
-        <div class="page-header-content">
+        <div class="page-header-content col-lg-11">
             <div class="page-title">
                 <h2><span class="">Announcement</span></h2>
             </div>
-        </div>
 
-        <div class="breadcrumb-line breadcrumb-line-component">
-            <ul class="breadcrumb">
-                <li><a href="#"><i class="icon-home2 position-left"></i> Announcements</a></li>
-            </ul>
-
-            <ul class="breadcrumb-elements">
-                <li><a href="{{ url('admin/announcements/create') }}"><i class="icon-add position-left"></i> New Announcement</a></li>
-            </ul>
+            <div class="heading-elements">
+                <a href="{{ url('admin/announcements/create') }}"><button type="button" class="btn btn-default heading-btn"><i class="icon-add position-left"></i> New Announcement</button></a>
+            </div>
         </div>
     </div>
     <!-- /page header -->
@@ -98,7 +92,7 @@
 
 @section("content")
     <!-- Content area -->
-    <div class="content">
+    <div class="content col-lg-11">
 
         <!-- Error Message -->
         @if (count($errors) > 0)

@@ -1,6 +1,11 @@
 @extends("app")
 
 @section("css")
+    <style>
+        .datatable-header {
+            display:none;
+        }
+    </style>
 @endsection
 
 @section("js")
@@ -61,7 +66,12 @@
             </div>
         @endif
 
-        <div class="panel panel-flat">
+        <div class="panel panel-white">
+            <div class="panel-heading">
+                <h3 class="panel-title">Tracking
+                    {{--<small class="ml-20 pl-20 border-left text-grey">3</small>--}}
+                </h3>
+            </div>
             <table class="table datatable-client">
                 <thead class="active alpha-grey">
                 <tr>

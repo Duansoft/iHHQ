@@ -87,10 +87,10 @@ $(function() {
     });
 
     // Search Bar
-    $('#search').on( 'keyup click', function () {
+    $('#search').on('keyup click', function () {
         $('.table-overview').DataTable().search(
             $('#search').val()
         ).draw();
-    } );
+    });
 
 });

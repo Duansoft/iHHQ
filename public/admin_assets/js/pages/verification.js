@@ -1,6 +1,6 @@
 $(function(){
     // Update the count down every 1 second
-    var distance = 600;
+    var distance = 120;
     var x = setInterval(function() {
         // Time calculations for days, hours, minutes and seconds
         var minutes = Math.floor(distance / 60);

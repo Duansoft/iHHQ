@@ -45,7 +45,7 @@
                 <!-- Error title -->
                 <div class="text-center content-group">
                     <h1 class="error-title">403</h1>
-                    <h5>Oops, an error has occurred. Page not found!</h5>
+                    <h5>Oops, You might not have the necessary permissions for a resource.</h5>
                     <h5>&copy; 2017. <a href="#">iHHQ Legal Office</a></h5>
                 </div>
                 <!-- /error title -->

@@ -20,7 +20,7 @@ $(function() {
         serverSide: true,
         dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
         columnDefs: [{
-            orderable: true,
+            orderable: false,
             width: "120px",
             targets: [ 8 ]
         },{
@@ -36,6 +36,11 @@ $(function() {
                 return '<span class="no-margin text-size-large">' + row.name + '<small class="display-block text-muted text-size-small">' + row.description + '</small></span>';
             },
             targets: 3,
+        },{
+            render: function ( data, type, row ) {
+                return '<span class="no-margin text-size-large">' + row.name + '<small class="display-block text-muted text-size-small">' + row.description + '</small></span>';
+            },
+            targets: 4,
         }, {
             render: function ( data, type, row ) {
                 if (row.status == 0) // delivery
@@ -222,7 +227,6 @@ $(function() {
             var container = $('#container')[0];
             var width = parseFloat(300);
             var height = parseFloat(300);
-            alert(width + " " + height);
             var printWindow = window.open('', 'PrintMap', 'width=' + width + ',height=' + height);
             printWindow.document.writeln(container.innerHTML);
             printWindow.document.close();

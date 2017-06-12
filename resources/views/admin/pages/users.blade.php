@@ -2,7 +2,6 @@
 
 
 @section("css")
-    {{--<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">--}}
 @endsection
 
 
@@ -127,35 +126,29 @@
 @section("page-header")
     <!-- Page header -->
     <div class="page-header">
-        <div class="page-header-content">
+        <div class="page-header-content col-lg-11">
             <div class="page-title">
                 <h2>Users</h2>
             </div>
-        </div>
 
-        <div class="breadcrumb-line breadcrumb-line-component">
-            <ul class="breadcrumb">
-                <li><a href="#"><i class="icon-home2 position-left"></i> Users</a></li>
-            </ul>
-
-            <ul class="breadcrumb-elements">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="icon-user-plus position-left"></i>
+            <div class="heading-elements">
+                <div class="btn-group heading-btn">
+                    <button class="btn btn-default btn-icon dropdown-toggle" data-toggle="dropdown">
+                        <i class="icon-add position-left"></i>
                         Add User
                         <span class="caret"></span>
-                    </a>
+                    </button>
 
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a href="#" id="add_admin"> Super Admin</a></li>
+                        <li><a href="{{ url('admin/users/admins/create/') }}"> Super Admin</a></li>
                         <li class="divider"></li>
-                        <li><a href="#" id="add_lawyer"> Lawyer</a></li>
-                        <li><a href="#" id="add_staff"> Legal Staff</a></li>
+                        <li><a href="{{ url('admin/users/lawyers/create/') }}"> Lawyer</a></li>
+                        <li><a href="{{ url('admin/users/staffs/create/') }}"> Legal Staff</a></li>
                         <li class="divider"></li>
-                        <li><a href="#" id="add_client"> Client</a></li>
+                        <li><a href="{{ url('admin/users/clients/create/') }}"> Client</a></li>
                     </ul>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
     </div>
     <!-- /page header -->
@@ -164,7 +157,29 @@
 
 @section("content")
     <!-- Content area -->
-    <div class="content">
+    <div class="content col-lg-11">
+        <!-- Error Message -->
+        @if (count($errors) > 0)
+            <div class="alert alert-danger no-border">
+                <ul>
+                    <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
+                    @foreach ($errors->all() as $error)
+                        <li>
+                            <span class="text-semibold">{{ $error }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <!-- Success Message -->
+        @if(Session::has('flash_message'))
+            <div class="alert alert-success no-border">
+                <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
+                <span class="text-semibold">{{ Session::get('flash_message') }}</span>
+            </div>
+        @endif
+
         <div class="panel panel-flat">
             <table class="table datatable-basic">
                 <thead class="active alpha-grey">

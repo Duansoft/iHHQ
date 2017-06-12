@@ -24,20 +24,14 @@ class Controller extends BaseController
         $twilioPhoneNumber = "+601117223168";
 
         $client = new Twilio($sid, $token, $twilioPhoneNumber);
-        $message = $client->message(
-            $mobile_number,
-            array(
-                'from' => $twilioPhoneNumber,
-                'body' => $message
-            )
-        );
+        $message = $client->message($mobile_number, $message);
 
         return $message;
     }
 
     protected function createBillPlz()
     {
-        $billplz = Client::make('c9159118-692d-4f97-9063-66c72f568085');
+        $billplz = Client::make('6afaaa17-1425-43be-9f27-bcd258aaab4b');
         //$billplz->useVersion('v3');
         $billplz->useSandbox();
 

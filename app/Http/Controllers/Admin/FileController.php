@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Department;
+use App\File_Category;
 use App\File_Document;
 use App\File_Subcategory;
 use App\File_User;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Yajra\Datatables\Facades\Datatables;
 use App\File;
@@ -28,9 +30,25 @@ class FileController extends Controller
     {
         if ($request->ajax()) {
             $files = DB::table('files')
-                ->select('file_id', 'file_ref', 'project_name', 'created_at');
+                ->select('file_id', 'file_ref', 'project_name', 'updated_at', 'outstanding_amount', 'paid_amount', 'percent');
+
             return Datatables::of($files)
-                ->editColumn('created_at', '{!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $created_at)->toFormattedDateString() !!}')
+                ->editColumn('updated_at', '{!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $updated_at)->toFormattedDateString() !!}')
+                ->addColumn('time_ago', function($file){
+                    return \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $file->updated_at)->diffForHumans();
+                })
+                ->addColumn('billing', function($file){
+                    return $file->outstanding_amount - $file->paid_amount;
+                })
+                ->addColumn('action', function ($file) {
+                    return '<div class="btn-group btn-group-fade">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions<span class="caret pl-15"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a href="./files/' . $file->file_id . '/close">close</a></li>
+                                <li><a href="./files/' . $file->file_id . '">Edit</a></li>
+                            </ul>
+                        </div>';
+                })
                 ->make(true);
         }
 
@@ -56,14 +74,14 @@ class FileController extends Controller
             ->orderBy('users.name')
             ->get();
         $departments = Department::all();
-        $subcategories = File_Subcategory::all();
+        $categories = File_Category::all();
 
         if (!empty($file_id)) {
             $file = File::findOrFail($file_id);
-            return View('admin.pages.addEditFile', compact('file', 'lawyers', 'staffs', 'departments', 'subcategories'));
+            return View('admin.pages.addEditFile', compact('file', 'lawyers', 'staffs', 'departments',  'categories'));
         }
 
-        return View('admin.pages.addEditFile', compact('lawyers', 'staffs', 'departments', 'subcategories'));
+        return View('admin.pages.addEditFile', compact('lawyers', 'staffs', 'departments', 'subcategories', 'categories'));
     }
 
     /**
@@ -88,6 +106,7 @@ class FileController extends Controller
             'contact' => 'nullable|max:255',
             'contact_name' => 'nullable|max:50',
             'contact_email' => 'nullable|email|max:50',
+            'cases' => 'required|json'
         ]);
 
         if ($validator->fails()) {
@@ -105,6 +124,7 @@ class FileController extends Controller
             $file->updated_by = Auth::id();
             $message = 'The file have been updated successfully';
         }
+        $file = $this->calculateTotalOutstandingAmount($data['cases']);
 
         $lawyers = Input::get('lawyers');
         foreach($lawyers as $lawyer) {
@@ -150,6 +170,42 @@ class FileController extends Controller
 
     }
 
+    public function closeFile($id)
+    {
+        $file = File::findOrFail($id);
+
+        $isNoConflict = true;
+        // check uncompleted cases
+        $cases = json_decode($file->cases);
+        foreach($cases as $case) {
+            if ($case->status != 'Completed') {
+                $isNoConflict = false;
+                Session::push('status', "NOT COMPLETE : " . $case->activity);
+            }
+        }
+
+        // check unreceived milestones
+        $payments = Payment::where('file_ref', $file->file_ref)->get();
+        foreach($payments as $payment) {
+            if ($payment->status != "RECEIVED") { // received
+                $isNoConflict = false;
+                Session::push('status', "NOT RECEIVED : " . $payment->purpose);
+            }
+        }
+
+        if ($isNoConflict) {
+            $file->status = 1;
+            $file->save();
+            Session::flash('flash_message', "The File (" . $file->file_ref . ") is closed successfully");
+        }
+
+        return redirect()->back();
+    }
+
+    /**
+     * Ajax Functions
+     */
+
     public function searchFileAjax()
     {
         $user_id = Input::get('id');
@@ -167,6 +223,18 @@ class FileController extends Controller
             $values[] = $file->file_ref;
         }
 
+        return response()->json($values);
+    }
+
+    public function getSubCategoriesAjax()
+    {
+        $id = Input::get('id');
+        $subCategories = File_Subcategory::where('category_id', $id)->get();
+
+        $values = [];
+        foreach ($subCategories as $subcategory) {
+            $values[] = ['id' => $subcategory->subcategory_id, 'text' => $subcategory->name, 'data' => $subcategory->template];
+        }
         return response()->json($values);
     }
 
@@ -235,6 +303,95 @@ class FileController extends Controller
     }
 
     /**
+     * Upload Case Document
+     */
+    public function postCaseDocument($id)
+    {
+        $data = Input::all();
+        $index = Input::get('index');
+        $file = File::findOrFail($id);
+
+        $validator = Validator::make($data, [
+            'file_ref' => 'required',
+            'name' => 'required|max:100',
+            'file' => 'required|file',
+            'index' => 'required|numeric'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->messages());
+        }
+
+        $doc = Input::file('file');
+        $file_ref = $file->file_ref;
+        $extension = $doc->getClientOriginalExtension();
+        $fileName = Input::get('name') . '.' . $extension;
+        $filePath = 'files/' . $file_ref . '/documents';
+
+        DB::beginTransaction();
+        try {
+            $path = $doc->storeAs($filePath, $fileName);
+
+            $document = new File_Document();
+            $document->fill($data);
+            $document->path = $path;
+            $document->created_by = Auth::id();
+            $document->extension = $this->getExtensionType($extension);
+            $document->save();
+
+            $cases = json_decode($file->cases);
+            $case = $cases[$index];
+            $case->status = "Completed";
+            $file->cases = json_encode($cases);
+            $file->percent = $this->calculateCompletionPercent(json_encode($cases));
+            $file->save();
+
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->withErrors(['errors' => 'Failed to upload document']);
+        }
+
+        return redirect()->back()->with('flash_message', 'Document have been uploaded successfully');
+    }
+
+    public function createMilestone($id)
+    {
+        $file = File::findOrFail($id);
+
+        if ($file->status == 1) { // closed
+            return redirect()->back()->withErrors('errors', 'The file was already closed. Not allowed to create new milestone');
+        }
+
+        $data = Input::all();
+        $validator = Validator::make($data, [
+            'file_ref' => 'required',
+            'activity' => 'required',
+            'milestone' => 'required',
+            'duration' => 'required|numeric'
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->messages())->withInput();
+        }
+
+        $case = [];
+        $case["no"] = sizeof(json_decode($file->cases)) + 1;
+        $case["activity"] = $data["activity"];
+        $case["select"] = true;
+        $case["status"] = "In Progress";
+        $case["duration"] = $data["duration"];
+        $case["milestone"] = $data["milestone"];
+
+        $cases = json_decode($file->cases);
+        $cases[] = $case;
+        $file->cases = json_encode($cases);
+        $file->outstanding_amount = $this->calculateTotalOutstandingAmount(json_encode($cases));
+        $file->save();
+
+        return redirect()->back()->with('flash_message', 'New Milestone has been created successfully');
+    }
+
+    /**
      * Download uploaded Documents
      */
     public function download($id)
@@ -273,5 +430,54 @@ class FileController extends Controller
         $file->save();
 
         return redirect()->back()->with('flash_message', 'Payment have been created successfully');
+    }
+
+    /**
+     * confirm Payment
+     */
+    public function verifiedPayment($id, $pid)
+    {
+        $file = File::findOrFail($id);
+        $payment = Payment::findOrFail($pid);
+        $payment->status = 1;
+        $payment->save();
+
+        $file->paid_amount = Payment::where('file_ref', $file->file_ref)
+            ->where('status', 1)
+            ->sum('amount');
+        $file->save();
+
+        return redirect()->back()->with('flash_message', 'The payment is confirmed');
+    }
+
+
+    /**
+     * Private Methods
+     */
+    private function calculateTotalOutstandingAmount($data)
+    {
+        $cases = json_decode($data);
+
+        $amount = 0;
+        foreach($cases as $case) {
+            $amount += $case->milestone;
+        }
+
+        return $amount;
+    }
+
+    private function calculateCompletionPercent($data)
+    {
+        $cases = json_decode($data);
+
+        $total = sizeof($cases);
+        $count = 0;
+        foreach($cases as $case) {
+            if ($case->status == "Completed") {
+                $count++;
+            }
+        }
+
+        return $count / $total * 100;
     }
 }

@@ -146,5 +146,5 @@ return [
     | Parameter passed to the middleware_handling method
     |--------------------------------------------------------------------------
     */
-    'middleware_params' => '404',
+    'middleware_params' => '403',
 ];

@@ -10,7 +10,7 @@ class Payment extends Model
 
     protected $primaryKey = 'payment_id';
 
-    protected $fillable = ['file_ref', 'purpose', 'amount', 'status', 'created_by', 'remarks'];
+    protected $fillable = ['file_ref', 'transaction_id', 'purpose', 'amount', 'status', 'paid_at', 'paid_by','created_by', 'remarks'];
 
     public function file()
     {

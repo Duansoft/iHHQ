@@ -65,13 +65,12 @@
                 <div class="col-lg-3 no-padding">
                     <div class="panel panel-white">
                         <div class="panel-heading">
-                            <button type="button" class="btn btn-default full-width" data-toggle="modal" data-target="#modal_new_ticket"> Create a new ticket</button>
-                            {{--<div class="input-group">--}}
-                                {{--<input type="text" class="form-control" placeholder="Create a new ticket...">--}}
-                                {{--<span class="input-group-btn">--}}
-                                    {{--<button class="btn btn-default pl-20 pr-20" type="button" data-toggle="modal" data-target="#modal_new_ticket"><i class="icon-plus3 text-grey"></i></button>--}}
-                                {{--</span>--}}
-                            {{--</div>--}}
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Create a new ticket...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default pl-20 pr-20" type="button" data-toggle="modal" data-target="#modal_new_ticket"><i class="icon-plus3 text-grey"></i></button>
+                                </span>
+                            </div>
                         </div>
                         <div class="panel-body no-padding">
                             <ul class="media-list media-list-linked media-list-bordered">

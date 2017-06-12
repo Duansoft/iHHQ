@@ -19,21 +19,14 @@
 @section("page-header")
     <!-- Page header -->
     <div class="page-header">
-        <div class="page-header-content">
+        <div class="page-header-content col-lg-11">
             <div class="page-title">
                 <h2><span class="text-semibold">Tickets</span></h2>
             </div>
-        </div>
 
-        <div class="breadcrumb-line breadcrumb-line-component">
-            <ul class="breadcrumb">
-                <li><a href="{{url('admin/tickets')}}"><i class="icon-home2 position-left"></i> Ticket</a></li>
-                <li class="active">{{$ticket->ticket_id}}</li>
-            </ul>
-
-            <ul class="breadcrumb-elements">
-                <li><a href="{{url('admin/tickets/create')}}"><i class="icon-add position-left"></i> New Ticket</a></li>
-            </ul>
+            <div class="heading-elements">
+                <a href="{{url('admin/tickets')}}"><button type="button" class="btn btn-default heading-btn"><i class="icon-circle-left2 position-left"></i> BACK</button></a>
+            </div>
         </div>
     </div>
     <!-- /page header -->
@@ -45,7 +38,7 @@
     <meta name="_searchHHQ" content="{{ url('admin/users/hhq/search') }}"/>
 
     <!-- Content area -->
-    <div class="content">
+    <div class="content col-lg-11">
 
         <!-- Error Message -->
         @if (count($errors) > 0)
@@ -132,7 +125,7 @@
                         <ul class="media-list chat-stacked content-group">
                             @foreach($messages as $message)
                                 <li class="media">
-                                    <div class="media-left"><img src="{{ asset('upload/avatars/' . $message->sender_photo) }}" class="img-lg, img-circle" alt=""></div>
+                                    <div class="media-left"><img src="{{ asset('upload/avatars/' . $sender_photo) }}" class="img-lg, img-circle" alt=""></div>
                                     <div class="media-body">
                                         <div class="media-heading">
                                             <a class="text-semibold text-grey">{{ $message->sender_name }}</a>

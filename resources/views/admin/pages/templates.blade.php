@@ -19,20 +19,16 @@
 @section("page-header")
     <!-- Page header -->
     <div class="page-header">
-        <div class="page-header-content">
+        <div class="page-header-content col-lg-11">
             <div class="page-title">
                 <h2><span class="">Legal Templates</span></h2>
             </div>
-        </div>
 
-        <div class="breadcrumb-line breadcrumb-line-component">
-            <ul class="breadcrumb">
-                <li><a href="{{ url('admin/templates') }}"><i class="icon-home2 position-left"></i> Legal Templates</a></li>
-            </ul>
-
-            <ul class="breadcrumb-elements">
-                <li><a href="{{ url('admin/templates/create') }}"><i class="icon-add position-left"></i> New Template</a></li>
-            </ul>
+            @permission('create-logistics')
+            <div class="heading-elements">
+                <a href="{{ url('admin/templates/create') }}"><button type="button" class="btn btn-default heading-btn"><i class="icon-add position-left"></i> New Template</button></a>
+            </div>
+            @endpermission
         </div>
     </div>
     <!-- /page header -->
@@ -44,7 +40,7 @@
     <meta name="_publicURL" content="{{ url('') }}"/>
 
     <!-- Content area -->
-    <div class="content">
+    <div class="content col-lg-11">
 
         <!-- Error Message -->
         @if (count($errors) > 0)

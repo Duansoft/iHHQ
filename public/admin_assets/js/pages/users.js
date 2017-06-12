@@ -1,6 +1,15 @@
 
 $(function() {
 
+    // Default select initialization
+    $('.select').select2({
+        minimumResultsForSearch: Infinity,
+        placeholder: function(){
+            $(this).data('placeholder');
+        }
+    });
+
+
     /**
      * Edit User
      */

@@ -89,20 +89,16 @@
 @section("page-header")
     <!-- Page header -->
     <div class="page-header">
-        <div class="page-header-content">
+        <div class="page-header-content col-lg-11">
             <div class="page-title">
                 <h2><span>Tickets</span></h2>
             </div>
-        </div>
 
-        <div class="breadcrumb-line breadcrumb-line-component">
-            <ul class="breadcrumb">
-                <li><a href="#"><i class="icon-home2 position-left"></i> Ticket</a></li>
-            </ul>
-
-            <ul class="breadcrumb-elements">
-                <li><a href="{{url('admin/tickets/create')}}"><i class="icon-add position-left"></i> New Ticket</a></li>
-            </ul>
+            @role('admin')
+            <div class="heading-elements">
+                <a href="{{url('admin/tickets/create')}}"><button type="button" class="btn btn-default heading-btn"><i class="icon-add position-left"></i> New Ticket</button></a>
+            </div>
+            @endrole
         </div>
     </div>
     <!-- /page header -->
@@ -111,7 +107,7 @@
 
 @section("content")
     <!-- Content area -->
-    <div class="content">
+    <div class="content col-lg-11">
 
         <!-- Error Message -->
         @if (count($errors) > 0)
@@ -135,6 +131,7 @@
             </div>
         @endif
 
+        @role('admin')
         <!-- row area -->
         <div class="row">
             <div class="col-lg-3">
@@ -164,7 +161,6 @@
                     </div>
                 </div>
                 <!-- /navigation -->
-
             </div>
 
             <div class="col-lg-9">
@@ -187,6 +183,90 @@
             </div>
         </div>
         <!-- /row area -->
+        @endrole
+
+        @if (Auth::user()->hasRole('lawyer') || Auth::user()->hasRole('staff'))
+        <!-- Highlighted tabs -->
+        @if (empty($tickets))
+        <div class="row">
+            <div class="col-lg-11 col-md-12">
+                <div class="col-lg-3 no-padding">
+                    <div class="panel panel-white">
+                        <div class="panel-body no-padding">
+                            <ul class="media-list media-list-linked media-list-bordered">
+                                @foreach($tickets as $ticket)
+                                    <li class="media border-left-orange border-left-lg">
+                                        <a href="#" class="media-link">
+                                            <div class="media-left">
+                                                <img src="{{ asset('upload/avatars/' . $ticket->client->photo) }}" class="img-lg, img-circle" alt="{{ asset('admin_assets/images/avatars/avatar.png') }}">
+                                                {{--<span class="badge bg-dashboard-user media-badge">5</span>--}}
+                                            </div>
+                                            <div class="media-body">
+                                                <span class="media-heading text-semibold">{{ $ticket->client->name }}</span>
+                                                <span class="text-muted">{{ $ticket->category->name }}</span>
+                                                <span class="display-block">{{ $ticket->file_ref != '' ? 'File Ref - ' . $ticket->file_ref : '' }}{{ $ticket->subject }}</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9 no-padding">
+                    <!-- Left annotation position -->
+                    <div class="panel panel-white">
+                        <div class="panel-heading">
+                            <h5 class="panel-title" style="margin-right: 100px;">{{ isset($ticket) ? $ticket->subject : 'Ticket' }}</h5>
+                            <div class="heading-elements">
+                                <div class="heading-btn no-margin-left">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default btn-icon text-grey pt-5 pb-5 pl-15 pr-15"><i class="icon-cog7"></i></button>
+                                        <button type="button" class="btn btn-default btn-icon text-grey pt-5 pb-5 pl-15 pr-15"><i class="icon-paperplane"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-body">
+                            <ul class="media-list chat-stacked content-group">
+                                @foreach($messages as $message)
+                                    <li class="media">
+                                        <div class="media-left"><img src="{{ asset('upload/avatars/' . $message->photo) }}" class="img-lg, img-circle" alt=""></div>
+                                        <div class="media-body">
+                                            <div class="media-heading">
+                                                <a class="text-semibold text-grey">{{$message->name}}</a>
+                                                <span class="media-annotation dotted">{{ \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $message->created_at)->format('h:i: A - j M') }}</span>
+                                            </div>
+                                            {{$message->message}}
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+
+                            <div class="media date-step content-divider mb-20">
+                                <span>Reply</span>
+                            </div>
+
+                            <textarea name="enter-message" class="form-control content-group" rows="3" cols="1" placeholder="Enter your message..."></textarea>
+
+                            <div class="row">
+                                <div class="col-md-12 text-right">
+                                    <button type="button" class="btn btn-primary">Send<i class="icon-arrow-right14 position-right"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /left annotation position-->
+                </div>
+            </div>
+        </div>
+        @else
+        <h6 class="text-grey text-italic text-size-large">There are no still relevant tickets</h6>
+        @endif
+
+        <!-- /highlighted tabs -->
+        @endif
 
     </div>
     <!-- /content area -->

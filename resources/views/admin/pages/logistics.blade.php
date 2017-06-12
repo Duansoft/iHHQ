@@ -2,6 +2,11 @@
 
 
 @section("css")
+    <style>
+        .datatable-header {
+            display:none;
+        }
+    </style>
 @endsection
 
 
@@ -19,21 +24,25 @@
 @section("page-header")
     <!-- Page header -->
     <div class="page-header">
-        <div class="page-header-content">
+        <div class="page-header-content col-lg-11">
             <div class="page-title">
                 <h2>Logistics</h2>
             </div>
+
+            <div class="heading-elements">
+                <a href="{{ url('admin/logistics/create') }}"><button type="button" class="btn btn-default heading-btn"><i class="icon-add position-left"></i>Create Dispatch</button></a>
+            </div>
         </div>
 
-        <div class="breadcrumb-line breadcrumb-line-component">
-            <ul class="breadcrumb">
-                <li><a href="#"><i class="icon-home2 position-left"></i> Logistics</a></li>
-            </ul>
+        {{--<div class="breadcrumb-line breadcrumb-line-component">--}}
+            {{--<ul class="breadcrumb">--}}
+                {{--<li><a href="#"><i class="icon-home2 position-left"></i> Logistics</a></li>--}}
+            {{--</ul>--}}
 
-            <ul class="breadcrumb-elements">
-                <li><a href="{{ url('admin/logistics/create') }}"><i class="icon-add position-left"></i> Create Dispatch</a></li>
-            </ul>
-        </div>
+            {{--<ul class="breadcrumb-elements">--}}
+                {{--<li><a href="{{ url('admin/logistics/create') }}"><i class="icon-add position-left"></i> Create Dispatch</a></li>--}}
+            {{--</ul>--}}
+        {{--</div>--}}
     </div>
     <!-- /page header -->
 @endsection
@@ -46,7 +55,7 @@
 <meta name="_publicURL" content="{{ url('') }}"/>
 <meta name="_search" content="{{ url('admin/logistics/get') }}"/>
 
-<div class="content">
+<div class="content col-lg-11">
 
     <!-- Error Message -->
     @if (count($errors) > 0)
@@ -70,7 +79,12 @@
         </div>
     @endif
 
-    <div class="panel panel-flat">
+    <div class="panel panel-white">
+        <div class="panel-heading">
+            <h3 class="panel-title">Tracking
+                {{--<small class="ml-20 pl-20 border-left text-grey">3</small>--}}
+            </h3>
+        </div>
         <table class="table datatable">
             <thead class="active alpha-grey">
             <tr>

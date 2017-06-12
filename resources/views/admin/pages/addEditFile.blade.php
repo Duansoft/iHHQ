@@ -6,6 +6,9 @@
 
 
 @section("js")
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/tables/handsontable/handsontable.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/styling/switchery.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/selects/select2.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/notifications/jgrowl.min.js') }}"></script>
@@ -23,23 +26,147 @@
 
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/core/app.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/file.js') }}"></script>
+    <script type="text/javascript">
+
+        $(function() {
+            // trigger after selecting from ajax
+            var hot_checks_values_data = [];
+            var selectedData;
+            var cellTable;
+
+            $('#category').on("select2:select", function(event) {
+                $.ajax({
+                    type: "GET",
+                    url: '{{ url("admin/files/subcategories") }}',
+                    data: {"id": event.currentTarget.value},
+                    dataType: 'json',
+                    success: function (data) {
+                        initializeSubCategory(data);
+                    },
+                    error: function (data) {
+                        console.log('Error:', data);
+                    }
+                });
+            });
+
+            // Default select initialization
+            var subCategorySelect = $('#subcategory').select2({
+                minimumResultsForSearch: Infinity
+            });
+
+            function initializeSubCategory(data) {
+                subCategorySelect.empty();
+                subCategorySelect.select2({
+                    minimumResultsForSearch: Infinity,
+                    data: data,
+                });
+                selectedData = data[0].data;
+                $("#subcategory > option").each(function(index) { // iterate through all options of selectbox
+                    $(this).attr('data-id', data[index].data); // add attribute to option with value of i
+                });
+            }
+
+            $('#btn-load-template').on('click', function(){
+                hot_checks_values_data = JSON.parse(selectedData);
+                cellTable.destroy();
+                create_template_table();
+            });
+
+            // Checkbox true/false values
+            // ------------------------------
+
+            // Define element
+            var hot_checks_values = document.getElementById('activity-table');
+
+            // Initialize with options
+            function create_template_table() {
+                 cellTable = new Handsontable(hot_checks_values, {
+                    data: hot_checks_values_data,
+                    rowHeaders: true,
+                    colHeaders: ['Select', 'Activity Desc', 'Status', 'Price', 'Duration'],
+                    manualColumnMove: true,
+                    stretchH: 'all',
+                    columns: [
+                        {
+                            data: 'select',
+                            type: 'checkbox',
+                            width: 30
+                        },
+                        {
+                            data: 'activity'
+                        },
+                        {
+                            data: 'status',
+                            width: 40
+                        },
+                        {
+                            data: 'milestone',
+                            type: 'numeric',
+                            format: '0,0.00',
+                            width: 40
+                        },
+                        {
+                            data: 'duration',
+                            width: 30
+                        },
+                    ]
+                });
+
+                $('#case').val(JSON.stringify(hot_checks_values_data));
+            }
+
+            create_template_table();
+            $('#btn_add').on('click', function(){
+                hot_checks_values_data.push(
+                        {no: "10", status: "In Progress", activity: "", duration: 0, milestone: 0, select: true}
+                );
+                cellTable.destroy();
+                create_template_table();
+            });
+            $('#btn_delete').on('click', function(){
+                var jsonArr = [];
+                $.each(hot_checks_values_data, function(index, item) {
+                    if (item.select == false) {
+                        jsonArr.push(item);
+                    }
+                    hot_checks_values_data = jsonArr;
+                    cellTable.destroy();
+                    create_template_table();
+                });
+            });
+            $('#btn_delete_all').on('click', function(){
+                hot_checks_values_data = [];
+                cellTable.destroy();
+                create_template_table();
+            });
+
+
+            // When Submit
+            $('form').on('submit', function(e) {
+                e.preventDefault();
+                if (hot_checks_values_data.length == 0) {
+                    alert("You must add a activity at least");
+                } else {
+                    $(this).submit();
+                }
+            });
+
+        });
+    </script>
 @endsection
 
 
 @section("page-header")
     <!-- Page header -->
     <div class="page-header">
-        <div class="page-header-content">
+        <div class="page-header-content col-lg-11">
             <div class="page-title">
                 <h2><span>{{isset($file->file_id) ? 'Edit File' : 'New File'}}</span></h2>
             </div>
-        </div>
 
-        <div class="breadcrumb-line breadcrumb-line-component">
-            <ul class="breadcrumb">
-                <li><a href="{{ url('admin/files') }}"><i class="icon-home2 position-left"></i> Files</a></li>
-                <li class="active">{{isset($file->file_id) ? 'Edit File' : 'New File'}}</li>
-            </ul>
+            <div class="heading-elements">
+                <a href="{{url('admin/files')}}"><button type="button" class="btn btn-default heading-btn"><i class="icon-circle-left2 position-left"></i> BACK</button></a>
+            </div>
         </div>
     </div>
     <!-- /page header -->
@@ -52,7 +179,7 @@
 
 
     <!-- Content area -->
-    <div class="content">
+    <div class="content col-lg-11">
 
         <!-- Error Message -->
         @if (count($errors) > 0)
@@ -95,7 +222,7 @@
                                             <label class="control-label col-lg-2">File Ref</label>
                                             <div class="col-lg-10">
                                                 @if (isset($file))
-                                                    <input type="text" class="form-control" name="file_ref" value="{{ $file->file_ref }}" disabled required>
+                                                    <input type="text" class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly required>
                                                 @else
                                                     <input type="text" class="form-control" name="file_ref" value="{{ old('file_ref') }}" required>
                                                 @endif
@@ -123,22 +250,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <input type="text" name="category_id" value="4" hidden>
 
-                                        <div class="form-group">
-                                            <label class="control-label col-lg-2">Sub Category</label>
-                                            <div class="col-lg-10">
-                                                <select class="select" name="subcategory_id">
-                                                    @foreach($subcategories as $subcategory)
-                                                        @if (isset($file))
-                                                        <option value="{{ $subcategory->subcategory_id }}" {{ $subcategory->subcategory_id == $file->subcategory_id ? 'selected' : '' }}>{{ $subcategory->title }}</option>
-                                                        @else
-                                                        <option value="{{ $subcategory->subcategory_id }}">{{ $subcategory->title }}</option>
-                                                        @endif
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
 
                                         {{--<div class="form-group">--}}
                                             {{--<label class="control-label col-lg-2">Date</label>--}}
@@ -263,7 +375,67 @@
                         </div>
                     </div>
 
-                    <div class="text-right">
+                    <div class="row no-margin">
+                        <div class="panel panel-flat">
+                            <div class="panel-body">
+                                <fieldset class="content-group">
+                                    <legend class="text-bold">Category</legend>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-2">Category</label>
+                                        <div class="col-lg-10">
+                                            <select id="category" class="select" name="category_id">
+                                                @foreach($categories as $category)
+                                                    @if (isset($file))
+                                                        <option value="{{ $category->category_id }}" {{ $category->category_id == $file->category_id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                                    @else
+                                                        <option value="{{ $category->category_id }}">{{ $category->name }}</option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-2">Sub Category</label>
+                                        <div class="col-lg-10">
+                                            <select id="subcategory" class="select" name="subcategory_id"></select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group text-right">
+                                        <button id="btn-load-template" type="button" class="btn btn-default mr-10"><i class="icon-cog4 position-left"></i> Load From Template</button>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-lg-8 col-lg-offset-2">
+                                            <div class="btn-group btn-group-justified">
+                                                <div class="btn-group">
+                                                    <button id="btn_add" type="button" class="btn btn-default">Add</button>
+                                                </div>
+
+                                                <div class="btn-group">
+                                                    <button id="btn_delete" type="button" class="btn btn-default">Del</button>
+                                                </div>
+
+                                                <div class="btn-group">
+                                                    <button id="btn_delete_all" type="button" class="btn btn-default">Delete All</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <div class="hot-container">
+                                    <div id="activity-table"></div>
+                                </div>
+
+                                <input type="hidden" id="case" name="cases" value="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-right mt-20">
                         <button type="submit" class="btn btn-primary"> {{isset($file->file_id) ? 'Save Changes' : 'Open New File'}} <i class="icon-arrow-right14 position-right"></i></button>
                     </div>
                 </form>
@@ -271,4 +443,35 @@
         </div>
     </div>
     <!-- /content area -->
+
+    <!-- New Ticket Modal Dialog -->
+    <div id="modal_select_template" class="modal fade modal-full">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-yellow-800">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Select Activities</h5>
+                </div>
+
+                <form id="create_ticket_form" class="form-horizontal" action="{{url('support/tickets/create')}}" method="post">
+                    {{ csrf_field() }}
+
+                    <fieldset class="ml-20 mr-20 p-10">
+                        <div class="form-group">
+                            <div class="hot-container">
+                                <div id="activity_templates"></div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="form-group bg-grey-F8FAFC no-margin p-10 text-grey-300">
+                        <label class="control-label col-md-8">Messages are kept confidential</label>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-success form-control">Create Ticket</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /New Ticket Modal Dialog -->
 @endsection

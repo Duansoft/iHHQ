@@ -11,14 +11,13 @@
 |
 */
 use App\Role;
+use App\Permission;
+
 
 Route::get('/', function() {
     return redirect('/login');
 });
 Route::get('/admin/', function() {
-    return redirect('login');
-});
-Route::get('/hhq/', function() {
     return redirect('login');
 });
 
@@ -32,20 +31,20 @@ Route::get('/hhq/', function() {
  */
 Auth::routes();
 Route::group(['namespace' => 'Auth'], function () {
+
     Route::post('/login', 'LoginController@postLogin');
     Route::get('/register', 'RegisterController@getRegister');
     Route::post('/register', 'RegisterController@postRegister');
     Route::get('/verification/{token}', 'VerificationController@getVerification');
     Route::post('/verification/{token}', 'VerificationController@postVerification');
     Route::get('/logout', 'LoginController@logout');
+
     // Route::post('/password/forgot', 'ForgotPasswordController@postForgot');
     // Route::get('/password/forgot', 'ForgotPasswordController@getForgot');
     // Route::post('/password/reset', 'ResetPasswordController@postReset');
     // Route::get('/password/reset', 'ResetPasswordController@getReset');
-//    Route::get('/register/verify/{confirmation_code}', 'RegisterController@confirm');
-    Route::get('/test', function(){
-        Auth::user()->attachRole(Role::find(1));
-    });
+    // Route::get('/register/verify/{confirmation_code}', 'RegisterController@confirm');
+
 });
 
 
@@ -53,7 +52,6 @@ Route::group(['namespace' => 'Auth'], function () {
  * Non-HHQ URIs
  */
 Route::group(['middleware' => ['auth', 'role:client']], function () {
-//Route::group(['middleware' => ['auth']], function () {
 
     /* Main */
     Route::get('/overview', 'OverviewController@index');
@@ -89,44 +87,53 @@ Route::group(['middleware' => ['auth', 'role:client']], function () {
 
 
 /**
- * HHQ URIs
+ * SuperAdmin, Lawyer, Legal Staff URIs
  */
-Route::group(['namespace' => 'Admin', 'prefix' => 'hhq', 'middleware' => ['auth', 'role:lawyer|role:staff']], function() {
-
-    /* Dashboard */
-    Route::get('/dashboard', 'DashboardController@index');
-    Route::get('/dashboard/index', 'DashboardController@index');
-
-});
-
-
-/**
- * SuperAdmin URIs
- */
-Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], function() {
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['auth', 'role:admin|lawyer|staff']], function() {
 
     /* Dashboard */
     Route::get('dashboard', 'DashboardController@index');
-    Route::get('dashboard/index', 'DashboardController@index');
+
+    /* Main */
+    Route::get('/overview', 'OverviewController@index');
+
+    /* Users */
+    Route::group(['middleware' => ['role:admin']], function() {
+        Route::get('users', 'UserController@index');
+        Route::post('users', 'UserController@postUser');
+        Route::get('users/{id}', 'UserController@getUser');
+        // Search Function
+        Route::get('users/clients/search', 'UserController@findUserAjax');
+        Route::get('users/hhq/search', 'UserController@findHHQStaffsAjax');
+        // Create New
+        Route::get('users/clients/create', 'UserController@getCreateClient');
+        Route::get('users/admins/create', 'UserController@getCreateAdmin');
+        Route::get('users/lawyers/create', 'UserController@getCreateLawyer');
+        Route::get('users/staffs/create', 'UserController@getCreateStaff');
+    });
 
     /* Files */
     Route::get('files', 'FileController@index');
-    Route::get('files/index', 'FileController@index');
-    Route::get('files/create', 'FileController@getFile');
-    Route::post('files/create', 'FileController@postFile');
+    Route::get('files/create', ['middleware' => ['role:admin|lawyer'], 'uses' => 'FileController@getFile']);
+    Route::post('files/create', ['middleware' => ['role:admin|lawyer'], 'uses' => 'FileController@postFile']);
     Route::get('files/search', 'FileController@searchFileAjax');
+    Route::get('files/subcategories', 'FileController@getSubCategoriesAjax');
     Route::get('files/{id}', 'FileController@getFile');
     Route::post('files/{id}', 'FileController@postFile');
+    Route::get('files/{id}/close', 'FileController@closeFile');
     Route::get('files/{id}/detail', 'FileController@getFileDetail');
     Route::post('files/{id}/documents', 'FileController@postDocument');
+    Route::post('files/{id}/cases/documents', 'FileController@postCaseDocument');
+    Route::post('files/{id}/milestone', 'FileController@createMilestone');
     Route::get('files/documents/{id}/download', 'FileController@download');
     Route::post('files/{id}/payments', 'FileController@createPayment');
+    Route::get('files/{id}/payments/{pid}', 'FileController@verifiedPayment');
 
     /* Logistics */
     Route::get('logistics', 'LogisticsController@index');
     Route::get('logistics/get', 'LogisticsController@getDispatches');
-    Route::get('logistics/create', 'LogisticsController@getCreate');
-    Route::post('logistics/create', 'LogisticsController@postCreate');
+    Route::get('logistics/create', ['middleware' => ['role:admin|lawyer'], 'uses' => 'LogisticsController@getCreate']);
+    Route::post('logistics/create', ['middleware' => ['role:admin|lawyer'], 'uses' => 'LogisticsController@postCreate']);
     Route::get('logistics/{id}', 'LogisticsController@getDispatch');
     Route::post('logistics/{id}', 'LogisticsController@postDispatch');
     Route::post('logistics/{id}/delete', 'LogisticsController@deleteDispatch');
@@ -134,18 +141,12 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     /* Payment */
     Route::get('payment', 'PaymentController@index');
 
-    /* Users */
-    Route::get('users', 'UserController@index');
-    Route::get('users/index', 'UserController@index');
-    Route::get('users/clients/search', 'UserController@findUserAjax');
-    Route::get('users/hhq/search', 'UserController@findHHQStaffsAjax');
-
-    Route::get('users/admin', 'UserController@getAdmin');
-    Route::get('users/lawyer', 'UserController@getLawyer');
-    Route::get('users/staff', 'UserController@getStaff');
-    Route::get('users/client', 'UserController@getClientAjax');
-    Route::get('users/get', 'UserController@getUser');
-    Route::post('users', 'UserController@postUser');
+//    Route::get('users/admin', 'UserController@getAdmin');
+//    Route::get('users/lawyer', 'UserController@getLawyer');
+//    Route::get('users/staff', 'UserController@getStaff');
+//    Route::get('users/client', 'UserController@getClientAjax');
+//    Route::get('users/get', 'UserController@getUser');
+//    Route::post('users', 'UserController@postUser');
 
     /* Tickets */
     Route::get('tickets', 'TicketController@index');
@@ -178,11 +179,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     /* Legal Templates */
     Route::get('templates', 'TemplateController@index');
     Route::get('templates/get', 'TemplateController@getTemplatesAjax');
-    Route::get('templates/create', 'TemplateController@getCreateTemplate');
-    Route::post('templates/create', 'TemplateController@createTemplate');
-    Route::get('templates/{id}', 'TemplateController@getTemplate');
-    Route::post('templates/{id}', 'TemplateController@postTemplate');
-    Route::get('templates/{id}/delete', 'TemplateController@deleteTemplate');
+    Route::get('templates/create', ['middleware' => ['role:admin|lawyer'], 'uses' => 'TemplateController@getCreateTemplate']);
+    Route::post('templates/create', ['middleware' => ['role:admin|lawyer'], 'uses' => 'TemplateController@createTemplate']);
+    Route::get('templates/{id}', ['middleware' => ['role:admin|lawyer'], 'uses' => 'TemplateController@getTemplate']);
+    Route::post('templates/{id}', ['middleware' => ['role:admin|lawyer'], 'uses' => 'TemplateController@postTemplate']);
+    Route::get('templates/{id}/delete', ['middleware' => ['role:admin|lawyer'], 'uses' => 'TemplateController@deleteTemplate']);
     Route::get('templates/{id}/download', 'TemplateController@download');
 
     /* Settings */
@@ -192,3 +193,21 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
 
 });
 
+
+/**
+ * Role Permission Template
+ */
+Route::get('test-role', function(){
+    $admin = Role::where('name', 'admin')->first();
+    $lawyer = Role::where('name', 'lawyer')->first();
+
+    $permission = new Permission();
+    $permission->name         = 'create-logistics';
+    $permission->display_name = 'create logistics';
+    $permission->description  = 'create logistics';
+    $permission->save();
+
+    $admin->attachPermission($permission);
+    $lawyer->attachPermission($permission);
+
+});
