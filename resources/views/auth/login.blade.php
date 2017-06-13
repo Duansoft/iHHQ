@@ -43,15 +43,14 @@
         <!-- Main content -->
         <div class="content-wrapper">
 
+            <div class="text-center" style="position: relative; top: 25px; z-index: 100;">
+                <img src="{{ asset('\admin_assets\images\lock.png') }}" style="width: 70px; height: 70px;">
+            </div>
+
             <!-- Content area -->
             <div class="content">
-
                 <div class="panel panel-body login-form no-padding">
-                    <div class="p-20">
-                        <div class="text-center mb-20">
-                            <div class="icon-object border-warning-400 text-warning-400"><i class="icon-people"></i></div>
-                        </div>
-
+                    <div class="p-20 mt-15">
                         <!-- Error Message -->
                         @if (count($errors) > 0)
                             <div class="alert alert-danger no-border">
@@ -62,22 +61,16 @@
                         @endif
 
                         <form action="{{ url('/login') }}" method="post" enctype="multipart/form-data">
-
                             {{ csrf_field() }}
 
-                            <div class="form-group has-feedback has-feedback-left">
-                                <input type="email" class="form-control" name="email" placeholder="Email"
-                                    value="{{old('email')}}" required>
-                                <div class="form-control-feedback">
-                                    <i class="icon-mail-read text-muted"></i>
-                                </div>
+                            <div class="form-group has-feedback">
+                                <label class="control-label">Email</label>
+                                <input type="email" class="form-control" name="email" placeholder="Email" value="{{old('email')}}" required>
                             </div>
 
-                            <div class="form-group has-feedback has-feedback-left">
+                            <div class="form-group has-feedback">
+                                <label class="control-label">Password</label>
                                 <input type="password" class="form-control" name="password" placeholder="Password" required>
-                                <div class="form-control-feedback">
-                                    <i class="icon-lock2 text-muted"></i>
-                                </div>
                             </div>
 
                             <div class="form-group login-options">
@@ -91,8 +84,9 @@
                                 </div>
                             </div>
 
-                            {{--{!! app('captcha')->display(["style" => "transform:scale(1.12);-webkit-transform:scale(1.12);transform-origin:0 0;-webkit-transform-origin:0 0;"]) !!}--}}
-                            {{--<div class="g-recaptcha mb-20" data-sitekey="6Ld-_x0UAAAAAO5ThcAQWNxuNnfkPDGNzlhRvq4Z" ></div>--}}
+                            {!! app('captcha')->display(["style" => "transform:scale(1.12);-webkit-transform:scale(1.12);transform-origin:0 0;-webkit-transform-origin:0 0;"]) !!}
+                            <div class="g-recaptcha mb-20" data-sitekey="6Ld-_x0UAAAAAO5ThcAQWNxuNnfkPDGNzlhRvq4Z" ></div>
+
                             <div class="form-group no-margin">
                                 <button type="submit" class="btn bg-success btn-block">Login</button>
                             </div>

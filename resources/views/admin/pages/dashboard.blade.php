@@ -110,7 +110,7 @@
                 <div class="panel panel-white">
                     <div class="panel-heading">
                         <h3 class="panel-title">Superadmin
-                            <small class="ml-20 pl-20 border-left text-grey">32 Entries</small>
+                            {{--<small class="ml-20 pl-20 border-left text-grey">32 Entries</small>--}}
                         </h3>
                         <div class="heading-elements">
                             <form class="heading-form" action="#">
@@ -135,96 +135,36 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>
-                                <span class="no-margin">BillPlz Payment1<small class="display-block text-muted text-size-small">File Ref 394843</small></span>
-                            </td>
-                            <td>
-                                <span class="no-margin">17th Oct, 15<small class="display-block text-muted text-size-small">6 days ago</small></span>
-                            </td>
-                            <td>
-                                <div class="media-left media-middle">
-                                    <a href="#"><img src="{{ asset('admin_assets/images/avatars/jacky.png') }}" class="img-lg, img-circle" alt=""></a>
-                                </div>
-                                <div class="media-left">
-                                    <h6 class="no-margin">Norman Hammond
-                                        <small class="display-block text-muted text-size-small">Axiata Group</small>
-                                    </h6>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="no-margin">File Ref 34847<small class="display-block text-muted text-size-small">Edgar Kennedy(Associate)</small></span>
-                            </td>
-                            <td>
-                                <div class="btn-group btn-group-fade">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#" data-toggle="modal" data-target="#modal_make_payment">Create</a></li>
-                                        <li><a href="#" data-toggle="modal" data-target="#modal_request_payment">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="no-margin">BillPlz Payment2<small class="display-block text-muted text-size-small">File Ref 394843</small></span>
-                            </td>
-                            <td>
-                                <span class="no-margin">17th Oct, 15<small class="display-block text-muted text-size-small">6 days ago</small></span>
-                            </td>
-                            <td>
-                                <div class="media-left media-middle">
-                                    <a href="#"><img src="{{ asset('admin_assets/images/avatars/jacky.png') }}" class="img-lg, img-circle" alt=""></a>
-                                </div>
-                                <div class="media-left">
-                                    <h6 class="no-margin">Norman Hammond
-                                        <small class="display-block text-muted text-size-small">Axiata Group</small>
-                                    </h6>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="no-margin">File Ref 34847<small class="display-block text-muted text-size-small">Edgar Kennedy(Associate)</small></span>
-                            </td>
-                            <td>
-                                <div class="btn-group btn-group-fade">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#" data-toggle="modal" data-target="#modal_make_payment">Create</a></li>
-                                        <li><a href="#" data-toggle="modal" data-target="#modal_request_payment">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="no-margin">BillPlz Payment3<small class="display-block text-muted text-size-small">File Ref 394843</small></span>
-                            </td>
-                            <td>
-                                <span class="no-margin">17th Oct, 15<small class="display-block text-muted text-size-small">6 days ago</small></span>
-                            </td>
-                            <td>
-                                <div class="media-left media-middle">
-                                    <a href="#"><img src="{{ asset('admin_assets/images/avatars/jacky.png') }}" class="img-lg, img-circle" alt=""></a>
-                                </div>
-                                <div class="media-left">
-                                    <h6 class="no-margin">Norman Hammond
-                                        <small class="display-block text-muted text-size-small">Axiata Group</small>
-                                    </h6>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="no-margin">File Ref 34847<small class="display-block text-muted text-size-small">Edgar Kennedy(Associate)</small></span>
-                            </td>
-                            <td>
-                                <div class="btn-group btn-group-fade">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#" data-toggle="modal" data-target="#modal_make_payment">Create</a></li>
-                                        <li><a href="#" data-toggle="modal" data-target="#modal_request_payment">Delete</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
+                        {{--<tr>--}}
+                            {{--<td>--}}
+                                {{--<span class="no-margin">BillPlz Payment1<small class="display-block text-muted text-size-small">File Ref 394843</small></span>--}}
+                            {{--</td>--}}
+                            {{--<td>--}}
+                                {{--<span class="no-margin">17th Oct, 15<small class="display-block text-muted text-size-small">6 days ago</small></span>--}}
+                            {{--</td>--}}
+                            {{--<td>--}}
+                                {{--<div class="media-left media-middle">--}}
+                                    {{--<a href="#"><img src="{{ asset('admin_assets/images/avatars/jacky.png') }}" class="img-lg, img-circle" alt=""></a>--}}
+                                {{--</div>--}}
+                                {{--<div class="media-left">--}}
+                                    {{--<h6 class="no-margin">Norman Hammond--}}
+                                        {{--<small class="display-block text-muted text-size-small">Axiata Group</small>--}}
+                                    {{--</h6>--}}
+                                {{--</div>--}}
+                            {{--</td>--}}
+                            {{--<td>--}}
+                                {{--<span class="no-margin">File Ref 34847<small class="display-block text-muted text-size-small">Edgar Kennedy(Associate)</small></span>--}}
+                            {{--</td>--}}
+                            {{--<td>--}}
+                                {{--<div class="btn-group btn-group-fade">--}}
+                                    {{--<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>--}}
+                                    {{--<ul class="dropdown-menu">--}}
+                                        {{--<li><a href="#" data-toggle="modal" data-target="#modal_make_payment">Create</a></li>--}}
+                                        {{--<li><a href="#" data-toggle="modal" data-target="#modal_request_payment">Delete</a></li>--}}
+                                    {{--</ul>--}}
+                                {{--</div>--}}
+                            {{--</td>--}}
+                        {{--</tr>--}}
                         </tbody>
                     </table>
 

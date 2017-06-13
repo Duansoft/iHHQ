@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Department;
 use App\File;
 use App\Ticket;
@@ -29,7 +28,7 @@ class SupportController extends Controller
             ->get();
         $tickets = Ticket::where('client_id', $myID)
             ->where('status_id', '!=', 0)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('updated_at', 'desc')
             ->get();
 
         $messages = [];
@@ -71,6 +70,54 @@ class SupportController extends Controller
         $message->client_id = $user->id;
         $message->sender_id = $user->id;
         $message->save();
+
+        return redirect()->back();
+    }
+
+    public function getTicket($id)
+    {
+        $myID = Auth::id();
+        $ticket = Ticket::findOrFail($id);
+        $departments = Department::get();
+        $files = File::whereHas('participants', function ($query) use($myID) {
+                $query->where('user_id', '=', $myID);
+            })
+            ->where('status', 0)
+            ->get();
+        $tickets = Ticket::where('client_id', $myID)
+            ->where('status_id', '!=', 0)
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        $messages = Ticket_Message::where('ticket_id', $ticket->ticket_id)
+            ->select('ticket_messages.*', 'users.name', 'users.photo')
+            ->join('users', 'users.id', 'ticket_messages.sender_id')
+            ->orderBy('ticket_messages.created_at')
+            ->get();
+
+        return View('pages.support', compact('departments', 'files', 'tickets', 'messages', 'ticket'));
+    }
+
+    public function postMessage($id)
+    {
+        $ticket = Ticket::findOrFail($id);
+        $message = Input::get('message');
+
+        $validator = Validator::make([
+            'message' => $message
+        ],[
+            'message' => 'required|max:65536'
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->messages());
+        }
+
+        $ticket_message = new Ticket_Message();
+        $ticket_message->ticket_id = $ticket->ticket_id;
+        $ticket_message->message = $message;
+        $ticket_message->sender_id = Auth::id();
+        $ticket_message->client_id = $ticket->client_id;
+        $ticket_message->save();
 
         return redirect()->back();
     }

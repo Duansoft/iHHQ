@@ -33,16 +33,6 @@
                 <a href="{{ url('admin/logistics/create') }}"><button type="button" class="btn btn-default heading-btn"><i class="icon-add position-left"></i>Create Dispatch</button></a>
             </div>
         </div>
-
-        {{--<div class="breadcrumb-line breadcrumb-line-component">--}}
-            {{--<ul class="breadcrumb">--}}
-                {{--<li><a href="#"><i class="icon-home2 position-left"></i> Logistics</a></li>--}}
-            {{--</ul>--}}
-
-            {{--<ul class="breadcrumb-elements">--}}
-                {{--<li><a href="{{ url('admin/logistics/create') }}"><i class="icon-add position-left"></i> Create Dispatch</a></li>--}}
-            {{--</ul>--}}
-        {{--</div>--}}
     </div>
     <!-- /page header -->
 @endsection

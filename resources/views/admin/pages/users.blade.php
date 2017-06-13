@@ -26,10 +26,19 @@
                 columnDefs: [{
                     width: '80px',
                     targets: [0]
+                },{
+                    render: function ( data, type, row ) {
+                        if (row.is_allow == 1) {
+                            return '<span class="label label-success"> YES</span>';
+                        } else {
+                            return '<span class="label bg-dashboard-user"> NO</span>';
+                        }
+                    },
+                    targets: 5,
                 }, {
                     orderable: false,
                     width: '100px',
-                    targets: [5]
+                    targets: [6]
                 }],
                 language: {
                     search: '<span>Filter:</span> _INPUT_',
@@ -43,6 +52,7 @@
                     {data: 'name', name: 'name'},
                     {data: 'email', name: 'email'},
                     {data: 'passport_no', name: 'passport_no'},
+                    {data: 'is_allow', name: 'is_allow', searchable: false},
                     {data: 'action', name: 'action', orderable: false, searchable: false}
                 ]
             });
@@ -189,6 +199,7 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Passport</th>
+                    <th>Approve</th>
                     <th>Actions</th>
                 </tr>
                 </thead>

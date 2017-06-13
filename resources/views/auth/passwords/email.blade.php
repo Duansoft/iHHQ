@@ -46,14 +46,17 @@
             <!-- Content area -->
             <div class="content">
 
+                <div class="text-center" style="position: relative; top: 25px; z-index: 100;">
+                    <img src="{{ asset('\admin_assets\images\lock.png') }}" style="width: 70px; height: 70px;">
+                </div>
+
                 <!-- Advanced login -->
                 <form action="{{ route('password.email') }}" method="post">
                     {{ csrf_field() }}
 
-                    <div class="panel panel-body login-form no-padding">
-                        <div class="p-20">
+                    <div class="panel panel-body login-form no-padding pt-20">
+                        <div class="p-20 mt-20">
                             <div class="text-center mb-20">
-                                <div class="icon-object border-warning-400 text-warning-400"><i class="icon-people"></i></div>
                                 <h5 class="content-group-lg">
                                     Forgot your password?
                                 </h5>
@@ -65,8 +68,8 @@
                                 </div>
                             @endif
 
-                            <div class="form-group has-feedback">
-                                <span class="form-control no-border display-block text-grey text-size-small no-padding"> Enter your email address to reset your password. </span>
+                            <div class="form-group has-feedback {{ $errors->has('email') ? ' has-error' : '' }}" >
+                                <label class="control-label no-border display-block text-grey text-size-small no-padding"> Enter your email address to reset your password. </label>
                                 <input type="email" name="email" class="form-control" placeholder="Email" value="{{old('email')}}" required>
                                 @if ($errors->has('email'))
                                     <span class="help-block">

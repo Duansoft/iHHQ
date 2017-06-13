@@ -23,7 +23,7 @@ class UserController extends Controller
     {
         if ($request->ajax()) {
             $users = DB::table('users')
-                ->select('users.id', 'roles.display_name', 'users.name', 'email', 'passport_no')
+                ->select('users.id', 'roles.display_name', 'users.name', 'email', 'passport_no', 'is_allow')
                 ->join('role_user', 'role_user.user_id', 'users.id')
                 ->join('roles', 'roles.id', 'role_user.role_id');
 
@@ -205,6 +205,7 @@ class UserController extends Controller
         if ($request->get('id')) {
             $user = User::findOrFail($request->get('id'));
             $user->fill($data);
+            $user->is_allow = Input::get('is_allow') == "on" ? true : false;
             $user->save();
 
             return redirect('admin/users')->with('flash_message', 'The user have been updated successfully');
@@ -212,7 +213,7 @@ class UserController extends Controller
             $user = new User();
             $user->fill($data);
             $user->verified = true;
-            $user->is_allow = true;
+            $user->is_allow = Input::get('is_allow') == "on" ? true : false;
             $user->password = bcrypt($data['password']);
             $user->save();
 

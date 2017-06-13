@@ -172,7 +172,7 @@
                                         <span class="no-margin">{{$payment->remarks}}</span>
                                     </td>
                                     <td>
-                                        <span class="no-margin">RM{{$payment->amount}}</span>
+                                         <span class="no-margin">RM{{$payment->amount}}</span>
                                     </td>
                                     <td>
                                         <span class="label {{ $payment->getStatusClass() }}">{{ $payment->status }}</span>
@@ -184,6 +184,12 @@
                                                 <ul class="dropdown-menu">
                                                     <li><a class="btn_pay" href="#" data-toggle="modal" data-target="#modal_make_payment" data-amount="{{$payment->amount}}" data-id="{{$payment->payment_id}}">Make Payment</a></li>
                                                 </ul>
+                                            @else
+                                                @if (!empty($payment->receipt))
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="text-muted" onclick="return false;">Download Receipt</a></li>
+                                                </ul>
+                                                @endif
                                             @endif
                                         </div>
                                     </td>
@@ -218,7 +224,7 @@
                                 <label>Select Method</label>
                                 <select class="select payment_option" name="method">
                                     <option value="bank">Bank</option>
-                                    <option value="billplz">BillPlz</option>
+                                    {{--<option value="billplz">BillPlz</option>--}}
                                 </select>
                             </div>
 
@@ -234,12 +240,12 @@
 
                             <div class="form-group">
                                 <label>User Password</label>
-                                <input type="password" name="password" placeholder="password" class="form-control">
+                                <input type="password" name="password" placeholder="password" class="form-control" required>
                             </div>
 
                             <div class="form-group p-10 mb-20 well">
                                 <label class="text-grey">Bank Deposite</label>
-                                <label class="no-margin-bottom">If you have selected Bank Deposit as payment method please prepare to attach a copy of the bank receipt at the next step.</label>
+                                <label class="no-margin-bottom">If you have selected Bank Deposit as payment method please prepare to attach a copy of the bank receipt.</label>
                             </div>
 
                             <div class="form-group">

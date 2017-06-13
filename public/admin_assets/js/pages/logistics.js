@@ -44,7 +44,7 @@ $(function() {
         }, {
             render: function ( data, type, row ) {
                 if (row.status == 0) // delivery
-                    return '<span class="label label-warning">DELIVERED</span>';
+                    return '<span class="label bg-dashboard-user">DELIVERED</span>';
                 else
                     return '<span class="label label-success">RECEIVED</span>';
             },
@@ -98,7 +98,7 @@ $(function() {
         }, {
             render: function ( data, type, row ) {
                 if (row.status == 0) // delivery
-                    return '<span class="label label-warning">DELIVERED</span>';
+                    return '<span class="label bg-dashboard-user">DELIVERED</span>';
                 else
                     return '<span class="label label-success">RECEIVED</span>';
             },

@@ -46,6 +46,10 @@
             <!-- Content area -->
             <div class="content">
 
+                <div class="text-center" style="position: relative; top: 25px; z-index: 100;">
+                    <img src="{{ asset('\admin_assets\images\lock.png') }}" style="width: 70px; height: 70px;">
+                </div>
+
                 <!-- Advanced login -->
                 <form action="{{ route('password.request') }}" method="post" role="form">
                     {{ csrf_field() }}
@@ -53,9 +57,8 @@
                     <input type="hidden" name="token" value="{{ $token }}">
 
                     <div class="panel panel-body login-form no-padding">
-                        <div class="p-20">
+                        <div class="p-20 mt-20">
                             <div class="text-center mb-20">
-                                <div class="icon-object border-warning-400 text-warning-400"><i class="icon-people"></i></div>
                                 <h5 class="content-group-lg">Reset Password</h5>
                             </div>
 

@@ -12,6 +12,7 @@ class Ticket_Message extends Model
 
     /**
      * status = 0: unread, status = 1: read
+     * type = 0: text, type = 1: file
      */
     protected $fillable = ['ticket_id', 'type', 'sender_id', 'client_id', 'message', 'status'];
 

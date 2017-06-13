@@ -21,6 +21,7 @@ Route::get('/admin/', function() {
     return redirect('login');
 });
 
+
 /* captcha validation url */
 //Route::get('captcha-form-validation',array('as'=>'google.get-recaptcha-validation-form','uses'=>'FileController@getCaptchaForm')) ;
 //Route::post('captcha-form-validation',array('as'=>'google.post-recaptcha-validation','uses'=>'FileController@postCaptchaForm')) ;
@@ -35,16 +36,10 @@ Route::group(['namespace' => 'Auth'], function () {
     Route::post('/login', 'LoginController@postLogin');
     Route::get('/register', 'RegisterController@getRegister');
     Route::post('/register', 'RegisterController@postRegister');
+    Route::get('/verification/{token}/resend', 'VerificationController@resendSMS');
     Route::get('/verification/{token}', 'VerificationController@getVerification');
     Route::post('/verification/{token}', 'VerificationController@postVerification');
     Route::get('/logout', 'LoginController@logout');
-
-    // Route::post('/password/forgot', 'ForgotPasswordController@postForgot');
-    // Route::get('/password/forgot', 'ForgotPasswordController@getForgot');
-    // Route::post('/password/reset', 'ResetPasswordController@postReset');
-    // Route::get('/password/reset', 'ResetPasswordController@getReset');
-    // Route::get('/register/verify/{confirmation_code}', 'RegisterController@confirm');
-
 });
 
 
@@ -54,33 +49,32 @@ Route::group(['namespace' => 'Auth'], function () {
 Route::group(['middleware' => ['auth', 'role:client']], function () {
 
     /* Main */
-    Route::get('/overview', 'OverviewController@index');
-    Route::get('/overview/index', 'OverviewController@index');
+    Route::get('overview', 'OverviewController@index');
+    Route::get('overview/detail', 'OverviewController@viewFileDetail');
+    Route::get('overview/documents/{id}/download', 'OverviewController@download');
 
     /* Logistics */
     Route::get('/logistics', 'LogisticsController@index');
-    Route::get('/logistics/index', 'LogisticsController@index');
     Route::get('/logistics/get', 'LogisticsController@getDispatches');
 
     /* Payment */
     Route::get('payment', 'PaymentController@index');
-    Route::get('payment/index', 'PaymentController@index');
     Route::post('payment/pay', 'PaymentController@proceedPay');
+    Route::get('payment/{id}/download', 'PaymentController@downloadReceipt');
 
     /* Support */
     Route::get('support', 'SupportController@index');
-    Route::get('support/index', 'SupportController@index');
     Route::post('support/tickets/create', 'SupportController@createTicket');
+    Route::get('support/tickets/{id}', 'SupportController@getTicket');
+    Route::post('support/tickets/{id}/messages', 'SupportController@postMessage');
 
     /* Templates */
     Route::get('templates', 'TemplateController@index');
-    Route::get('templates/index', 'TemplateController@index');
     Route::get('templates/get', 'TemplateController@getTemplatesAjax');
     Route::get('templates/{id}/download', 'TemplateController@download');
 
     /* Setting */
     Route::get('/setting', 'SettingController@index');
-    Route::get('/setting/index', 'SettingController@index');
     Route::post('/setting', 'SettingController@postProfile');
     Route::post('setting/notification', 'SettingController@postNotificationSetting');
 });
@@ -96,6 +90,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
 
     /* Main */
     Route::get('/overview', 'OverviewController@index');
+    Route::get('overview/detail', 'OverviewController@viewFileDetail');
+    Route::get('overview/documents/{id}/download', 'OverviewController@download');
 
     /* Users */
     Route::group(['middleware' => ['role:admin']], function() {
@@ -136,17 +132,12 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     Route::post('logistics/create', ['middleware' => ['role:admin|lawyer'], 'uses' => 'LogisticsController@postCreate']);
     Route::get('logistics/{id}', 'LogisticsController@getDispatch');
     Route::post('logistics/{id}', 'LogisticsController@postDispatch');
-    Route::post('logistics/{id}/delete', 'LogisticsController@deleteDispatch');
+    Route::get('logistics/{id}/delete', 'LogisticsController@deleteDispatch');
 
     /* Payment */
-    Route::get('payment', 'PaymentController@index');
-
-//    Route::get('users/admin', 'UserController@getAdmin');
-//    Route::get('users/lawyer', 'UserController@getLawyer');
-//    Route::get('users/staff', 'UserController@getStaff');
-//    Route::get('users/client', 'UserController@getClientAjax');
-//    Route::get('users/get', 'UserController@getUser');
-//    Route::post('users', 'UserController@postUser');
+    Route::get('payments', 'PaymentController@index');
+    Route::get('payments/{id}/download', 'PaymentController@downloadReceipt');
+    Route::post('payments/{id}/upload', 'PaymentController@uploadReceipt');
 
     /* Tickets */
     Route::get('tickets', 'TicketController@index');
@@ -163,6 +154,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     Route::get('tickets/{id}/complete', 'TicketController@completeTicket');
     Route::get('tickets/{id}/open', 'TicketController@reopenTicket');
     Route::post('tickets/{id}', 'TicketController@postTicket');
+
 
     /* Announcements */
     Route::get('announcements', 'AnnouncementController@index');
@@ -197,17 +189,17 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
 /**
  * Role Permission Template
  */
-Route::get('test-role', function(){
-    $admin = Role::where('name', 'admin')->first();
-    $lawyer = Role::where('name', 'lawyer')->first();
-
-    $permission = new Permission();
-    $permission->name         = 'create-logistics';
-    $permission->display_name = 'create logistics';
-    $permission->description  = 'create logistics';
-    $permission->save();
-
-    $admin->attachPermission($permission);
-    $lawyer->attachPermission($permission);
-
-});
+//Route::get('test-role', function(){
+//    $admin = Role::where('name', 'admin')->first();
+//    $lawyer = Role::where('name', 'lawyer')->first();
+//
+//    $permission = new Permission();
+//    $permission->name         = 'create-logistics';
+//    $permission->display_name = 'create logistics';
+//    $permission->description  = 'create logistics';
+//    $permission->save();
+//
+//    $admin->attachPermission($permission);
+//    $lawyer->attachPermission($permission);
+//
+//});

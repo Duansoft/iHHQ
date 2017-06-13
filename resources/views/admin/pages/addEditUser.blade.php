@@ -8,10 +8,23 @@
 @section("js")
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/selects/select2.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/styling/switchery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/styling/switch.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/uploaders/fileinput.min.js') }}"></script>
 
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/core/app.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/users.js') }}"></script>
+    <script type="text/javascript">
+        $(function(){
+            // Initialize multiple switches
+            var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
+
+            elems.forEach(function(html) {
+                var switchery = new Switchery(html);
+            });
+        });
+    </script>
 @endsection
 
 
@@ -155,6 +168,22 @@
                                 @endif
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Approve Account?</label>
+                            <div class="col-lg-10">
+                                <div class="checkbox checkbox-left checkbox-switchery">
+                                    <label class="display-block">
+                                        @if (isset($user))
+                                        <input type="checkbox" class="switchery" name="is_allow" {{ $user->is_allow ? 'checked="checked"' : ''}}>
+                                        @else
+                                        <input type="checkbox" class="switchery" name="is_allow" checked="checked">
+                                        @endif
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
                     </fieldset>
 
                     <div class="text-right">

@@ -95,20 +95,20 @@
                                 <p> <strong>Agent</strong>: {{ $ticket->agent }}</p>
                             </div>
                             <div class="col-lg-6 no-padding">
-                                <p> <strong>Category</strong>: <span style="color: #7e0099">{{ $ticket->category }}</span></p>
-                                <p> <strong>Status</strong>: <span style="color: #15a000">{{ $ticket->status }}</span></p>
+                                <p> <strong>Category</strong>: {{ $ticket->category }}</p>
+                                <p> <strong>Status</strong>: {{ $ticket->status }}</p>
                                 <p> <strong>Created</strong>: {{ \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $ticket->created_at)->diffForHumans() }}</p>
                                 <p> <strong>Last Update</strong>: {{ \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $ticket->updated_at)->diffForHumans() }}</p>
                             </div>
                         </div>
                         <div class="btn-group btn-group-justified pt-20">
-                            <a href="#" data-toggle="modal" data-target="#modal_edit_ticket" class="btn btn-primary">Edit</a>
+                            <a href="#" data-toggle="modal" data-target="#modal_edit_ticket" class="btn btn-default">Edit</a>
                             @if($ticket->status_id == 0)
-                                <a href="{{ url('admin/tickets/' . $ticket->ticket_id . '/open') }}" class="btn btn-success" onclick="return confirm('Are you sure?')">Reopen</a>
+                                <a href="{{ url('admin/tickets/' . $ticket->ticket_id . '/open') }}" class="btn btn-default" onclick="return confirm('Are you sure?')">Reopen</a>
                             @else
-                                <a href="{{ url('admin/tickets/' . $ticket->ticket_id . '/complete') }}" class="btn btn-success" onclick="return confirm('Are you sure?')">Complete</a>
+                                <a href="{{ url('admin/tickets/' . $ticket->ticket_id . '/complete') }}" class="btn btn-default" onclick="return confirm('Are you sure?')">Complete</a>
                             @endif
-                            <a href="{{ url('admin/tickets/' . $ticket->ticket_id . '/delete') }}" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                            <a href="{{ url('admin/tickets/' . $ticket->ticket_id . '/delete') }}" class="btn btn-default" onclick="return confirm('Are you sure?')">Delete</a>
                         </div>
                     </div>
                 </div>

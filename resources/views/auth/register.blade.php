@@ -81,8 +81,7 @@
 
                                                 <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
                                                     <label for="email" class="control-label">Email</label>
-                                                    <input type="email" name="email" class="form-control" placeholder="Email address"
-                                                           value="{{old('email')}}" required>
+                                                    <input type="email" name="email" class="form-control" placeholder="Email address" value="{{old('email')}}" required>
                                                     @if ($errors->has('email'))
                                                         <span class="help-block">
                                                             {{ $errors->first('email') }}

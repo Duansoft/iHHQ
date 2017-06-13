@@ -91,6 +91,12 @@ class LoginController extends Controller
             return redirect()->back()->withErrors('Email or Password is invalid');
         }
 
+        $user = Auth::user();
+        if (!$user->is_allow) {
+            Auth::logout();
+            return redirect()->back()->withErrors('Your login Permission is not allowed');
+        }
+
         return redirect()->intended($this->redirectTo());
     }
 

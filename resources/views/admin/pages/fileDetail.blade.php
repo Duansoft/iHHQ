@@ -1,6 +1,5 @@
 @extends("admin/admin_app")
 
-
 @section("css")
 @endsection
 
@@ -31,11 +30,20 @@
         $('.btn-dlg').on('click', function(){
             $('.reset_control').val("");
         });
+
         $('.btn-upload-doc').on('click', function(){
             var index = $(this).data("info");
             var activity = $(this).data("activity");
             $('#input_activity').val(activity);
             $('#modal_complete_case #index').val(index);
+        });
+
+        $('.btn_upload').on('click', function(){
+            $('#file_ref').val($(this).data('ref'));
+            $('#amount').val($(this).data('amount'));
+            //$('#receipt').fileupload('clear');
+            $('#name').val('');
+            $('#upload_form').attr('action', $(this).data('url'));
         });
     });
     </script>
@@ -140,6 +148,7 @@
                             </div>
                         </div>
 
+                        <!-- Payment Tab -->
                         <div class="tab-pane fade has-padding" id="tab-payment">
                             <table class="table text-nowrap">
                                 @foreach($file->payments as $payment)
@@ -152,11 +161,20 @@
                                         <td class="no-border pull-right">
                                             <div class="btn-group btn-group-fade">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>
-                                                <ul class="dropdown-menu">
-                                                    @if ($payment->status == "BANK DEPOSIT")
+                                                @if ($payment->status == "BANK DEPOSIT")
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}">Download Receipt</a></li>
                                                         <li><a href="{{ url('admin/files/' . $file->file_id . '/payments/' . $payment->payment_id) }}">Confirmed</a></li>
-                                                    @endif
-                                                </ul>
+                                                    </ul>
+                                                @elseif ($payment->status == "RECEIVED")
+                                                    <ul class="dropdown-menu">
+                                                        @if ($payment->receipt == null)
+                                                            <li><a class="btn_upload" data-toggle="modal" data-target="#modal_upload_receipt" data-ref="{{$payment->file_ref}}" data-amount="{{$payment->amount}}" data-url="{{ url('admin/payments/' . $payment->payment_id . '/upload')}}">Upload Receipt</a></li>
+                                                        @else
+                                                            <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}">Download Receipt</a></li>
+                                                        @endif
+                                                    </ul>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
@@ -166,7 +184,9 @@
                                 <button type="button" class="btn btn-dlg btn-success pl-20 pr-20 mt-20" data-toggle="modal" data-target="#modal_create_payment"><i class="icon-plus22 position-left"></i> Request Payment</button>
                             </div>
                         </div>
+                        <!-- /Payment Tab -->
 
+                        <!-- Document Tab -->
                         <div class="tab-pane fade has-padding" id="tab-document">
                             <table class="table text-nowrap">
                                 <tbody>
@@ -195,6 +215,7 @@
                                 <button type="button" class="btn btn-dlg btn-success pl-20 pr-20 mt-20" data-toggle="modal" data-target="#modal_upload_document"><i class="icon-plus22 position-left"></i> Upload</button>
                             </div>
                         </div>
+                        <!-- /Document Tab -->
                     </div>
                     <!-- /tabs content -->
                 </div>
@@ -212,43 +233,48 @@
                                 <ul class="list-condensed list-unstyled text-right">
                                     @foreach($participants as $participant)
                                         @if ($participant->role == "lawyer")
-                                            <li class="text-size-large text-success-800">{{ $participant->name }}</li>
+                                            <li class="text-size-large">{{ $participant->name }}</li>
                                         @endif
                                     @endforeach
                                 </ul>
                             </div>
                         </div>
+
                         <div class="row">
                             <p class="col-md-6">Staff</p>
                             <div class="col-md-6">
                                 <ul class="list-condensed list-unstyled text-right">
                                     @foreach($participants as $participant)
                                         @if ($participant->role == "staff")
-                                            <li class="text-size-large text-success-800">{{ $participant->name }}</li>
+                                            <li class="text-size-large">{{ $participant->name }}</li>
                                         @endif
                                     @endforeach
                                 </ul>
                             </div>
                         </div>
+
+                        <legend class="text-bold p-5 mb-10"></legend>
+
                         <div class="row">
                             <p class="col-md-6">Client</p>
                             <div class="col-md-6">
                                 <ul class="list-condensed list-unstyled text-right">
                                     @foreach($participants as $participant)
                                         @if ($participant->role == "client")
-                                            <li class="text-size-large text-success-800">{{ $participant->name }}</li>
+                                            <li class="text-size-large">{{ $participant->name }}</li>
                                         @endif
                                     @endforeach
                                 </ul>
                             </div>
                         </div>
+
                         <div class="row">
                             <p class="col-md-6">Spectator</p>
                             <div class="col-md-6">
                                 <ul class="list-condensed list-unstyled text-right">
                                     @foreach($participants as $participant)
                                         @if ($participant->role == "spectator")
-                                        <li class="text-size-large text-success-800">{{ $participant->name }}</li>
+                                        <li class="text-size-large">{{ $participant->name }}</li>
                                         @endif
                                     @endforeach
                                 </ul>
@@ -259,22 +285,22 @@
 
                         <div class="row">
                             <p class="col-md-6">Total Outstanding</p>
-                            <p class="col-md-6 text-right text-warning-800">RM{{ $file->outstanding_amount }}</p>
+                            <p class="col-md-6 text-right">RM{{ $file->outstanding_amount }}</p>
                         </div>
                         <div class="row">
                             <p class="col-md-6">Total Paid</p>
-                            <p class="col-md-6 text-right text-success-800">RM{{ $file->paid_amount }}</p>
+                            <p class="col-md-6 text-right">RM{{ $file->paid_amount }}</p>
                         </div>
 
                         <legend class="text-bold p-5 mb-10"></legend>
 
                         <div class="row">
                             <p class="col-md-6">Tags</p>
-                            <p class="col-md-6 text-right text-primary-800">{{$file->tags}}</p>
+                            <p class="col-md-6 text-right">{{$file->tags}}</p>
                         </div>
                         <div class="row">
                             <p class="col-md-6">Open Date</p>
-                            <p class="col-md-6 text-right text-primary-800">{!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $file->created_at)->toFormattedDateString() !!}</p>
+                            <p class="col-md-6 text-right">{!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $file->created_at)->toFormattedDateString() !!}</p>
                         </div>
                     </div>
                 </div>
@@ -456,5 +482,48 @@
         </div>
     </div>
     <!-- /Upload Modal Dialog -->
+
+    <!-- upload receipt modal -->
+    <div id="modal_upload_receipt" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-yellow-800">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Upload Receipt</h5>
+                </div>
+
+                <form id="upload_form" action="#" method="post" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>File Ref</label>
+                            <input id="file_ref" type="text" placeholder="" name="file_ref" class="form-control" readonly required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input id="amount" type="text" placeholder="" name="amount" class="form-control" readonly required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Receipt Name</label>
+                            <input id="name" type="text" placeholder="" name="name" class="form-control" required>
+                        </div>
+
+                        <div class="form-group file-receipt">
+                            <label>Receipt</label>
+                            <input id="receipt" type="file" class="file-input reset_control" name="receipt" accept=".pdf" data-allowed-file-extensions='["pdf"]' data-show-caption="true">
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success form-control">Upload Receipt</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /upload receipt modal -->
 @endsection
 

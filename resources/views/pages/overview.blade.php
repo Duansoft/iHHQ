@@ -17,9 +17,57 @@
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/velocity/velocity.ui.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/buttons/spin.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/buttons/ladda.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/selects/select2.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/uploaders/fileinput.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/jquery.matchHeight.js') }}"></script>
 
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/core/app.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/overview.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+
+            $('.view_detail').on('click', function(e){
+                e.preventDefault();
+                $.ajax({
+                    type: "GET",
+                    url: $(this).data('url'),
+                    success: function (data) {
+                        $('#modal_file_detail').html(data);
+                        $('#modal_file_detail').modal('show');
+                    },
+                    error: function (data) {
+                        console.log('Error:', data);
+                    }
+                });
+            });
+
+            $('.select').select2({
+                minimumResultsForSearch: Infinity
+            });
+
+            $('.file-input').fileinput({
+                browseLabel: 'Browse',
+                browseIcon: '<i class="icon-file-plus"></i>',
+                uploadIcon: '<i class="icon-file-upload2"></i>',
+                removeIcon: '<i class="icon-cross3"></i>',
+                showUpload: false,
+                layoutTemplates: {
+                    icon: '<i class="icon-file-check"></i>'
+                },
+                initialCaption: "No Receipt selected"
+            });
+
+
+            $('.btn_pay').on('click', function(e){
+                e.preventDefault();
+                $('#modal_file_detail').modal('hide');
+
+                $('#amount').val($(this).data('amount'));
+                $('#payment_id').val($(this).data('id'));
+            });
+
+        });
+    </script>
 @endsection
 
 
@@ -128,8 +176,7 @@
                                     <div class="btn-group btn-group-fade">
                                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
                                         <ul class="dropdown-menu">
-                                            <li><a href="#" data-toggle="modal" data-target="#modal_make_payment">Create</a></li>
-                                            <li><a href="#" data-toggle="modal" data-target="#modal_request_payment">Delete</a></li>
+                                            <li><a class="view_detail" data-url="{{ url('overview/detail/?id=' . $file->file_id) }}">View Detail</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -159,27 +206,72 @@
                                     </a>
                                 @endforeach
                             </div>
-                            {{-- FAG Announcement --}}
-                            {{--<div class="list-group-divider"></div>--}}
-                            {{--<div class = "list-group no-padding no-border">--}}
-                            {{--<a class = "list-group-item">--}}
-                            {{--<div class="list-group-item-heading">--}}
-                            {{--<h6>Are there any fees for online payment?</h6>--}}
-                            {{--</div>--}}
-                            {{--<div class="list-group-item-text">--}}
-                            {{--<span class = "text-grey">If I change my avatar will I need to do the same on my phone?</span>--}}
-                            {{--<h6 class="text-success">Visit FAQ Page</h6>--}}
-                            {{--</div>--}}
-                            {{--</a>--}}
-                            {{--</div>--}}
                         </div>
                     </div>
                 @endif
             </div>
         </div>
         <!-- /highlighted tabs -->
-
     </div>
     <!-- /content area -->
+
+    <!-- Upload Modal Dialog -->
+    <div id="modal_file_detail" class="modal fade">
+    </div>
+    <!-- /Upload Modal Dialog -->
+
+    <!-- make payment modal -->
+    <div id="modal_make_payment" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-yellow-800">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Make Payment</h4>
+                </div>
+
+                <form action="{{ url('payment/pay') }}" method="post" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+
+                    <input type="hidden" id="payment_id" name="payment_id" >
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Select Method</label>
+                            <select class="select payment_option" name="method">
+                                <option value="bank">Bank</option>
+                                {{--<option value="billplz">BillPlz</option>--}}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input type="number" id="amount" class="form-control" name="amount" step="0.01" placeholder="RM1000.00" readonly required>
+                        </div>
+
+                        <div class="form-group file-receipt">
+                            <label>Receipt</label>
+                            <input type="file" class="file-input reset_control" name="receipt" accept=".pdf" data-allowed-file-extensions='["pdf"]' data-show-caption="true">
+                        </div>
+
+                        <div class="form-group">
+                            <label>User Password</label>
+                            <input type="password" name="password" placeholder="password" class="form-control">
+                        </div>
+
+                        <div class="form-group p-10 mb-20 well">
+                            <label class="text-grey">Bank Deposite</label>
+                            <label class="no-margin-bottom">If you have selected Bank Deposit as payment method please prepare to attach a copy of the bank receipt.</label>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success form-control">Proceed to pay</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /make payment modal -->
+
 @endsection
 

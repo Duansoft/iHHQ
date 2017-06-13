@@ -56,8 +56,8 @@
                     </li>
 
                     <!-- Payment Page -->
-                    <li class="{{ Request::is('admin/payment*')? 'active': '' }}">
-                        <a href="{{URL::to('admin/payment')}}"><span>Billing & Payment</span></a>
+                    <li class="{{ Request::is('admin/payments*')? 'active': '' }}">
+                        <a href="{{URL::to('admin/payments')}}"><span>Billing & Payment</span></a>
                     </li>
 
                     <!-- Support Page -->

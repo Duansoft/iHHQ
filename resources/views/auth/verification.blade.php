@@ -46,14 +46,17 @@
             <!-- Content area -->
             <div class="content">
 
+                <div class="text-center" style="position: relative; top: 25px; z-index: 100;">
+                    <img src="{{ asset('\admin_assets\images\lock.png') }}" style="width: 70px; height: 70px;">
+                </div>
+
                 <!-- Advanced login -->
                 <form action="{{ url('/verification/' . $token) }}" method="post">
                     {{ csrf_field() }}
 
                     <div class="panel panel-body login-form no-padding">
-                        <div class="p-20">
+                        <div class="p-20 mt-20">
                             <div class="text-center mb-20">
-                                <div class="icon-object border-warning-400 text-warning-400"><i class="icon-people"></i></div>
                                 <h5 class="content-group-lg">Enter Verification Code
                                     <span class="display-block text-grey text-size-small">We have sent you a verification code vis SMS. <br> Enter the verification code to continue</span>
                                 </h5>
@@ -62,6 +65,7 @@
                             <!-- Error Message -->
                             @if (count($errors) > 0)
                                 <div class="alert alert-danger no-border">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
                                     @foreach ($errors->all() as $error)
                                         <span class="text-semibold">{{ $error }}</span>
                                     @endforeach
@@ -83,16 +87,14 @@
 
                     </div>
                 </form>
-                <!-- /advanced login -->
+
+                <div class="text-center">
+                    <a href="{{ url('/verification/' . $token) . '/resend' }}"><span class="text-white">Don't have receive code? Click here to resend</span></a>
+                </div>
+
             </div>
-            <!-- /content area -->
-
         </div>
-        <!-- /main content -->
-
     </div>
-    <!-- /page content -->
-
 </div>
 <!-- /page container -->
 

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\File_Document;
+use Illuminate\Support\Facades\Storage;
 
 class PaymentController extends Controller
 {
@@ -67,7 +68,7 @@ class PaymentController extends Controller
         }
 
         if (!Hash::check(Input::get('password'), $user->password)) {
-            return redirect()->back()->withErrors('error', 'Password is not matched');
+            return redirect()->back()->withErrors(['Password is not matched']);
         }
 
 
@@ -128,8 +129,18 @@ class PaymentController extends Controller
                 return redirect()->back()->withInput()->withErrors(['errors' => 'Failed to proceed']);
             }
 
-            return redirect()->back()->with('flash_message', 'Thanks, Our staff will be confirm the receipt');
+            return back()->with('flash_message', 'Thanks, Our staff will be confirm the receipt');
         }
+    }
+
+    public function downloadReceipt($id)
+    {
+        $payment = Payment::findOrFail($id);
+        if (empty($payment->receipt)) {
+            return redirect()->back()->withErrors(['No uploaded receipt']);
+        }
+
+        return response()->download(Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix() . $payment->receipt);
     }
 
 }

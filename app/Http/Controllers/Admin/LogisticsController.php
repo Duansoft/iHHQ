@@ -89,7 +89,7 @@ class LogisticsController extends Controller
         $val = $user->name . " (" . $user->passport_no . ")";
         $couriers = Courier::all();
 
-        return View('admin.pages.addEditDispatch', compact('couriers', 'dispatch', 'val'));
+        return View('admin.pages.addEditDispatch', compact('couriers', 'dispatch', 'val', 'user'));
     }
 
     public function postDispatch($id)

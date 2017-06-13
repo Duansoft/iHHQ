@@ -16,6 +16,7 @@
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/notifications/bootbox.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/notifications/sweet_alert.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/selects/select2.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/uploaders/fileinput.min.js') }}"></script>
 
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/core/app.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/components_modals.js') }}"></script>
@@ -44,6 +45,26 @@
             {
                 return fileRef.match(key) || name.match(key) || tags.match(key)
             }
+
+            $('.file-input').fileinput({
+                browseLabel: 'Browse',
+                browseIcon: '<i class="icon-file-plus"></i>',
+                uploadIcon: '<i class="icon-file-upload2"></i>',
+                removeIcon: '<i class="icon-cross3"></i>',
+                showUpload: false,
+                layoutTemplates: {
+                    icon: '<i class="icon-file-check"></i>'
+                },
+                initialCaption: "No Receipt selected"
+            });
+
+            $('.btn_upload').on('click', function(){
+                $('#file_ref').val($(this).data('ref'));
+                $('#amount').val($(this).data('amount'));
+                //$('#receipt').fileupload('clear');
+                $('#name').val('');
+                $('#upload_form').attr('action', $(this).data('url'));
+            });
         });
     </script>
 @endsection
@@ -77,6 +98,29 @@
 @section("content")
     <!-- Content area -->
     <div class="content">
+
+        <!-- Error Message -->
+        @if (count($errors) > 0)
+            <div class="alert alert-danger no-border col-md-11">
+                <ul>
+                    <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
+                    @foreach ($errors->all() as $error)
+                        <li>
+                            <span class="text-semibold">{{ $error }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <!-- Success Message -->
+        @if(Session::has('flash_message'))
+            <div class="alert alert-success no-border col-md-11">
+                <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
+                <span class="text-semibold">{{ Session::get('flash_message') }}</span>
+            </div>
+        @endif
+
         <!-- Highlighted tabs -->
         <div class="row">
             <div class="col-lg-11">
@@ -137,11 +181,20 @@
                                     <td>
                                         <div class="btn-group btn-group-fade">
                                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>
+                                            @if ($payment->status == "BANK DEPOSIT")
                                             <ul class="dropdown-menu">
-                                                @if ($payment->status == "BANK DEPOSIT")
-                                                    <li><a href="{{ url('admin/files/' . $file->file_id . '/payments/' . $payment->payment_id) }}">Confirmed</a></li>
+                                                <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}">Download Receipt</a></li>
+                                                <li><a href="{{ url('admin/files/' . $file->file_id . '/payments/' . $payment->payment_id) }}">Confirmed</a></li>
+                                            </ul>
+                                            @elseif ($payment->status == "RECEIVED")
+                                            <ul class="dropdown-menu">
+                                                @if ($payment->receipt == null)
+                                                <li><a class="btn_upload" data-toggle="modal" data-target="#modal_upload_receipt" data-ref="{{$payment->file_ref}}" data-amount="{{$payment->amount}}" data-url="{{ url('admin/payments/' . $payment->payment_id . '/upload')}}">Upload Receipt</a></li>
+                                                @else
+                                                <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}">Download Receipt</a></li>
                                                 @endif
                                             </ul>
+                                            @endif
                                         </div>
                                     </td>
                             @endforeach
@@ -154,96 +207,51 @@
         </div>
         <!-- /highlighted tabs -->
         <span class="text-grey text-italic pl-10">Note: All payments shall subject to verification by our Accounts department. Kindly allow 2-3 working days for processing and changes to be reflected on your dashboard.</span>
-
-
-        <!-- make payment modal -->
-        <div id="modal_make_payment" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-yellow-800">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h5 class="modal-title">Make Payment</h5>
-                    </div>
-
-                    <form action="#">
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label>Select Method</label>
-                                <input type="text" placeholder="Eugene" class="form-control">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Amount</label>
-                                <input type="text" placeholder="RM 1000.00" class="form-control">
-                            </div>
-
-                            <div class="form-group">
-                                <label>User Password</label>
-                                <input type="password" placeholder="password" class="form-control">
-                            </div>
-
-                            <div class="form-group p-10 mb-20 well">
-                                <label class="text-grey">Bank Deposite</label>
-                                <label class="no-margin-bottom">If you have selected Bank Deposit as payment method please prepare to attach a copy of the bank receipt at the next step.</label>
-                            </div>
-
-                            <div class="form-group">
-                                <button type="button" class="btn btn-success form-control">Proceed to pay</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- /make payment modal -->
-
-        <!-- request payment modal -->
-        <div id="modal_request_payment" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-yellow-800">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h5 class="modal-title">Request Payment</h5>
-                    </div>
-
-                    <form action="#">
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label>Purpose</label>
-                                <input type="text" placeholder="Eugene" class="form-control">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Amount</label>
-                                <input type="text" placeholder="" class="form-control">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Reconfirm Ref File</label>
-                                <input type="text" placeholder="" class="form-control">
-                            </div>
-
-                            <div class="form-group">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" class="control-success" checked="checked">
-                                        Have an attachment?
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <button type="button" class="btn btn-success form-control">Create</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- /request payment modal -->
-
     </div>
     <!-- /content area -->
+
+    <!-- upload receipt modal -->
+    <div id="modal_upload_receipt" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-yellow-800">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Upload Receipt</h5>
+                </div>
+
+                <form id="upload_form" action="#" method="post" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>File Ref</label>
+                            <input id="file_ref" type="text" placeholder="" name="file_ref" class="form-control" readonly required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input id="amount" type="text" placeholder="" name="amount" class="form-control" readonly required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Receipt Name</label>
+                            <input id="name" type="text" placeholder="" name="name" class="form-control" required>
+                        </div>
+
+                        <div class="form-group file-receipt">
+                            <label>Receipt</label>
+                            <input id="receipt" type="file" class="file-input reset_control" name="receipt" accept=".pdf" data-allowed-file-extensions='["pdf"]' data-show-caption="true">
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success form-control">Upload Receipt</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /upload receipt modal -->
 @endsection
 
 

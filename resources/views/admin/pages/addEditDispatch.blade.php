@@ -94,7 +94,8 @@
                         <div class="form-group">
                             <label class="control-label col-lg-2">Client</label>
                             <div class="col-lg-10">
-                                <select class="select-remote-client" name="client_id" data-placeholder="search client"></select>
+                                <select class="select-remote-client" name="client_id" data-placeholder="search client">
+                                </select>
                             </div>
                         </div>
 
@@ -149,6 +150,9 @@
                     </fieldset>
 
                     <div class="text-right">
+                        @if (isset($dispatch))
+                        <a href="{{ url('/admin/logistics/' . $dispatch->dispatch_id . '/delete') }}" onclick="confirm('Are you sure to remove?')" class="mr-10"><button type="button" class="btn btn-danger">Delete<i class="icon-arrow-right14 position-right"></i></button></a>
+                        @endif
                         <button type="submit" class="btn btn-primary">Submit<i class="icon-arrow-right14 position-right"></i></button>
                     </div>
                 </form>

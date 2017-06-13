@@ -34,15 +34,14 @@ class TicketController extends Controller
 
         } else {
             $myID = Auth::id();
-            $departments = Department::get();
-            $files = File::whereHas('participants', function ($query) use($myID) {
-                $query->where('user_id', '=', $myID);
-            })
-                ->where('status', 0)
-                ->get();
-            $tickets = Ticket::where('client_id', $myID)
-                ->where('status_id', '!=', 0)
-                ->orderBy('created_at', 'desc')
+            $tickets = DB::table('tickets')
+                ->select('tickets.*', 'client.photo as photo', 'client.name as name', 'ticket_categories.name as category')
+                ->leftJoin('file_users', 'tickets.file_ref', 'file_users.file_ref')
+                ->leftJoin('users AS client', 'tickets.client_id', 'client.id')
+                ->leftJoin('ticket_categories', 'tickets.category_id', 'ticket_categories.category_id')
+                ->where('file_users.user_id', $myID)
+                ->orWhere('staff_id', $myID)
+                ->orderBy('updated_at', 'desc')
                 ->get();
 
             $messages = [];
@@ -55,7 +54,7 @@ class TicketController extends Controller
                     ->get();
             }
 
-            return View('admin.pages.tickets', compact('departments', 'files', 'tickets', 'messages', 'ticket'));
+            return View('admin.pages.support', compact('tickets', 'messages', 'ticket'));
         }
     }
 
@@ -163,30 +162,59 @@ class TicketController extends Controller
     public function getTicket($id)
     {
         $user = Auth::user();
-        $files = File::where('created_by', $user->id)->where('status', '0')->get();
-        $ticket_categories = Ticket_Category::all();
 
-        $activeTickets = Ticket::where('status_id', 2)->count();
-        $pendingTickets = Ticket::where('status_id', 1)->count();
-        $completedTickets = Ticket::where('status_id', 0)->count();
+        if (Auth::user()->hasRole('admin')) {
+            $files = File::where('created_by', $user->id)->where('status', '0')->get();
+            $ticket_categories = Ticket_Category::all();
 
-        $ticket = DB::table('tickets')
-            ->select('tickets.*', 'ticket_statuses.name AS status', 'owners.name AS owner', 'agents.name AS agent', 'ticket_categories.name AS category')
-            ->leftJoin('users AS owners', 'owners.id', 'tickets.client_id')
-            ->leftJoin('users AS agents', 'agents.id', 'tickets.staff_id')
-            ->leftJoin('ticket_categories', 'ticket_categories.category_id', 'tickets.category_id')
-            ->leftJoin('ticket_statuses', 'ticket_statuses.id', 'tickets.status_id')
-            ->where('tickets.ticket_id', $id)
-            ->first();
-        $messages = DB::table('ticket_messages')
-            ->select('ticket_messages.*', 'sender.name AS sender_name', 'sender.photo AS sender_photo', 'receiver.name AS receiver_name', 'receiver.photo AS receiver.photo')
-            ->leftJoin('users AS sender', 'sender.id', 'ticket_messages.sender_id')
-            ->leftJoin('users AS receiver', 'receiver.id', 'ticket_messages.client_id')
-            ->where('ticket_id', $id)
-            ->orderBy('ticket_messages.created_at', 'desc')
-            ->get();
+            $activeTickets = Ticket::where('status_id', 2)->count();
+            $pendingTickets = Ticket::where('status_id', 1)->count();
+            $completedTickets = Ticket::where('status_id', 0)->count();
 
-        return View('admin.pages.editTicket', compact('ticket', 'messages', 'activeTickets', 'completedTickets', 'pendingTickets', 'files', 'ticket_categories'));
+            $ticket = DB::table('tickets')
+                ->select('tickets.*', 'ticket_statuses.name AS status', 'owners.name AS owner', 'agents.name AS agent', 'ticket_categories.name AS category')
+                ->leftJoin('users AS owners', 'owners.id', 'tickets.client_id')
+                ->leftJoin('users AS agents', 'agents.id', 'tickets.staff_id')
+                ->leftJoin('ticket_categories', 'ticket_categories.category_id', 'tickets.category_id')
+                ->leftJoin('ticket_statuses', 'ticket_statuses.id', 'tickets.status_id')
+                ->where('tickets.ticket_id', $id)
+                ->first();
+            $messages = DB::table('ticket_messages')
+                ->select('ticket_messages.*', 'sender.name AS sender_name', 'sender.photo AS sender_photo', 'receiver.name AS receiver_name', 'receiver.photo AS receiver.photo')
+                ->leftJoin('users AS sender', 'sender.id', 'ticket_messages.sender_id')
+                ->leftJoin('users AS receiver', 'receiver.id', 'ticket_messages.client_id')
+                ->where('ticket_id', $id)
+                ->orderBy('ticket_messages.created_at', 'desc')
+                ->get();
+
+            return View('admin.pages.editTicket', compact('ticket', 'messages', 'activeTickets', 'completedTickets', 'pendingTickets', 'files', 'ticket_categories'));
+
+        } else {
+
+            $ticket = Ticket::findOrFail($id);
+            $files = File::whereHas('participants', function ($query) use($user) {
+                    $query->where('user_id', '=', $user->id);
+                })
+                ->where('status', 0)
+                ->get();
+            $tickets = DB::table('tickets')
+                ->select('tickets.*', 'client.photo as photo', 'client.name as name', 'ticket_categories.name as category')
+                ->leftJoin('file_users', 'tickets.file_ref', 'file_users.file_ref')
+                ->leftJoin('users AS client', 'tickets.client_id', 'client.id')
+                ->leftJoin('ticket_categories', 'tickets.category_id', 'ticket_categories.category_id')
+                ->where('file_users.user_id', $user->id)
+                ->orWhere('staff_id', $user->id)
+                ->orderBy('updated_at', 'desc')
+                ->get();
+
+            $messages = Ticket_Message::where('ticket_id', $ticket->ticket_id)
+                ->select('ticket_messages.*', 'users.name', 'users.photo')
+                ->join('users', 'users.id', 'ticket_messages.sender_id')
+                ->orderBy('ticket_messages.created_at')
+                ->get();
+
+            return View('admin.pages.support', compact('files', 'tickets', 'messages', 'ticket'));
+        }
     }
 
     public function sendMessage($id)
@@ -198,20 +226,18 @@ class TicketController extends Controller
         $validator = Validator::make($data, [
             'message' => 'required|max:65536'
         ]);
-
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator->messages());
         }
 
         $message = new Ticket_Message();
-        $message->fillable($data);
+        $message->fill($data);
         $message->ticket_id = $ticket->ticket_id;
         $message->sender_id = $me->id;
+        $message->client_id = $ticket->client_id;
         $message->save();
 
-        $ticket->save();
-
-        return "";
+        return redirect()->back();
     }
 
     public function deleteTicket($id)
