@@ -13,6 +13,10 @@
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/core/app.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/components_modals.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/tickets.js') }}"></script>
+    <script type="text/javascript">
+        // Scroll Bottom
+        $('#chat_window').scrollTop($('#chat_window')[0].scrollHeight);
+    </script>
 @endsection
 
 
@@ -122,10 +126,10 @@
                     </div>
 
                     <div class="panel-body">
-                        <ul class="media-list chat-stacked content-group">
+                        <ul id="chat_window" class="media-list chat-stacked content-group">
                             @foreach($messages as $message)
                                 <li class="media">
-                                    <div class="media-left"><img src="{{ asset('upload/avatars/' . $sender_photo) }}" class="img-lg, img-circle" alt=""></div>
+                                    <div class="media-left"><img src="{{ asset('upload/avatars/' . $message->sender_photo) }}" class="img-lg, img-circle" alt=""></div>
                                     <div class="media-body">
                                         <div class="media-heading">
                                             <a class="text-semibold text-grey">{{ $message->sender_name }}</a>

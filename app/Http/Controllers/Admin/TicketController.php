@@ -184,7 +184,7 @@ class TicketController extends Controller
                 ->leftJoin('users AS sender', 'sender.id', 'ticket_messages.sender_id')
                 ->leftJoin('users AS receiver', 'receiver.id', 'ticket_messages.client_id')
                 ->where('ticket_id', $id)
-                ->orderBy('ticket_messages.created_at', 'desc')
+                ->orderBy('ticket_messages.updated_at')
                 ->get();
 
             return View('admin.pages.editTicket', compact('ticket', 'messages', 'activeTickets', 'completedTickets', 'pendingTickets', 'files', 'ticket_categories'));
