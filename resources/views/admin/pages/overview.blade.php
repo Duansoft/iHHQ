@@ -176,7 +176,10 @@
                                         <div class="btn-group btn-group-fade">
                                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
                                             <ul class="dropdown-menu">
-                                                <li><a class="view_detail" data-url="{{ url('admin/overview/detail/?id=' . $file->file_id) }}">View Detail</a></li>
+                                                <li><a href="{{ url('admin/files/' . $file->file_id) . '/detail' }}">View Detail</a></li>
+                                                {{--@role('lawyer')--}}
+                                                {{--<li><a class="view_detail" data-url="{{ url('admin/overview/detail/?id=' . $file->file_id) }}">View Detail</a></li>--}}
+                                                {{--@endrole--}}
                                             </ul>
                                         </div>
                                     </td>
@@ -219,5 +222,188 @@
     <div id="modal_file_detail" class="modal fade">
     </div>
     <!-- /Upload Modal Dialog -->
+
+    <!-- Milestone CRUD Modal Dialog -->
+    <div id="modal_milestone" class="modal fade"></div>
+    <!-- /Milestone CRUD Modal Dialog -->
+
+    <!-- Upload Modal Dialog -->
+    <div id="modal_complete_case" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-yellow-800">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Upload A New Document</h4>
+                </div>
+
+                <form id="modal_upload" class="form-horizontal" action="{{ url('admin/files/' . $file->file_id . '/cases/documents') }}"  method="post" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+
+                    <input id="index" type="hidden" name="index" value="">
+
+                    <fieldset class="ml-20 mr-20 p-10">
+                        <div class="form-group">
+                            <label>Activity</label>
+                            <input id="input_activity" class="form-control reset_control" placeholder="activity" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label>File Name</label>
+                            <input class="form-control reset_control" name="name" placeholder="Name of document" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>File Ref</label>
+                            <input class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly="readonly">
+                        </div>
+
+                        <div class="form-group">
+                            <label>File</label>
+                            <input type="file" class="file-input reset_control" name="file" accept=".pdf, .doc, .docx" data-allowed-file-extensions='["pdf", "doc", "docx"]' data-show-caption="true">
+                        </div>
+                    </fieldset>
+                    <div class="form-group bg-grey-F8FAFC no-margin p-15 text-grey-300">
+                        <div class="col-md-4 col-md-offset-4">
+                            <button type="submit" class="btn btn-success form-control text-size-large">Upload Now</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /Upload Modal Dialog -->
+
+    <!-- New Milestone Modal Dialog -->
+    <div id="modal_create_milestone" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-yellow-800">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Create New Milestone</h4>
+                </div>
+
+                <form class="form-horizontal" action="{{ url('admin/files/' . $file->file_id . '/milestone') }}"  method="post">
+                    {{ csrf_field() }}
+
+                    <fieldset class="ml-20 mr-20 p-10">
+                        <div class="form-group">
+                            <label>Activity Description</label>
+                            <input type="text" class="form-control reset_control" name="activity" placeholder="" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Milestone</label>
+                            <input type="number" step="1" class="form-control reset_control" name="milestone" placeholder="RM 1,000.00" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Duration</label>
+                            <input type="number" step="1" class="form-control reset_control" name="duration" placeholder="5 days" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>File Ref</label>
+                            <input class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly="readonly">
+                        </div>
+                    </fieldset>
+                    <div class="form-group bg-grey-F8FAFC no-margin p-15 text-grey-300">
+                        <div class="col-md-4 col-md-offset-4">
+                            <button type="submit" class="btn btn-success form-control text-size-large">Create Milestone</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /Upload Modal Dialog -->
+
+    <!-- Upload Dco Modal Dialog -->
+    <div id="modal_complete_case" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-yellow-800">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Upload A New Document</h4>
+                </div>
+
+                <form id="modal_upload" class="form-horizontal" action="{{ url('admin/files/' . $file->file_id . '/cases/documents') }}"  method="post" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+
+                    <input id="index" type="hidden" name="index" value="">
+
+                    <fieldset class="ml-20 mr-20 p-10">
+                        <div class="form-group">
+                            <label>Activity</label>
+                            <input id="input_activity" class="form-control reset_control" placeholder="activity" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label>File Name</label>
+                            <input class="form-control reset_control" name="name" placeholder="Name of document" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>File Ref</label>
+                            <input class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly="readonly">
+                        </div>
+
+                        <div class="form-group">
+                            <label>File</label>
+                            <input type="file" class="file-input reset_control" name="file" accept=".pdf, .doc, .docx" data-allowed-file-extensions='["pdf", "doc", "docx"]' data-show-caption="true">
+                        </div>
+                    </fieldset>
+                    <div class="form-group bg-grey-F8FAFC no-margin p-15 text-grey-300">
+                        <div class="col-md-4 col-md-offset-4">
+                            <button type="submit" class="btn btn-success form-control text-size-large">Upload Now</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /Upload Doc Modal Dialog -->
+
+    <!-- upload receipt modal -->
+    <div id="modal_upload_receipt" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-yellow-800">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Upload Receipt</h5>
+                </div>
+
+                <form id="upload_form" action="#" method="post" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>File Ref</label>
+                            <input id="file_ref" type="text" placeholder="" name="file_ref" class="form-control" readonly required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input id="amount" type="text" placeholder="" name="amount" class="form-control" readonly required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Receipt Name</label>
+                            <input id="name" type="text" placeholder="" name="name" class="form-control" required>
+                        </div>
+
+                        <div class="form-group file-receipt">
+                            <label>Receipt</label>
+                            <input id="receipt" type="file" class="file-input reset_control" name="receipt" accept=".pdf" data-allowed-file-extensions='["pdf"]' data-show-caption="true">
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success form-control">Upload Receipt</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /upload receipt modal -->
 
 @endsection

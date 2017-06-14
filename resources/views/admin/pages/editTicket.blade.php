@@ -91,14 +91,14 @@
                     </div>
 
                     <div class="panel-body">
-                        <div class="col-lg-12 no-padding">
-                            <div class="col-lg-6 no-padding">
+                        <div class="col-sm-12 no-padding">
+                            <div class="col-sm-6 pull-md-9 no-padding">
                                 <p> <strong>Ticket ID</strong>: {{ $ticket->ticket_id }}</p>
                                 <p> <strong>File Ref</strong>: {{ $ticket->file_ref }}</p>
                                 <p> <strong>Owner</strong>: {{ $ticket->owner }}</p>
                                 <p> <strong>Agent</strong>: {{ $ticket->agent }}</p>
                             </div>
-                            <div class="col-lg-6 no-padding">
+                            <div class="col-sm-6 pull-md-9 no-padding">
                                 <p> <strong>Category</strong>: {{ $ticket->category }}</p>
                                 <p> <strong>Status</strong>: {{ $ticket->status }}</p>
                                 <p> <strong>Created</strong>: {{ \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $ticket->created_at)->diffForHumans() }}</p>
@@ -145,9 +145,9 @@
                             <span>Reply</span>
                         </div>
 
-                        <form method="post">
+                        <form method="post" action="{{ url('admin/tickets/' .$ticket->ticket_id. '/messages' ) }}" enctype="multipart/form-data">
+                            {{ csrf_field() }}
                             <textarea name="message" class="form-control content-group" rows="3" cols="1" placeholder="Enter your message..." required></textarea>
-
                             <div class="row">
                                 <div class="col-md-12 text-right">
                                     <button type="submit" class="btn btn-primary">Send Message<i class="icon-arrow-right14 position-right"></i></button>
@@ -172,7 +172,10 @@
                         <form class="form" action="{{ url('admin/tickets/' . $ticket->ticket_id) }}" method="post">
                             {{ csrf_field() }}
                             <fieldset>
-                                <label class="text-semibold text-danger text-size-large mb-10">Client: <span> {{ $ticket->owner }}</span></label>
+                                <div class="form-group">
+                                    <label class="control-label">Client</label>
+                                    <input type="text" class="form-control" name="owner" value="{{ $ticket->owner }}" readonly>
+                                </div>
 
                                 <div class="row">
                                     <div class="col-md-6">
@@ -180,7 +183,7 @@
                                             <label>Category</label>
                                             <select class="select" name="category_id[]">
                                                 @foreach($ticket_categories as $ticket_category)
-                                                    <option value="{{$ticket_category->id}}">{{$ticket_category->name}}</option>
+                                                    <option value="{{$ticket_category->id}}" {{ $ticket->category_id == $ticket_category->category_id ? "selected" : ""}}>{{$ticket_category->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -188,10 +191,10 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>File Ref<span>(optional)</span></label>
-                                            <select class="select" name="file_id">
+                                            <select class="select" name="file_ref">
                                                 <option>None selected</option>
                                                 @foreach($files as $file)
-                                                    <option value="{{$file->file_id}}">{{$file->file_ref}}</option>
+                                                    <option value="{{$file->file_ref}}" {{ $file->file_ref == $ticket->file_ref ? "selected" : ""}}>{{$file->file_ref}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -200,7 +203,7 @@
 
                                 <div class="form-group">
                                     <label class="form-label">Subject</label>
-                                    <textarea rows="3" cols="3" class="form-control" name="subject" placeholder="write your question." required>{{ $ticket->subject }}</textarea>
+                                    <textarea rows="3" cols="3" class="form-control" name="subject" placeholder="write your question." readonly required>{{ $ticket->subject }}</textarea>
                                 </div>
 
                                 <div class="form-group">
@@ -210,7 +213,7 @@
 
                             </fieldset>
                             <div class="text-right pt-10">
-                                <button type="submit" class="btn btn-primary"> Save Changes<i class="icon-arrow-right14 position-right"></i></button>
+                                <button type="submit" class="btn btn-success"> Save Ticket<i class="icon-arrow-right14 position-right"></i></button>
                             </div>
                         </form>
                     </div>

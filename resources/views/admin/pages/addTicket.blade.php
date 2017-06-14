@@ -109,10 +109,10 @@
                                 <div class="form-group">
                                     <label class="form-label col-lg-2">File Ref<span>(optional)</span></label>
                                     <div class="col-lg-10">
-                                        <select class="select" name="file_id">
+                                        <select class="select" name="file_ref">
                                             <option>None selected</option>
                                             @foreach($files as $file)
-                                                <option value="{{$file->file_id}}">{{$file->file_ref}}</option>
+                                                <option value="{{$file->file_ref}}">{{$file->file_ref}}</option>
                                             @endforeach
                                         </select>
                                     </div>

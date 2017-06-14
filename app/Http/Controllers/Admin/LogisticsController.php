@@ -98,7 +98,6 @@ class LogisticsController extends Controller
 
         $validator = Validator::make($data, [
             'file_ref' => 'required',
-            'client_id' => 'required',
             'description' => 'required',
             'courier_id' => 'required',
             'qr_code' => 'required'

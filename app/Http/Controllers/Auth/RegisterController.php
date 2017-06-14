@@ -101,7 +101,7 @@ class RegisterController extends Controller
 
         $token = str_random(32);
         $randomNumber = rand(100000, 999999);
-        //$randomNumber = 555555;
+//        $randomNumber = 555555;
 
 
         DB::beginTransaction();

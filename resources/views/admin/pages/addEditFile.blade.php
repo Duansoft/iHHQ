@@ -72,7 +72,9 @@
                 create_template_table();
             });
 
-            // Checkbox true/false values
+
+
+            // Handson Table Setup
             // ------------------------------
 
             // Define element
@@ -116,6 +118,7 @@
             }
 
             create_template_table();
+
             $('#btn_add').on('click', function(){
                 hot_checks_values_data.push(
                         {no: "10", status: "In Progress", activity: "", duration: 0, milestone: 0, select: true}
@@ -150,7 +153,6 @@
                     $(this).submit();
                 }
             });
-
         });
     </script>
 @endsection
@@ -250,7 +252,6 @@
                                                 </select>
                                             </div>
                                         </div>
-
 
                                         {{--<div class="form-group">--}}
                                             {{--<label class="control-label col-lg-2">Date</label>--}}
@@ -379,7 +380,7 @@
                         <div class="panel panel-flat">
                             <div class="panel-body">
                                 <fieldset class="content-group">
-                                    <legend class="text-bold">Category</legend>
+                                    <legend class="text-bold">Category & Milestone</legend>
 
                                     <div class="form-group">
                                         <label class="control-label col-lg-2">Category</label>
@@ -404,7 +405,7 @@
                                     </div>
 
                                     <div class="form-group text-right">
-                                        <button id="btn-load-template" type="button" class="btn btn-default mr-10"><i class="icon-cog4 position-left"></i> Load From Template</button>
+                                        <button id="btn-load-template" type="button" class="btn btn-default mr-10"><i class="icon-download7 position-left"></i> Load Milestone Template</button>
                                     </div>
 
                                     <div class="form-group">

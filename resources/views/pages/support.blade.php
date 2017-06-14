@@ -115,7 +115,7 @@
                 <div class="col-lg-9 no-padding">
                     <!-- Left annotation position -->
                     <div class="panel panel-white">
-                        <div class="panel-heading" style="margin-bottom: 10px; margin-top: 10px;">
+                        <div class="panel-heading" style="margin-top: 10px;">
                             <h5 class="panel-title" style="margin-right: 100px;">{{ isset($ticket) ? $ticket->subject : 'Ticket' }}</h5>
                             <div class="heading-elements">
                                 <div class="heading-btn no-margin-left">
@@ -127,6 +127,7 @@
                             </div>
                         </div>
 
+                        @if(sizeof($messages) > 0)
                         <div class="panel-body">
                             <ul id="chat_window" class="media-list chat-stacked content-group">
                                 @foreach($messages as $message)
@@ -143,6 +144,7 @@
                                 @endforeach
                             </ul>
 
+                            @if (isset($ticket))
                             <div class="media date-step content-divider mb-20">
                                 <span>Reply</span>
                             </div>
@@ -156,7 +158,9 @@
                                     </div>
                                 </div>
                             </form>
+                            @endif
                         </div>
+                        @endif
                     </div>
                     <!-- /left annotation position-->
                 </div>

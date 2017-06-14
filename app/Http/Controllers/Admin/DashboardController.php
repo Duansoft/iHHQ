@@ -8,6 +8,9 @@ use App\Ticket;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Yajra\Datatables\Facades\Datatables;
+use Illuminate\Support\Facades\DB;
+
 
 class DashboardController extends Controller
 {
@@ -17,11 +20,46 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $payments = Payment::where('status', 2)->count();
-        $dispatches = Dispatch::where('status', 2)->count();
-        $users = User::where('is_allow', 1)->count();
-        $tickets = Ticket::where('status_id', 1)->count();
+        $users = User::where('is_review', false)
+            ->count();
+        $payments = Payment::where('status', 2)
+            ->whereNull('receipt')
+            ->count();
+        $dispatches = Dispatch::where('status', '!=', 0)
+            ->count();
+        $tickets = Ticket::where('status_id', 1)
+            ->where('file_ref', '')
+            ->count();
 
-        return View('admin.pages.dashboard', compact('payments', 'dispatches', 'users', 'tickets'));
+
+        $usersData = DB::table('users')
+            ->select('*', DB::raw('"user" AS dashboard_title'))
+            ->where('is_review', false)
+            ->get();
+        $paymentsData = DB::table('payments')
+            ->select('*', DB::raw('"payment" AS dashboard_title'))
+            ->join('users', 'users.id', 'payments.paid_by')
+            ->where('status', 2)
+            ->get();
+        $dispatchesData = DB::table('dispatches')
+            ->select('*', DB::raw('"dispatch" AS dashboard_title'))
+            ->join('users', 'users.id', 'dispatches.client_id')
+            ->where('status', '!=', 0)
+            ->get();
+        $ticketsData = DB::table('tickets')
+            ->select('*', 'ticket_categories.name AS category',DB::raw('"ticket" AS dashboard_title'))
+            ->join('ticket_categories', 'ticket_categories.category_id', 'tickets.category_id')
+            ->join('users', 'users.id', 'tickets.client_id')
+            ->where('file_ref', '')
+            ->where('status_id', 1)
+            ->get();
+
+        $logs = $usersData->merge($paymentsData)
+            ->merge($dispatchesData)
+            ->merge($ticketsData)
+            ->sortBy('updated_at');
+
+        return View('admin.pages.dashboard', compact('payments', 'dispatches', 'users', 'tickets', 'users', 'logs'));
     }
+
 }

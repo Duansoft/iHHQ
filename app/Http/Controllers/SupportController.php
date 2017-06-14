@@ -62,6 +62,12 @@ class SupportController extends Controller
         $ticket = new Ticket();
         $ticket = $ticket->fill($data);
         $ticket->client_id = $user->id;
+        if (Input::has('file_ref')) {
+            $ticket->file_ref = Input::get('file_ref');
+            $ticket->status_id = 2;
+        } else {
+            $ticket->status_id = 1;
+        }
         $ticket->save();
 
         $message = new Ticket_Message();

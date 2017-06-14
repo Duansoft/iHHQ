@@ -87,16 +87,6 @@ $(function() {
 
 
     //
-    // Dual List Box
-    //
-
-    //$('.listbox-filter-disabled').bootstrapDualListbox({
-    //    showFilterInputs: false
-    //});
-
-
-
-    //
     // Date range picker
     //
 

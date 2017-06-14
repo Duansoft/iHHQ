@@ -11,4 +11,28 @@ class Dispatch extends Model
     protected $primaryKey = "dispatch_id";
 
     protected $fillable = ['file_ref', 'client_id', 'courier_id', 'status', 'qr_code', 'description', 'created_by'];
+
+//    public function getStatusAttribute($value)
+//    {
+//        if ($value == 0) {
+//            return "DELIVERED";
+//        } else if ($value == 1) {
+//            return "RECEIVED";
+//        } else if ($value == 2) {
+//            return "RETURN";
+//        }
+//    }
+//
+//    public function getStatusClass()
+//    {
+//        $value = $this->status;
+//
+//        if ($value == "DELIVERED") {
+//            return 'label-primary';
+//        } else if ($value == "RECEIVED") {
+//            return 'label-success';
+//        } else if ($value == "RETURN") {
+//            return 'label-warning';
+//        }
+//    }
 }

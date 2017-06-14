@@ -2,6 +2,11 @@
 
 
 @section("css")
+    <style>
+        .datatable-header {
+            display:none;
+        }
+    </style>
 @endsection
 
 
@@ -12,7 +17,17 @@
 
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/core/app.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/admin_dashboard.js') }}"></script>
-    @endsection
+    <script type="text/javascript">
+        $(function() {
+            // Search Bar
+            $('#search').on('keyup click', function () {
+                $('.datatable-basic').DataTable().search(
+                        $('#search').val()
+                ).draw();
+            });
+        });
+    </script>
+@endsection
 
 
 @section("page-header")
@@ -33,6 +48,29 @@
 @section("content")
     <!-- Content area -->
     <div class="content">
+
+        <!-- Error Message -->
+        @if (count($errors) > 0)
+            <div class="alert alert-danger no-border">
+                <ul>
+                    <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
+                    @foreach ($errors->all() as $error)
+                        <li>
+                            <span class="text-semibold">{{ $error }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <!-- Success Message -->
+        @if(Session::has('flash_message'))
+            <div class="alert alert-success no-border">
+                <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
+                <span class="text-semibold">{{ Session::get('flash_message') }}</span>
+            </div>
+        @endif
+
         <div class="row">
             <div class="col-lg-11 no-padding">
                 <div class="col-md-3">
@@ -78,7 +116,7 @@
                                 </ul>
                             </div>
                             <span class="text-white-opacity-70">NEW USERS(S)</span>
-                            <h1 class="no-margin" style="font-size: 40px;">5</h1>
+                            <h1 class="no-margin" style="font-size: 40px;">{{ $users }}</h1>
                             <div class="border-top border-white-30 mt-10">
                                 <span class="mt-10 display-block text-white-opacity-80">PLEASE REVIEW</span>
                             </div>
@@ -115,7 +153,7 @@
                         <div class="heading-elements">
                             <form class="heading-form" action="#">
                                 <div class="form-group has-feedback">
-                                    <input type="search" class="form-control" placeholder="Search by file ref, name or tags">
+                                    <input id="search" type="search" class="form-control" placeholder="Search by file ref, name or tags">
                                     <div class="form-control-feedback">
                                         <i class="icon-search4 text-size-base text-muted"></i>
                                     </div>
@@ -135,36 +173,69 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {{--<tr>--}}
-                            {{--<td>--}}
-                                {{--<span class="no-margin">BillPlz Payment1<small class="display-block text-muted text-size-small">File Ref 394843</small></span>--}}
-                            {{--</td>--}}
-                            {{--<td>--}}
-                                {{--<span class="no-margin">17th Oct, 15<small class="display-block text-muted text-size-small">6 days ago</small></span>--}}
-                            {{--</td>--}}
-                            {{--<td>--}}
-                                {{--<div class="media-left media-middle">--}}
-                                    {{--<a href="#"><img src="{{ asset('admin_assets/images/avatars/jacky.png') }}" class="img-lg, img-circle" alt=""></a>--}}
-                                {{--</div>--}}
-                                {{--<div class="media-left">--}}
-                                    {{--<h6 class="no-margin">Norman Hammond--}}
-                                        {{--<small class="display-block text-muted text-size-small">Axiata Group</small>--}}
-                                    {{--</h6>--}}
-                                {{--</div>--}}
-                            {{--</td>--}}
-                            {{--<td>--}}
-                                {{--<span class="no-margin">File Ref 34847<small class="display-block text-muted text-size-small">Edgar Kennedy(Associate)</small></span>--}}
-                            {{--</td>--}}
-                            {{--<td>--}}
-                                {{--<div class="btn-group btn-group-fade">--}}
-                                    {{--<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>--}}
-                                    {{--<ul class="dropdown-menu">--}}
-                                        {{--<li><a href="#" data-toggle="modal" data-target="#modal_make_payment">Create</a></li>--}}
-                                        {{--<li><a href="#" data-toggle="modal" data-target="#modal_request_payment">Delete</a></li>--}}
-                                    {{--</ul>--}}
-                                {{--</div>--}}
-                            {{--</td>--}}
-                        {{--</tr>--}}
+                        @foreach($logs as $log)
+                            <tr>
+                                <td>
+                                    @if ($log->dashboard_title == "user")
+                                    <h6 class="no-margin">New Registration<small class="display-block text-muted text-size-small">{{$log->name}}</small></h6>
+                                    @elseif ($log->dashboard_title == "payment")
+                                    <h6 class="no-margin">Bank Deposit<small class="display-block text-muted text-size-small">{{$log->file_ref}}</small></h6>
+                                    @elseif ($log->dashboard_title == "dispatch")
+                                    <h6 class="no-margin">Dispatch<small class="display-block text-muted text-size-small">{{$log->file_ref}}</small></h6>
+                                    @elseif ($log->dashboard_title == "ticket")
+                                    <h6 class="no-margin">Ticket<small class="display-block text-muted text-size-small">{{$log->category}}</small></h6>
+                                    @endif
+                                </td>
+
+                                <td>
+                                    <span class="no-margin">
+                                        {!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $log->updated_at)->toFormattedDateString() !!}
+                                        <small class="display-block text-muted text-size-small">
+                                            {!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $log->updated_at)->diffForHumans() !!}
+                                        </small>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="media-left media-middle">
+                                        <a href="#"><img src="{{ asset('upload/avatars/' . $log->photo) }}" class="img-lg, img-circle" alt=""></a>
+                                    </div>
+                                    <div class="media-left media-middle">
+                                        <h6 class="no-margin">{{$log->name}}
+                                            {{--<small class="display-block text-muted text-size-small">Axiata Group</small>--}}
+                                        </h6>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if ($log->dashboard_title == "user")
+                                        <span class="no-margin">N/A<small class="display-block text-muted text-size-small">Unassigned</small></span>
+                                    @elseif ($log->dashboard_title == "payment")
+                                        <span class="no-margin">File Ref {{$log->file_ref}}<small class="display-block text-muted text-size-small">RM{{$log->amount}}</small></span>
+                                    @elseif ($log->dashboard_title == "dispatch")
+                                        <span class="no-margin">File Ref {{$log->file_ref}}<small class="display-block text-muted text-size-small">{{$log->status == 1 ? "RECEIVED" : "RETURN"}}</small></span>
+                                    @elseif ($log->dashboard_title == "ticket")
+                                        <span class="no-margin">N/A<small class="display-block text-muted text-size-small">Unassigned</small></span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-fade">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
+                                        <ul class="dropdown-menu">
+                                            {{--<li><a href="#" data-toggle="modal" data-target="#modal_request_payment">Delete</a></li>--}}
+                                            @if ($log->dashboard_title == "user")
+                                                <li><a href="{{url('admin/users/' .$log->id) .'/allow'}}">Allow</a></li>
+                                                <li><a href="{{url('admin/users/' .$log->id)}}">Go Detail</a></li>
+                                            @elseif ($log->dashboard_title == "payment")
+                                                <li><a href="{{url('admin/payments/' .$log->payment_id. '/download')}}">Download Receipt</a></li>
+                                            @elseif ($log->dashboard_title == "dispatch")
+                                                <li><a href="{{url('admin/logistics/' . $log->dispatch_id)}}">Go Detail</a></li>
+                                            @elseif ($log->dashboard_title == "tickets")
+                                                <li><a href="{{url('admin/tickets/' . $log->ticket_id)}}">Go Detail</a></li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
                         </tbody>
                     </table>
 

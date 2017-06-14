@@ -152,8 +152,13 @@ class TicketController extends Controller
 
         $ticket = new Ticket();
         $ticket->client_id = Input::get('client_id');
-        $ticket->status_id = 1;
         $ticket->subject = Input::get('subject');
+        if (Input::has('file_ref')) {
+            $ticket->file_ref = Input::get('file_ref');
+            $ticket->status_id = 2;
+        } else {
+            $ticket->status_id = 1;
+        }
         $ticket->save();
 
         return redirect('admin/tickets/pending')->with('flash_message', 'Ticket have been created successfully');

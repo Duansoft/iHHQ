@@ -45,8 +45,10 @@ $(function() {
             render: function ( data, type, row ) {
                 if (row.status == 0) // delivery
                     return '<span class="label bg-dashboard-user">DELIVERED</span>';
-                else
+                else if (row.status == 1)
                     return '<span class="label label-success">RECEIVED</span>';
+                else if (row.status ==2)
+                    return '<span class="label label-danger">RETURN</span>';
             },
             targets: 7,
         }],
@@ -99,8 +101,10 @@ $(function() {
             render: function ( data, type, row ) {
                 if (row.status == 0) // delivery
                     return '<span class="label bg-dashboard-user">DELIVERED</span>';
-                else
+                else if (row.status == 1)
                     return '<span class="label label-success">RECEIVED</span>';
+                else if (row.status ==2)
+                    return '<span class="label label-danger">RETURN</span>';
             },
             targets: 7,
         }],

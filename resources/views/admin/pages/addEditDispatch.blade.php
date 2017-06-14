@@ -102,7 +102,7 @@
                         <div class="form-group">
                             <label class="control-label col-lg-2">File Ref</label>
                             <div class="col-lg-10">
-                                <select class="select-file-ref" name="file_ref">
+                                <select class="select-file-ref" name="file_ref" readonly>
                                     @if (isset($dispatch))
                                         <option value="{{ $dispatch->file_ref }}" selected>{{ $dispatch->file_ref }}</option>
                                     @endif
@@ -113,8 +113,7 @@
                         <div class="form-group">
                             <label class="control-label col-lg-2">Description</label>
                             <div class="col-lg-10">
-                                <input type="text" class="form-control" name="description" maxlength="20" placeholder="e.g. Conveyancing documents"
-                                       value="{{ isset($dispatch) ? $dispatch->description : old('description') }}" required>
+                                <input type="text" class="form-control" name="description" maxlength="20" placeholder="e.g. Conveyancing documents" value="{{ isset($dispatch) ? $dispatch->description : old('description') }}">
                             </div>
                         </div>
 
@@ -143,6 +142,23 @@
                                     @else
                                     <option value="Ground">Ground</option>
                                     <option value="Airplane">Airplane</option>
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Status</label>
+                            <div class="col-lg-10">
+                                <select class="select" name="status">
+                                    @if (isset($dispatch))
+                                        <option value="0" {{$dispatch->status == 0 ? "selected" : ""}}>Delivered</option>
+                                        <option value="1" {{$dispatch->status == 1 ? "selected" : ""}}>Received</option>
+                                        <option value="2" {{$dispatch->status == 2 ? "selected" : ""}}>Return</option>
+                                    @else
+                                        <option value="0">Delivered</option>
+                                        <option value="1">Received</option>
+                                        <option value="2">Return</option>
                                     @endif
                                 </select>
                             </div>

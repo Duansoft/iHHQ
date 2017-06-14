@@ -44,8 +44,9 @@ class FileController extends Controller
                     return '<div class="btn-group btn-group-fade">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions<span class="caret pl-15"></span></button>
                             <ul class="dropdown-menu">
-                                <li><a href="./files/' . $file->file_id . '/close">close</a></li>
-                                <li><a href="./files/' . $file->file_id . '">Edit</a></li>
+                                <li><a href="./files/' . $file->file_id . '/detail"> Detail</a></li>
+                                <li><a href="./files/' . $file->file_id . '"> Edit</a></li>
+                                <li><a href="./files/' . $file->file_id . '/close"> Close</a></li>
                             </ul>
                         </div>';
                 })
@@ -106,7 +107,6 @@ class FileController extends Controller
             'contact' => 'nullable|max:255',
             'contact_name' => 'nullable|max:50',
             'contact_email' => 'nullable|email|max:50',
-            'cases' => 'required|json'
         ]);
 
         if ($validator->fails()) {
@@ -353,6 +353,20 @@ class FileController extends Controller
         }
 
         return redirect()->back()->with('flash_message', 'Document have been uploaded successfully');
+    }
+
+    /**
+     * Get Milestone Dialog
+     */
+    public function getMilestone($id)
+    {
+        $file = File::findOrFail($id);
+
+        if ($file->status == 1) { // closed
+            return redirect()->back()->withErrors('errors', 'The file was already closed. Not allowed to create new milestone');
+        }
+
+        return View('admin.pages.milestone-dialog', compact('file'));
     }
 
     public function createMilestone($id)

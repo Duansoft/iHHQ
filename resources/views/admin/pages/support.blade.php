@@ -85,9 +85,9 @@
                     <div class="panel panel-white">
                         <div class="panel-heading">
                             <div class="input-group">
-                                <input id="title" type="text" class="form-control" placeholder="Create a new ticket...">
+                                <input id="title" type="text" class="form-control" placeholder="Create a new ticket" readonly>
                                 <span class="input-group-btn">
-                                    <button id="btn-create" class="btn btn-default pl-20 pr-20" type="button" data-toggle="modal"><i class="icon-plus3 text-grey"></i></button>
+                                    <button class="btn btn-default pl-20 pr-20"><i class="icon-plus3 text-grey"></i></button>
                                 </span>
                             </div>
                         </div>

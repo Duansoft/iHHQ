@@ -98,15 +98,16 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
         Route::get('users', 'UserController@index');
         Route::post('users', 'UserController@postUser');
         Route::get('users/{id}', 'UserController@getUser');
-        // Search Function
-        Route::get('users/clients/search', 'UserController@findUserAjax');
-        Route::get('users/hhq/search', 'UserController@findHHQStaffsAjax');
+        Route::get('users/{id}/allow', 'UserController@allowUser');
         // Create New
         Route::get('users/clients/create', 'UserController@getCreateClient');
         Route::get('users/admins/create', 'UserController@getCreateAdmin');
         Route::get('users/lawyers/create', 'UserController@getCreateLawyer');
         Route::get('users/staffs/create', 'UserController@getCreateStaff');
     });
+    // Search Function
+    Route::get('users/clients/search', 'UserController@findUserAjax');
+    Route::get('users/hhq/search', 'UserController@findHHQStaffsAjax');
 
     /* Files */
     Route::get('files', 'FileController@index');
@@ -120,6 +121,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     Route::get('files/{id}/detail', 'FileController@getFileDetail');
     Route::post('files/{id}/documents', 'FileController@postDocument');
     Route::post('files/{id}/cases/documents', 'FileController@postCaseDocument');
+    Route::get('files/{id}/milestone', 'FileController@getMilestone');
     Route::post('files/{id}/milestone', 'FileController@createMilestone');
     Route::get('files/documents/{id}/download', 'FileController@download');
     Route::post('files/{id}/payments', 'FileController@createPayment');
@@ -128,8 +130,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     /* Logistics */
     Route::get('logistics', 'LogisticsController@index');
     Route::get('logistics/get', 'LogisticsController@getDispatches');
-    Route::get('logistics/create', ['middleware' => ['role:admin|lawyer'], 'uses' => 'LogisticsController@getCreate']);
-    Route::post('logistics/create', ['middleware' => ['role:admin|lawyer'], 'uses' => 'LogisticsController@postCreate']);
+    Route::get('logistics/create', 'LogisticsController@getCreate');
+    Route::post('logistics/create', 'LogisticsController@postCreate');
     Route::get('logistics/{id}', 'LogisticsController@getDispatch');
     Route::post('logistics/{id}', 'LogisticsController@postDispatch');
     Route::get('logistics/{id}/delete', 'LogisticsController@deleteDispatch');
@@ -154,7 +156,6 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     Route::get('tickets/{id}/complete', 'TicketController@completeTicket');
     Route::get('tickets/{id}/open', 'TicketController@reopenTicket');
     Route::post('tickets/{id}', 'TicketController@postTicket');
-
 
     /* Announcements */
     Route::get('announcements', 'AnnouncementController@index');

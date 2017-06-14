@@ -84,8 +84,8 @@
                                 </div>
                             </div>
 
-                            {!! app('captcha')->display(["style" => "transform:scale(1.12);-webkit-transform:scale(1.12);transform-origin:0 0;-webkit-transform-origin:0 0;"]) !!}
-                            <div class="g-recaptcha mb-20" data-sitekey="6Ld-_x0UAAAAAO5ThcAQWNxuNnfkPDGNzlhRvq4Z" ></div>
+                            {!! app('captcha')->display(["style" => "transform:scale(1.12);-webkit-transform:scale(1.12);transform-origin:0 0;-webkit-transform-origin:0 0; margin-bottom:20px;"]) !!}
+                            {{--<div class="g-recaptcha mb-10" data-sitekey="6LdhSyUUAAAAAMxKiz6M0W7KYUpZLDguUWH1cPHJ"></div>--}}
 
                             <div class="form-group no-margin">
                                 <button type="submit" class="btn bg-success btn-block">Login</button>

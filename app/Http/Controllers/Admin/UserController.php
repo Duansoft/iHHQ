@@ -206,6 +206,7 @@ class UserController extends Controller
             $user = User::findOrFail($request->get('id'));
             $user->fill($data);
             $user->is_allow = Input::get('is_allow') == "on" ? true : false;
+            $user->is_review = Input::get('is_allow') == "on" ? true : false;
             $user->save();
 
             return redirect('admin/users')->with('flash_message', 'The user have been updated successfully');
@@ -214,6 +215,7 @@ class UserController extends Controller
             $user->fill($data);
             $user->verified = true;
             $user->is_allow = Input::get('is_allow') == "on" ? true : false;
+            $user->is_review = Input::get('is_allow') == "on" ? true : false;
             $user->password = bcrypt($data['password']);
             $user->save();
 
@@ -243,5 +245,15 @@ class UserController extends Controller
         }
 
         return View('admin.pages.addEditUser');
+    }
+
+    public function allowUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_review = true;
+        $user->is_allow = true;
+        $user->save();
+
+        return redirect()->back()->with(['Login Permission of ' . $user->name . ' is approved']);
     }
 }

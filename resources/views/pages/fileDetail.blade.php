@@ -103,6 +103,18 @@
                                 @endforeach
                                 </tbody>
                             </table>
+
+                            @role('lawyer')
+                            <div class="text-right">
+                                <button type="button" class="btn btn-dlg btn-success pl-20 pr-20 mt-20 mr-20" data-toggle="modal" data-target="#modal_upload_document"><i class="icon-plus22 position-left"></i> Upload Document</button>
+                            </div>
+                            @endrole
+                            @role('staff')
+                            <div class="text-right">
+                                <button type="button" class="btn btn-dlg btn-success pl-20 pr-20 mt-20 mr-20" data-toggle="modal" data-target="#modal_upload_document"><i class="icon-plus22 position-left"></i> Upload Document</button>
+                            </div>
+                            @endrole
+
                         </div>
                     </div>
                     <!-- /tabs content -->

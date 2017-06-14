@@ -212,7 +212,7 @@
                             </table>
 
                             <div class="text-right">
-                                <button type="button" class="btn btn-dlg btn-success pl-20 pr-20 mt-20" data-toggle="modal" data-target="#modal_upload_document"><i class="icon-plus22 position-left"></i> Upload</button>
+                                <button type="button" class="btn btn-dlg btn-success pl-20 pr-20 mt-20" data-toggle="modal" data-target="#modal_upload_document"><i class="icon-plus22 position-left"></i> Upload Document</button>
                             </div>
                         </div>
                         <!-- /Document Tab -->
@@ -437,7 +437,7 @@
     </div>
     <!-- /Upload Modal Dialog -->
 
-    <!-- Upload Modal Dialog -->
+    <!-- Upload Dco Modal Dialog -->
     <div id="modal_complete_case" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -481,7 +481,7 @@
             </div>
         </div>
     </div>
-    <!-- /Upload Modal Dialog -->
+    <!-- /Upload Doc Modal Dialog -->
 
     <!-- upload receipt modal -->
     <div id="modal_upload_receipt" class="modal fade">

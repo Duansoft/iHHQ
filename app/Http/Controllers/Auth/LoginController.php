@@ -67,11 +67,11 @@ class LoginController extends Controller
         $validator = Validator::make([
             'email' => $email,
             'password' => $password,
-            //'g-recaptcha-response' => $recaptcha_response,
+            'g-recaptcha-response' => $recaptcha_response,
         ], [
             'email' => 'required | email',
             'password' => 'required',
-            //'g-recaptcha-response' => 'required|captcha'
+//            'g-recaptcha-response' => 'required|captcha'
         ]);
 
         if ($validator->fails()) {
@@ -94,7 +94,7 @@ class LoginController extends Controller
         $user = Auth::user();
         if (!$user->is_allow) {
             Auth::logout();
-            return redirect()->back()->withErrors('Your login Permission is not allowed');
+            return redirect()->back()->withErrors('Thanks. We will contact soon.');
         }
 
         return redirect()->intended($this->redirectTo());
