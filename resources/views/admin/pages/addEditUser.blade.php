@@ -144,12 +144,12 @@
                         <div class="form-group {{ $errors->has('country_id') ? ' has-error' : '' }}">
                             <label class="control-label col-lg-2">Country</label>
                             <div class="col-lg-10">
-                                <select class="select form-control" name="country_id">
+                                <select class="select-search form-control" name="country_id">
                                     @foreach($countries as $country)
                                         @if (isset($user))
-                                        <option value="{{$country->country_id}}" {{ $user->country_id == $country->country_id ? "selected" : ""}}>{{$country->country_name}} ({{$country->phone_code}})</option>
+                                        <option value="{{$country->country_id}}" {{ $user->country_id == $country->country_id ? "selected" : ""}}>{{$country->country_name}} (+{{$country->phone_code}})</option>
                                         @else
-                                        <option value="{{$country->country_id}}" >{{$country->country_name}} ({{$country->phone_code}})</option>
+                                        <option value="{{$country->country_id}}" >{{$country->country_name}} (+{{$country->phone_code}})</option>
                                         @endif
                                     @endforeach
                                 </select>
@@ -169,6 +169,44 @@
                             </div>
                         </div>
 
+                        <div class="form-group {{ $errors->has('department_id') ? ' has-error' : '' }}">
+                            <label class="control-label col-lg-2">Department</label>
+                            <div class="col-lg-10">
+                                <select class="select form-control" name="department_id">
+                                    <option> None</option>
+                                    @foreach($departments as $department)
+                                        @if (isset($user))
+                                            <option value="{{$department->department_id}}" {{ $department->department_id == $user->department_id ? "selected" : ""}}> {{$department->department_name}}</option>
+                                        @else
+                                            <option value="{{$department->department_id}}"> {{$department->department_name}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('department_id'))
+                                    <span class="help-block">{{ $errors->first('department_id') }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group {{ $errors->has('office_id') ? ' has-error' : '' }}">
+                            <label class="control-label col-lg-2">Office</label>
+                            <div class="col-lg-10">
+                                <select class="select form-control" name="office_id">
+                                    <option> None</option>
+                                    @foreach($offices as $office)
+                                        @if (isset($user))
+                                            <option value="{{$office->office_id}}" {{ $office->office_id == $office->office_id ? "selected" : ""}}> {{ $office->name }}</option>
+                                        @else
+                                            <option value="{{$office->office_id}}"> {{ $office->name }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('department_id'))
+                                    <span class="help-block">{{ $errors->first('office_id') }}</span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label class="control-label col-lg-2">Approve Account?</label>
                             <div class="col-lg-10">
@@ -183,14 +221,13 @@
                                 </div>
                             </div>
                         </div>
-
                     </fieldset>
 
                     <div class="text-right">
-                        <button type="submit" class="btn btn-primary">Submit<i class="icon-arrow-right14 position-right"></i></button>
+                        <button type="submit" class="btn btn-primary"> Submit<i class="icon-arrow-right14 position-right"></i></button>
                     </div>
                 </form>
-        </div>
+            </div>
         </div>
     </div>
     <!-- /content area -->

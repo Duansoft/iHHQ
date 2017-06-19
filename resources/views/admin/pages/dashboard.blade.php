@@ -177,13 +177,13 @@
                             <tr>
                                 <td>
                                     @if ($log->dashboard_title == "user")
-                                    <h6 class="no-margin">New Registration<small class="display-block text-muted text-size-small">{{$log->name}}</small></h6>
+                                    <a href="{{url('admin/users/' .$log->id)}}"><h6 class="no-margin text-black-default"> New Registration<small class="display-block text-muted text-size-small">{{$log->name}}</small></h6></a>
                                     @elseif ($log->dashboard_title == "payment")
-                                    <h6 class="no-margin">Bank Deposit<small class="display-block text-muted text-size-small">{{$log->file_ref}}</small></h6>
+                                    <a href="{{url('admin/files/'.$log->file_id.'/detail')}}"><h6 class="no-margin text-black-default">Bank Deposit<small class="display-block text-muted text-size-small">{{$log->file_ref}}</small></h6></a>
                                     @elseif ($log->dashboard_title == "dispatch")
-                                    <h6 class="no-margin">Dispatch<small class="display-block text-muted text-size-small">{{$log->file_ref}}</small></h6>
+                                    <a href="{{url('admin/logistics/' . $log->dispatch_id)}}"><h6 class="no-margin text-black-default">Dispatch<small class="display-block text-muted text-size-small">{{$log->file_ref}}</small></h6></a>
                                     @elseif ($log->dashboard_title == "ticket")
-                                    <h6 class="no-margin">Ticket<small class="display-block text-muted text-size-small">{{$log->category}}</small></h6>
+                                    <a href="{{url('admin/tickets/' . $log->ticket_id)}}"><h6 class="no-margin text-black-default">Ticket<small class="display-block text-muted text-size-small">{{$log->category}}</small></h6></a>
                                     @endif
                                 </td>
 

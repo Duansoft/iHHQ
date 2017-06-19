@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Announcement;
 use App\File;
+use App\Ticket;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\File_Document;
+use App\Department;
 
 class OverviewController extends Controller
 {
@@ -28,8 +30,9 @@ class OverviewController extends Controller
             })
             ->where('status', 0)
             ->get();
+        $departments = Department::get();
 
-        return View('pages.overview', compact('announcements', 'files'));
+        return View('pages.overview', compact('announcements', 'files', 'departments'));
     }
 
     public function viewFileDetail()
@@ -51,8 +54,11 @@ class OverviewController extends Controller
             ->join('users', 'users.id', 'file_users.user_id')
             ->where('files.file_ref', $file->file_ref)
             ->get();
+        $tickets = Ticket::where('file_ref', $file->file_ref)
+            ->orderBy('created_at')
+            ->get();
 
-        return View('pages.fileDetail', compact('file', 'documents', 'participants'));
+        return View('pages.fileDetail', compact('file', 'documents', 'participants', 'tickets'));
     }
 
     /**

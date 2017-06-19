@@ -154,6 +154,8 @@
                         <li class="divider"></li>
                         <li><a href="{{ url('admin/users/lawyers/create/') }}"> Lawyer</a></li>
                         <li><a href="{{ url('admin/users/staffs/create/') }}"> Legal Staff</a></li>
+                        <li><a href="{{ url('admin/users/logistic/create/') }}"> Logistic</a></li>
+                        <li><a href="{{ url('admin/users/billing/create/') }}"> Billing</a></li>
                         <li class="divider"></li>
                         <li><a href="{{ url('admin/users/clients/create/') }}"> Client</a></li>
                     </ul>

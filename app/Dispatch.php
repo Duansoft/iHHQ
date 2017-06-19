@@ -10,7 +10,7 @@ class Dispatch extends Model
 
     protected $primaryKey = "dispatch_id";
 
-    protected $fillable = ['file_ref', 'client_id', 'courier_id', 'status', 'qr_code', 'description', 'created_by'];
+    protected $fillable = ['file_ref', 'client_id', 'courier_id', 'status', 'qr_code', 'description', 'delivery_by', 'created_by'];
 
 //    public function getStatusAttribute($value)
 //    {

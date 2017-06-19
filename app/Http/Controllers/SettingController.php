@@ -41,7 +41,8 @@ class SettingController extends Controller
             return redirect()->back()->withErrors($validator->messages())->withInput();
         }
 
-        $me->fill($data);
+        $me->name = $data['name'];
+        $me->address = $data['address'];
         $me->save();
 
         if (Input::hasFile('photo')) {

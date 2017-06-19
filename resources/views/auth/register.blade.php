@@ -108,7 +108,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group {{ $errors->has('passport_no') ? ' has-error' : '' }}">
                                                             <label class="control-label">NRIC/Passport No.</label>
-                                                            <input type="text" class="form-control" name="passport_no" placeholder="000000-0000" pattern="^\d{6}-\d{4}$"
+                                                            <input type="text" class="form-control" name="passport_no" placeholder="123456-7890" pattern="^\d{6}-\d{4}$"
                                                                    value="{{old('passport_no')}}" required>
                                                             @if ($errors->has('passport_no'))
                                                                 <span class="help-block">
@@ -151,7 +151,7 @@
                                                             <label class="control-label">Country</label>
                                                             <select class="select form-control" name="country_id">
                                                                 @foreach($countries as $country)
-                                                                    <option value="{{$country->country_id}}">{{$country->country_name}} ({{$country->phone_code}})</option>
+                                                                    <option value="{{$country->country_id}}" {{$country->phone_code == 60 ? "selected" : ""}}>{{$country->country_name}} (+{{$country->phone_code}})</option>
                                                                 @endforeach
                                                             </select>
                                                             @if ($errors->has('country_id'))
@@ -164,7 +164,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group {{ $errors->has('mobile') ? ' has-error' : '' }}">
                                                             <label class="control-label">Mobile Number</label>
-                                                            <input type="text" class="form-control" name="mobile" placeholder="0123456789"
+                                                            <input type="text" class="form-control" name="mobile" placeholder="3xxxxxxxx"
                                                                    value="{{old('mobile')}}" required>
                                                             @if ($errors->has('mobile'))
                                                                 <span class="help-block">

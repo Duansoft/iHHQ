@@ -129,7 +129,7 @@ $(function() {
         ]
     });
 
-        // Add placeholder to the datatable filter option
+    // Add placeholder to the datatable filter option
     $('.dataTables_filter input[type=search]').attr('placeholder','Type to filter...');
 
     // Enable Select2 select for the length option

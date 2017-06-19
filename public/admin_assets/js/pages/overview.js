@@ -31,46 +31,22 @@ $(function() {
     // Table setup
     // ------------------------------
 
-    // Setting datatable defaults
-    // Setting datatable defaults
-    $.extend( $.fn.dataTable.defaults, {
+    $('.table-overview').DataTable({
         autoWidth: false,
-        columnDefs: [{
-            orderable: false,
-            width: '100px',
-            targets: [ 4 ]
-        }],
+        paging: false,
+        processing: true,
         dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
         language: {
             search: '<span>Filter:</span> _INPUT_',
             lengthMenu: '<span>Show:</span> _MENU_',
             paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
-        }
+        },
+        columnDefs: [{
+            orderable: false,
+            width: '100px',
+            targets: [ 4 ]
+        }],
     });
-
-
-    // Basic datatable
-    $('.table-overview').DataTable({
-        searching: true,
-        paging: false,
-        bInfo: false,
-        bJQueryUI: true,
-        sDom: 'lfrtip',
-    });
-
-
-    // Datatable with saving state
-    $('.datatable-save-state').DataTable({
-        stateSave: true
-    });
-
-
-    // Scrollable datatable
-    $('.datatable-scroll-y').DataTable({
-        autoWidth: true,
-        scrollY: 300
-    });
-
 
 
     // External table additions

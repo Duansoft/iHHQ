@@ -71,13 +71,6 @@ $(function() {
         }
     });
 
-    // Select with search
-    $('.select-search').select2({
-        placeholder: function(){
-            $(this).data('placeholder');
-        }
-    });
-
     // Custom tag class
     $('.tagsinput-custom-tag-class').tagsinput({
         tagClass: function(item){

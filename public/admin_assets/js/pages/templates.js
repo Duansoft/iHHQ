@@ -12,7 +12,7 @@ $(function() {
             dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
             columnDefs: [{
                 orderable: true,
-                width: '20px',
+                width: '50px',
                 targets: [ 0 ]
             },{
                 render: function ( data, type, row ) {
@@ -64,20 +64,20 @@ $(function() {
         dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
         columnDefs: [{
             orderable: true,
-            width: '20px',
+            width: '50px',
             targets: [ 0 ]
         },{
             render: function ( data, type, row ) {
                 return '<div class="media-left media-middle"><a href="./templates/' + row.template_id + '/download" download><img src="' + $('meta[name="_publicURL"]').attr('content') + '/' + row.extension + '" class="img-xs" alt=""></a></div>';
             },
-            width: '140px',
+            width: '150px',
             targets: 1,
         },{
             visible: false,
             searable: false,
             targets: 2,
         },{
-            width: '150px',
+            width: '200px',
             targets: 3,
         }],
         language: {

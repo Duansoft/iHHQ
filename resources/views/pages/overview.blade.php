@@ -5,6 +5,9 @@
         .dataTables_filter {
             display:none;
         }
+        .datatable-header {
+            display:none;
+        }
     </style>
 @endsection
 
@@ -25,7 +28,6 @@
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/overview.js') }}"></script>
     <script type="text/javascript">
         $(function() {
-
             $('.view_detail').on('click', function(e){
                 e.preventDefault();
                 $.ajax({
@@ -50,6 +52,7 @@
                 browseIcon: '<i class="icon-file-plus"></i>',
                 uploadIcon: '<i class="icon-file-upload2"></i>',
                 removeIcon: '<i class="icon-cross3"></i>',
+                browseClass: 'btn btn-default',
                 showUpload: false,
                 layoutTemplates: {
                     icon: '<i class="icon-file-check"></i>'
@@ -57,13 +60,19 @@
                 initialCaption: "No Receipt selected"
             });
 
-
-            $('.btn_pay').on('click', function(e){
+            $(document).on("click", '.btn_pay', function(e) {
                 e.preventDefault();
                 $('#modal_file_detail').modal('hide');
 
                 $('#amount').val($(this).data('amount'));
                 $('#payment_id').val($(this).data('id'));
+            });
+
+            $(document).on("click", '.btn-create-ticket', function(e) {
+                e.preventDefault();
+                $('#modal_file_detail').modal('hide');
+                $('#modal_new_ticket').modal('show');
+                $('#file_ref').val($(this).data('ref'));
             });
 
         });
@@ -78,6 +87,19 @@
 @section("content")
     <!-- Content area -->
     <div class="content">
+
+        <div class="row">
+            <div class="col-md-9">
+                <div class="page-title">
+                    <h2>Hi,<span class="text-warning text-capitalize"> {{ Auth::user()->name }}</span></h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="page-title">
+                    <h3>News & Announcement</h3>
+                </div>
+            </div>
+        </div>
 
         <!-- Error Message -->
         @if (count($errors) > 0)
@@ -104,9 +126,6 @@
         <!-- Highlighted tabs -->
         <div class="row">
             <div class="col-md-9">
-                <div class="page-title">
-                    <h2>Hi,<span class="text-warning text-capitalize"> {{ Auth::user()->name }}</span></h2>
-                </div>
                 <div class="panel panel-white">
                     <div class="panel-heading">
                         <h3 class="panel-title">My Files
@@ -138,15 +157,17 @@
                         @foreach($files as $file)
                             <tr>
                                 <td>
-                                    <h6 class="no-margin">{{$file->project_name}}
-                                        <small class="display-block text-muted text-size-small">File Ref. {{$file->file_ref}}</small>
-                                    </h6>
+                                    <a class="view_detail" data-url="{{ url('overview/detail/?id=' . $file->file_id) }}">
+                                        <h6 class="no-margin text-black-default">{{$file->project_name}}
+                                            <small class="display-block text-muted text-size-small">File Ref. {{$file->file_ref}}</small>
+                                        </h6>
+                                    </a>
                                 </td>
                                 <td>
                                     <span class="no-margin">
                                         {!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $file->updated_at)->toFormattedDateString() !!}
                                         <small class="display-block text-muted text-size-small">
-                                            {!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $file->updated_at)->diffForHumans() !!}
+                                        {!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $file->updated_at)->diffForHumans() !!}
                                         </small>
                                     </span>
                                 </td>
@@ -188,9 +209,6 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="page-title">
-                    <h3>News & Announcement</h3>
-                </div>
                 @if(count($announcements) > 0)
                     <div class="panel">
                         <div class="panel-body no-padding">
@@ -272,6 +290,54 @@
         </div>
     </div>
     <!-- /make payment modal -->
+
+    <!-- New Ticket Modal Dialog -->
+    <div id="modal_new_ticket" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-yellow-800">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">New Support Ticket</h5>
+                </div>
+
+                <form id="create_ticket_form" class="form-horizontal" action="{{url('support/tickets/create')}}" method="post">
+                    {{ csrf_field() }}
+
+                    <fieldset class="ml-20 mr-20 p-10">
+                        <div class="form-group">
+                            <label>Department</label>
+                            <select class="select form-control" name="department_id">
+                                @foreach($departments as $department)
+                                    <option value="{{$department->department_id}}">{{$department->department_name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>File Ref</label>
+                            <input id="file_ref" class="form-control" name="file_ref" readonly required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Subject</label>
+                            <input id="subject" type="text" name="subject" class="form-control" placeholder="" required>
+                        </div>
+
+                        <div class="form-group no-margin-bottom">
+                            <textarea name="message" class="form-control" rows="3" cols="1" placeholder="Write your question..." required></textarea>
+                        </div>
+                    </fieldset>
+                    <div class="form-group bg-grey-F8FAFC no-margin p-10 text-grey-300">
+                        <label class="control-label col-md-8">Messages are kept confidential</label>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-success form-control">Create Ticket</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /New Ticket Modal Dialog -->
 
 @endsection
 

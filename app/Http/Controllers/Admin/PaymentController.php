@@ -21,7 +21,14 @@ class PaymentController extends Controller
 
     public function index()
     {
-        $files = File::where('status', 0)->get();
+        if (Auth::user()->hasRole('admin')) {
+            $files = File::where('status', 0)->get();
+        } else {
+            $files = File::where('status', 0)
+                ->join('file_users', 'file_users.file_ref', 'files.file_ref')
+                ->where('file_users.user_id', Auth::id())
+                ->get();
+        }
 
         return View('admin.pages.payment', compact('files'));
     }

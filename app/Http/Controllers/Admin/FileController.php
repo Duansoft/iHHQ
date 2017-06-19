@@ -76,13 +76,15 @@ class FileController extends Controller
             ->get();
         $departments = Department::all();
         $categories = File_Category::all();
+        $subcategories = File_Subcategory::where('category_id', $categories[0]->category_id)->get();
 
         if (!empty($file_id)) {
             $file = File::findOrFail($file_id);
-            return View('admin.pages.addEditFile', compact('file', 'lawyers', 'staffs', 'departments',  'categories'));
+            $subcategories = File_Subcategory::where('category_id', $file->subcategory_id)->get();
+            return View('admin.pages.addEditFile', compact('file', 'lawyers', 'staffs', 'departments',  'categories', 'subcategories'));
         }
 
-        return View('admin.pages.addEditFile', compact('lawyers', 'staffs', 'departments', 'subcategories', 'categories'));
+        return View('admin.pages.addEditFile', compact('lawyers', 'staffs', 'departments', 'subcategories', 'categories', 'subcategories'));
     }
 
     /**
@@ -94,7 +96,7 @@ class FileController extends Controller
         $file_id = $id;
 
         $validator = Validator::make($data, [
-           'file_ref' => 'required|unique:files',
+            'file_ref' => 'required|unique:files',
             'project_name' => 'required',
             'department_id' => 'required',
             'category_id' => 'required',
@@ -113,6 +115,16 @@ class FileController extends Controller
             return redirect()->back()->withInput()->withErrors($validator->messages());
         }
 
+        foreach(Input::get('clients') as $client)
+        {
+            foreach(Input::get('spectators') as $spectator)
+            {
+                if ($client == $spectator) {
+                    return redirect()->back()->withInput()->withErrors('Clients and Spectators cannot be same');
+                }
+            }
+        }
+
         if (empty($file_id)) {
             $file = new File();
             $file->fill($data);
@@ -124,7 +136,7 @@ class FileController extends Controller
             $file->updated_by = Auth::id();
             $message = 'The file have been updated successfully';
         }
-        $file = $this->calculateTotalOutstandingAmount($data['cases']);
+        $file->outstanding_amount = $this->calculateTotalOutstandingAmount($data['cases']);
 
         $lawyers = Input::get('lawyers');
         foreach($lawyers as $lawyer) {
@@ -426,12 +438,42 @@ class FileController extends Controller
         $validator = Validator::make($data, [
             'file_ref' => 'required',
             'amount' => 'required',
-            'purpose' => 'required'
+            'purpose' => 'required',
+            'file' => 'required|file',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator->messages());
         }
+
+//        $invoice = Input::file('file');
+//        $file_ref = $file->file_ref;
+//        $fileName = Input::get('name') . '.pdf';
+//        $filePath = 'files/' . $file_ref . '/documents';
+//
+//        DB::beginTransaction();
+//        try {
+//            $path = $invoice->storeAs($filePath, $fileName);
+//
+//            $document = new File_Document();
+//            $document->fill($data);
+//            $document->path = $path;
+//            $document->created_by = Auth::id();
+//            $document->extension = $this->getExtensionType($extension);
+//            $document->save();
+//
+//            $cases = json_decode($file->cases);
+//            $case = $cases[$index];
+//            $case->status = "Completed";
+//            $file->cases = json_encode($cases);
+//            $file->percent = $this->calculateCompletionPercent(json_encode($cases));
+//            $file->save();
+//
+//            DB::commit();
+//        } catch (\Exception $exception) {
+//            DB::rollBack();
+//            return redirect()->back()->withInput()->withErrors(['errors' => 'Failed to upload document']);
+//        }
 
         $payment = new Payment();
         $payment->fill($data);

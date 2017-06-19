@@ -9,6 +9,12 @@ $(function() {
         }
     });
 
+    $('.select-search').select2({
+        placeholder: function(){
+            $(this).data('placeholder');
+        }
+    });
+
 
     /**
      * Edit User

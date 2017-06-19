@@ -39,7 +39,8 @@ class DashboardController extends Controller
         $paymentsData = DB::table('payments')
             ->select('*', DB::raw('"payment" AS dashboard_title'))
             ->join('users', 'users.id', 'payments.paid_by')
-            ->where('status', 2)
+            ->join('files', 'payments.file_ref', 'files.file_ref')
+            ->where('payments.status', 2)
             ->get();
         $dispatchesData = DB::table('dispatches')
             ->select('*', DB::raw('"dispatch" AS dashboard_title'))

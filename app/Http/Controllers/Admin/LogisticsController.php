@@ -27,12 +27,23 @@ class LogisticsController extends Controller
 
     public function getDispatches()
     {
-        $dispatches = DB::table('dispatches')
-            ->select('couriers.logo', 'couriers.name AS courier', 'delivery_by', 'dispatches.file_ref', 'users.name', 'description', 'dispatches.updated_at', 'dispatches.status', 'dispatch_id')
-            ->leftJoin('files', 'files.file_ref', 'dispatches.file_ref')
-            ->leftJoin('couriers', 'couriers.courier_id', 'dispatches.courier_id')
-            ->leftJoin('users', 'users.id', 'dispatches.client_id')
-            ->where('files.status', 0);
+        if (Auth::user()->hasRole('admin')) {
+            $dispatches = DB::table('dispatches')
+                ->select('couriers.logo', 'couriers.name AS courier', 'delivery_by', 'dispatches.file_ref', 'users.name', 'description', 'dispatches.updated_at', 'dispatches.status', 'dispatch_id')
+                ->leftJoin('files', 'files.file_ref', 'dispatches.file_ref')
+                ->leftJoin('couriers', 'couriers.courier_id', 'dispatches.courier_id')
+                ->leftJoin('users', 'users.id', 'dispatches.client_id')
+                ->where('files.status', 0);
+        } else {
+            $dispatches = DB::table('dispatches')
+                ->select('couriers.logo', 'couriers.name AS courier', 'delivery_by', 'dispatches.file_ref', 'users.name', 'description', 'dispatches.updated_at', 'dispatches.status', 'dispatch_id')
+                ->leftJoin('files', 'files.file_ref', 'dispatches.file_ref')
+                ->leftJoin('couriers', 'couriers.courier_id', 'dispatches.courier_id')
+                ->leftJoin('users', 'users.id', 'dispatches.client_id')
+                ->leftJoin('file_users', 'file_users.file_ref', 'files.file_ref')
+                ->where('file_users.user_id', Auth::id())
+                ->where('files.status', 0);
+        }
 
         return Datatables::of($dispatches)
             ->editColumn('updated_at', '{!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $updated_at)->toFormattedDateString() !!}')
@@ -100,7 +111,8 @@ class LogisticsController extends Controller
             'file_ref' => 'required',
             'description' => 'required',
             'courier_id' => 'required',
-            'qr_code' => 'required'
+            'delivery_by' => 'required',
+            'qr_code' => 'required',
         ]);
 
         if ($validator->fails()) {

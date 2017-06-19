@@ -62,7 +62,7 @@ class SupportController extends Controller
         $ticket = new Ticket();
         $ticket = $ticket->fill($data);
         $ticket->client_id = $user->id;
-        if (Input::has('file_ref')) {
+        if (Input::has('file_ref') && !empty(Input::get('file_ref'))) {
             $ticket->file_ref = Input::get('file_ref');
             $ticket->status_id = 2;
         } else {
@@ -77,7 +77,7 @@ class SupportController extends Controller
         $message->sender_id = $user->id;
         $message->save();
 
-        return redirect()->back();
+        return redirect('support');
     }
 
     public function getTicket($id)

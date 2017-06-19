@@ -103,6 +103,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
         Route::get('users/clients/create', 'UserController@getCreateClient');
         Route::get('users/admins/create', 'UserController@getCreateAdmin');
         Route::get('users/lawyers/create', 'UserController@getCreateLawyer');
+        Route::get('users/logistic/create', 'UserController@getCreateLogistic');
+        Route::get('users/billing/create', 'UserController@getCreateBilling');
         Route::get('users/staffs/create', 'UserController@getCreateStaff');
     });
     // Search Function
@@ -179,6 +181,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     Route::get('templates/{id}/delete', ['middleware' => ['role:admin|lawyer'], 'uses' => 'TemplateController@deleteTemplate']);
     Route::get('templates/{id}/download', 'TemplateController@download');
 
+    /* Options */
+    Route::group(['middleware' => ['role:admin']], function() {
+        Route::get('options', 'OptionController@index');
+    });
+
     /* Settings */
     Route::get('setting', 'SettingController@index');
     Route::post('setting', 'SettingController@postProfile');
@@ -190,7 +197,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
 /**
  * Role Permission Template
  */
-//Route::get('test-role', function(){
+Route::get('test-role', function(){
+
 //    $admin = Role::where('name', 'admin')->first();
 //    $lawyer = Role::where('name', 'lawyer')->first();
 //
@@ -202,5 +210,5 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
 //
 //    $admin->attachPermission($permission);
 //    $lawyer->attachPermission($permission);
-//
-//});
+
+});

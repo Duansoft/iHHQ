@@ -8,6 +8,7 @@
         "php": ">=5.6.4",
         "aloha/twilio": "^3.0",
         "anhskohbo/no-captcha": "^2.3",
+        "felixkiss/uniquewith-validator": "^3.1",
         "guzzlehttp/guzzle": "^6.2",
         "intervention/image": "^2.3",
         "jomweb/billplz": "^0.6",

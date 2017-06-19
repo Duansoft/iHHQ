@@ -28,17 +28,29 @@
                                 Docs
                             </a>
                         </li>
+
+                        <li>
+                            <a href="#tab-ticket" class="text-size-small text-uppercase" data-toggle="tab">
+                                Tickets
+                            </a>
+                        </li>
                     </ul>
                     <!-- /tabs -->
 
                     <!-- Tabs content -->
                     <div class="tab-content">
-                        <div class="tab-pane active fade in has-padding no-padding-left no-padding-right" id="tab-status">
+                        <div class="tab-pane active fade in has-padding no-padding" id="tab-status">
                             <table class="table">
+                                <thead>
+                                <tr class="no-border active">
+                                    <th>Activities</th>
+                                    <th class="text-center col-lg-1">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
                                 @foreach(json_decode($file->cases) as $index => $case)
                                     <tr class="no-border">
                                         <td class="no-border"><span>{{ $case->activity }}</span></td>
-                                        <td class="no-border"><span>RM{{ $case->milestone }}</span></td>
                                         <td class="no-border pull-right">
                                             @if ($case->status == "Completed")
                                                 <button type="button" class="btn bg-slate" readonly="readonly"> Completed</button>
@@ -48,11 +60,22 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                                </tbody>
                             </table>
                         </div>
 
-                        <div class="tab-pane fade has-padding no-padding-left no-padding-right" id="tab-payment">
+                        <div class="tab-pane fade in has-padding no-padding" id="tab-payment">
                             <table class="table">
+                                <thead>
+                                <tr class="no-border active">
+                                    <th>Activities</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th class="text-center" >Status</th>
+                                    <th class="text-center col-lg-1">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
                                 @foreach($file->payments as $payment)
                                     <tr class="no-border">
                                         <td class="no-border"><span class="text-size-large"> {{ $payment->purpose }}</span></td>
@@ -68,20 +91,29 @@
                                                     </ul>
                                                 @else
                                                     @if (!empty($payment->receipt))
-                                                    <ul class="dropdown-menu">
-                                                        <li><a href="{{ url('payment/' . $payment->payment_id . '/download') }}">Download Receipt</a></li>
-                                                    </ul>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a href="{{ url('payment/' . $payment->payment_id . '/download') }}">Download Receipt</a></li>
+                                                        </ul>
                                                     @endif
                                                 @endif
                                             </div>
                                         </td>
                                     </tr>
                                 @endforeach
+                                </tbody>
                             </table>
                         </div>
 
-                        <div class="tab-pane fade has-padding no-padding-left no-padding-right" id="tab-document">
+                        <div class="tab-pane fade has-padding no-padding" id="tab-document">
                             <table class="table">
+                                <thead>
+                                <tr class="no-border active">
+                                    <th>File</th>
+                                    <th>Detail</th>
+                                    <th>Date</th>
+                                    <th class="text-center col-lg-1">Actions</th>
+                                </tr>
+                                </thead>
                                 <tbody>
                                 @foreach($documents as $document)
                                     <tr class="no-border">
@@ -99,6 +131,7 @@
                                             </div>
                                         </td>
                                         <td class="no-border"><span> {!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $document->created_at)->toFormattedDateString() !!}</span></td>
+                                        <td class="no-border pull-right"><a href="{{url('overview/documents/'.$document->document_id .'/download')}}" download><button type="button" class="btn btn-default"> Download</button></a></td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -114,6 +147,37 @@
                                 <button type="button" class="btn btn-dlg btn-success pl-20 pr-20 mt-20 mr-20" data-toggle="modal" data-target="#modal_upload_document"><i class="icon-plus22 position-left"></i> Upload Document</button>
                             </div>
                             @endrole
+                        </div>
+
+                        <div class="tab-pane fade has-padding no-padding" id="tab-ticket">
+                            <table class="table">
+                                <thead>
+                                <tr class="no-border active">
+                                    <th>Subject</th>
+                                    <th>Date</th>
+                                    <th class="text-center col-lg-1">Detail</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                @foreach($tickets as $ticket)
+                                    <tr class="no-border">
+                                        <td class="no-border">
+                                            <span>{{ $ticket->subject }}</span>
+                                        </td>
+                                        <td class="no-border"><span> {!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $ticket->created_at)->toFormattedDateString() !!}</span></td>
+                                        <td class="no-border pull-right"><a href="{{url('support/tickets/'.$ticket->ticket_id)}}"><button type="button" class="btn btn-default"> Detail</button></a></td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+
+                            @role('client')
+                            <div class="text-right">
+                                {{--<a class="btn-create-ticket" data-dismiss="modal" data-toggle="modal" data-target="#modal_new_ticket"><button type="button" class="btn btn-success pl-20 pr-20 mt-20 mr-20" ><i class="icon-plus22 position-left"></i> Create Ticket</button></a>--}}
+                                <a class="btn-create-ticket" data-dismiss="modal" data-ref="{{$file->file_ref}}"><button type="button" class="btn btn-success pl-20 pr-20 mt-20 mr-20" ><i class="icon-plus22 position-left"></i> Create Ticket</button></a>
+                            </div>
+                            @endrole
 
                         </div>
                     </div>
@@ -123,7 +187,7 @@
             </div>
             <div class="col-lg-4">
                 <div class="panel panel-white" style="min-height: 600px;">
-                    <div class="panel-heading">
+                    <div class="panel-heading" style="padding-top: 24px; padding-bottom: 10px;">
                         <span class="panel-title">File Information</span>
                     </div>
                     <div class="panel-body">
@@ -163,18 +227,18 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="row">
-                            <p class="col-md-6">Spectator</p>
-                            <div class="col-md-6">
-                                <ul class="list-condensed list-unstyled text-right">
-                                    @foreach($participants as $participant)
-                                        @if ($participant->role == "spectator")
-                                            <li class="text-size-large">{{ $participant->name }}</li>
-                                        @endif
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
+                        {{--<div class="row">--}}
+                            {{--<p class="col-md-6">Spectator</p>--}}
+                            {{--<div class="col-md-6">--}}
+                                {{--<ul class="list-condensed list-unstyled text-right">--}}
+                                    {{--@foreach($participants as $participant)--}}
+                                        {{--@if ($participant->role == "spectator")--}}
+                                            {{--<li class="text-size-large">{{ $participant->name }}</li>--}}
+                                        {{--@endif--}}
+                                    {{--@endforeach--}}
+                                {{--</ul>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
 
                         <legend class="text-bold p-5 mb-10"></legend>
 

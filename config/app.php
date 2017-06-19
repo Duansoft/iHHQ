@@ -187,6 +187,7 @@ return [
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Sofa\Eloquence\ServiceProvider::class,
+        Felixkiss\UniqueWithValidator\ServiceProvider::class,
     ],
 
     /*

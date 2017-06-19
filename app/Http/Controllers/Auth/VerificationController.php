@@ -60,7 +60,7 @@ class VerificationController extends Controller
 
         $tempUser->delete();
 
-        return redirect('login')->withErrors('Thanks. You can login Once got approve');
+        return redirect('login')->withErrors('Thanks. We will contact soon.');
         //Auth::login($user);
         //return redirect($this->redirectPath);
     }

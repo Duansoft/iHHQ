@@ -27,6 +27,7 @@
                 browseIcon: '<i class="icon-file-plus"></i>',
                 uploadIcon: '<i class="icon-file-upload2"></i>',
                 removeIcon: '<i class="icon-cross3"></i>',
+                browseClass: 'btn btn-default',
                 showUpload: false,
                 layoutTemplates: {
                     icon: '<i class="icon-file-check"></i>'
@@ -111,15 +112,13 @@
                                 <div class="form-group border-bottom mr-5 ml-5">
                                     <label class="control-label col-lg-2 no-padding-left">Name</label>
                                     <div class="col-lg-10">
-                                        <input type="text" class="form-control no-border" name="name" placeholder="Your Name"
-                                               value="{{ $me->name }}" required>
+                                        <input type="text" class="form-control no-border" name="name" placeholder="Your Name" value="{{ $me->name }}" required>
                                     </div>
                                 </div>
                                 <div class="form-group border-bottom mr-5 ml-5">
                                     <label class="control-label col-lg-2 no-padding-left">Email</label>
                                     <div class="col-lg-10">
-                                        <input type="email" class="form-control no-border" name="email" placeholder="Email"
-                                               value="{{ $me->email }}" required>
+                                        <input type="email" class="form-control no-border" name="email" placeholder="Email" value="{{ $me->email }}" readonly required>
                                     </div>
                                 </div>
                                 <div class="form-group border-bottom mr-5 ml-5">
@@ -150,15 +149,13 @@
                                 <div class="form-group border-bottom mr-5 ml-5">
                                     <label class="control-label col-lg-2 no-padding-left">IC/Passport</label>
                                     <div class="col-lg-10">
-                                        <input type="text" class="form-control no-border" name="passport_no" placeholder="passport number"
-                                               value="{{ $me->passport_no }}" required>
+                                        <input type="text" class="form-control no-border" name="passport_no" placeholder="123456-7890" pattern="^\d{6}-\d{4}$" value="{{ $me->passport_no }}" readonly required>
                                     </div>
                                 </div>
                                 <div class="form-group border-bottom mr-5 ml-5">
                                     <label class="control-label col-lg-2 no-padding-left">Mobile No.</label>
                                     <div class="col-lg-10">
-                                        <input type="tel" class="form-control no-border" placeholder="123456789"
-                                               value="{{ $me->mobile }}" disabled required>
+                                        <input type="tel" class="form-control no-border" placeholder="123456789" value="{{ $me->mobile }}" readonly required>
                                     </div>
                                     {{--pattern="^\d{4}-\d{3}-\d{4}$"--}}
                                 </div>

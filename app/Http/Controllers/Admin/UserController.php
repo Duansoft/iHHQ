@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Country;
+use App\Department;
+use App\Office;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
@@ -146,32 +148,60 @@ class UserController extends Controller
     {
         $countries = Country::all();
         $role = Role::where('name', 'admin')->first();
+        $departments = Department::all();
+        $offices = Office::all();
 
-        return View('admin.pages.addEditUser', compact('countries', 'role'));
+        return View('admin.pages.addEditUser', compact('countries', 'role', 'departments', 'offices'));
     }
 
     public function getCreateLawyer()
     {
         $countries = Country::all();
         $role = Role::where('name', 'lawyer')->first();
+        $departments = Department::all();
+        $offices = Office::all();
 
-        return View('admin.pages.addEditUser', compact('countries', 'role'));
+        return View('admin.pages.addEditUser', compact('countries', 'role', 'departments', 'offices'));
+    }
+
+    public function getCreateLogistic()
+    {
+        $countries = Country::all();
+        $role = Role::where('name', 'logistic')->first();
+        $departments = Department::all();
+        $offices = Office::all();
+
+        return View('admin.pages.addEditUser', compact('countries', 'role', 'departments', 'offices'));
+    }
+
+    public function getCreateBilling()
+    {
+        $countries = Country::all();
+        $role = Role::where('name', 'billing')->first();
+        $departments = Department::all();
+        $offices = Office::all();
+
+        return View('admin.pages.addEditUser', compact('countries', 'role', 'departments', 'offices'));
     }
 
     public function getCreateStaff()
     {
         $countries = Country::all();
         $role = Role::where('name', 'staff')->first();
+        $departments = Department::all();
+        $offices = Office::all();
 
-        return View('admin.pages.addEditUser', compact('countries', 'role'));
+        return View('admin.pages.addEditUser', compact('countries', 'role', 'departments', 'offices'));
     }
 
     public function getCreateClient()
     {
         $countries = Country::all();
         $role = Role::where('name', 'client')->first();
+        $departments = Department::all();
+        $offices = Office::all();
 
-        return View('admin.pages.addEditUser', compact('countries', 'role'));
+        return View('admin.pages.addEditUser', compact('countries', 'role', 'departments', 'offices'));
     }
 
     public function postUser(Request $request)
@@ -230,8 +260,10 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $countries = Country::all();
         $role = $user->roles()->first();
+        $departments = Department::all();
+        $offices = Office::all();
 
-        return View('admin.pages.addEditUser', compact('user', 'countries', 'role'));
+        return View('admin.pages.addEditUser', compact('user', 'countries', 'role', 'departments', 'offices'));
     }
 
     /**

@@ -19,6 +19,7 @@
             browseIcon: '<i class="icon-file-plus"></i>',
             uploadIcon: '<i class="icon-file-upload2"></i>',
             removeIcon: '<i class="icon-cross3"></i>',
+            browseClass: 'btn btn-default',
             showUpload: false,
             layoutTemplates: {
                 icon: '<i class="icon-file-check"></i>'
@@ -124,11 +125,17 @@
                     </ul>
                     <!-- /tabs -->
 
-
                     <!-- Tabs content -->
                     <div class="tab-content">
-                        <div class="tab-pane active fade in has-padding" id="tab-status">
-                            <table class="table text-nowrap">
+                        <div class="tab-pane active fade in has-padding no-padding" id="tab-status">
+                            <table class="table">
+                                <thead>
+                                    <tr class="no-border active">
+                                        <th>Activities</th>
+                                        <th>Milestones</th>
+                                        <th class="text-center col-lg-1">Actions</th>
+                                    </tr>
+                                </thead>
                                 @foreach(json_decode($file->cases) as $index => $case)
                                 <tr class="no-border">
                                     <td class="no-border"><span class="text-size-large">{{ $case->activity }}</span></td>
@@ -143,14 +150,26 @@
                                 </tr>
                                 @endforeach
                             </table>
-                            <div class="text-right">
+                            <div class="text-right m-20">
                                 <button type="button" class="btn btn-dlg btn-success pl-20 pr-20 mt-20" data-toggle="modal" data-target="#modal_create_milestone"><i class="icon-plus22 position-left"></i> Add Milestone</button>
                             </div>
                         </div>
 
                         <!-- Payment Tab -->
-                        <div class="tab-pane fade has-padding" id="tab-payment">
-                            <table class="table text-nowrap">
+                        <div class="tab-pane fade in has-padding no-padding" id="tab-payment">
+                            <table class="table">
+                                <thead>
+                                <tr class="no-border active">
+                                    <th>Activities</th>
+                                    <th>Date</th>
+                                    <th></th>
+                                    <th>Amount</th>
+                                    <th class="text-center" >Status</th>
+                                    <th class="text-center col-lg-1">Actions</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
                                 @foreach($file->payments as $payment)
                                     <tr class="no-border">
                                         <td class="no-border"><span class="text-size-large"> {{ $payment->purpose }}</span></td>
@@ -179,16 +198,24 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                                </tbody>
                             </table>
-                            <div class="text-right">
+                            <div class="text-right m-20">
                                 <button type="button" class="btn btn-dlg btn-success pl-20 pr-20 mt-20" data-toggle="modal" data-target="#modal_create_payment"><i class="icon-plus22 position-left"></i> Request Payment</button>
                             </div>
                         </div>
                         <!-- /Payment Tab -->
 
                         <!-- Document Tab -->
-                        <div class="tab-pane fade has-padding" id="tab-document">
+                        <div class="tab-pane fade has-padding no-padding" id="tab-document">
                             <table class="table text-nowrap">
+                                <thead>
+                                <tr class="no-border active">
+                                    <th>File</th>
+                                    <th>Detail</th>
+                                    <th>Date</th>
+                                </tr>
+                                </thead>
                                 <tbody>
                                 @foreach($documents as $document)
                                     <tr class="no-border">
@@ -211,7 +238,7 @@
                                 </tbody>
                             </table>
 
-                            <div class="text-right">
+                            <div class="text-right m-20">
                                 <button type="button" class="btn btn-dlg btn-success pl-20 pr-20 mt-20" data-toggle="modal" data-target="#modal_upload_document"><i class="icon-plus22 position-left"></i> Upload Document</button>
                             </div>
                         </div>
@@ -333,7 +360,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>File</label>
+                            <label>Document</label>
                             <input type="file" class="file-input reset_control" name="file" accept=".pdf, .doc, .docx" data-allowed-file-extensions='["pdf", "doc", "docx"]' data-show-caption="true">
                         </div>
                     </fieldset>
@@ -377,6 +404,11 @@
                         </div>
 
                         <div class="form-group">
+                            <label>Invoice</label>
+                            <input type="file" class="file-input reset_control" name="file" accept=".pdf" data-allowed-file-extensions='["pdf"]' data-show-caption="true" required>
+                        </div>
+
+                        <div class="form-group">
                             <label>Reconfirm Ref File</label>
                             <input class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly required>
                         </div>
@@ -384,14 +416,14 @@
 
                     <div class="form-group bg-grey-F8FAFC no-margin p-15 text-grey-300">
                         <div class="col-md-4 col-md-offset-4">
-                            <button type="submit" class="btn btn-success form-control text-size-large">Create</button>
+                            <button type="submit" class="btn btn-success form-control text-size-large">Create Payment</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    <!-- /Upload Modal Dialog -->
+    <!-- /Create Payment Dialog -->
 
     <!-- New Milestone Modal Dialog -->
     <div id="modal_create_milestone" class="modal fade">
@@ -426,6 +458,7 @@
                             <input class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly="readonly">
                         </div>
                     </fieldset>
+
                     <div class="form-group bg-grey-F8FAFC no-margin p-15 text-grey-300">
                         <div class="col-md-4 col-md-offset-4">
                             <button type="submit" class="btn btn-success form-control text-size-large">Create Milestone</button>
@@ -437,7 +470,7 @@
     </div>
     <!-- /Upload Modal Dialog -->
 
-    <!-- Upload Dco Modal Dialog -->
+    <!-- Upload Doc Modal Dialog -->
     <div id="modal_complete_case" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">

@@ -211,7 +211,7 @@
                         <div class="form-group bg-grey-F8FAFC no-margin p-10 text-grey-300">
                             <label class="control-label col-md-8">Messages are kept confidential</label>
                             <div class="col-md-4">
-                                <button type="submit" class="btn btn-success form-control">Create Ticket</button>
+                                <button type="submit" class="btn btn-success form-control">Create New Ticket</button>
                             </div>
                         </div>
                     </form>

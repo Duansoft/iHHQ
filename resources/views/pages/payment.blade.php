@@ -24,6 +24,7 @@
                 browseIcon: '<i class="icon-file-plus"></i>',
                 uploadIcon: '<i class="icon-file-upload2"></i>',
                 removeIcon: '<i class="icon-cross3"></i>',
+                browseClass: 'btn btn-default',
                 showUpload: false,
                 layoutTemplates: {
                     icon: '<i class="icon-file-check"></i>'

@@ -2575,6 +2575,11 @@
 .text-black:focus {
   color: #666666 !important;
 }
+.text-black-default,
+.text-black:hover,
+.text-black:focus {
+  color: #333333 !important;
+}
 
 .border-yellow-800 {
   border-color: #FECF39;

@@ -13,6 +13,8 @@
 
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/core/app.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/logistics.js') }}"></script>
+    <script type="text/javascript">
+    </script>
 @endsection
 
 
@@ -94,19 +96,23 @@
                         <div class="form-group">
                             <label class="control-label col-lg-2">Client</label>
                             <div class="col-lg-10">
-                                <select class="select-remote-client" name="client_id" data-placeholder="search client">
-                                </select>
+                                @if (isset($dispatch))
+                                    <input type="text" class="form-control" value="{{$user->name}}" readonly required>
+                                    <input type="hidden" class="form-control" name="client_id" value="{{$user->id}}" readonly required>
+                                @else
+                                    <select class="select-remote-client" name="client_id" data-placeholder="search client"></select>
+                                @endif
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="control-label col-lg-2">File Ref</label>
                             <div class="col-lg-10">
-                                <select class="select-file-ref" name="file_ref" readonly>
-                                    @if (isset($dispatch))
-                                        <option value="{{ $dispatch->file_ref }}" selected>{{ $dispatch->file_ref }}</option>
-                                    @endif
-                                </select>
+                                @if (isset($dispatch))
+                                    <input type="text" class="form-control" name="file_ref" value="{{$dispatch->file_ref}}" readonly>
+                                @else
+                                    <select class="select-file-ref" name="file_ref" readonly></select>
+                                @endif
                             </div>
                         </div>
 

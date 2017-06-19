@@ -28,13 +28,13 @@
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/file.js') }}"></script>
     <script type="text/javascript">
 
-        $(function() {
+        $(function () {
             // trigger after selecting from ajax
             var hot_checks_values_data = [];
             var selectedData;
             var cellTable;
 
-            $('#category').on("select2:select", function(event) {
+            $('#category').on("select2:select", function (event) {
                 $.ajax({
                     type: "GET",
                     url: '{{ url("admin/files/subcategories") }}',
@@ -61,17 +61,16 @@
                     data: data,
                 });
                 selectedData = data[0].data;
-                $("#subcategory > option").each(function(index) { // iterate through all options of selectbox
+                $("#subcategory > option").each(function (index) { // iterate through all options of selectbox
                     $(this).attr('data-id', data[index].data); // add attribute to option with value of i
                 });
             }
 
-            $('#btn-load-template').on('click', function(){
+            $('#btn-load-template').on('click', function () {
                 hot_checks_values_data = JSON.parse(selectedData);
                 cellTable.destroy();
                 create_template_table();
             });
-
 
 
             // Handson Table Setup
@@ -82,7 +81,7 @@
 
             // Initialize with options
             function create_template_table() {
-                 cellTable = new Handsontable(hot_checks_values, {
+                cellTable = new Handsontable(hot_checks_values, {
                     data: hot_checks_values_data,
                     rowHeaders: true,
                     colHeaders: ['Select', 'Activity Desc', 'Status', 'Price', 'Duration'],
@@ -119,16 +118,16 @@
 
             create_template_table();
 
-            $('#btn_add').on('click', function(){
+            $('#btn_add').on('click', function () {
                 hot_checks_values_data.push(
                         {no: "10", status: "In Progress", activity: "", duration: 0, milestone: 0, select: true}
                 );
                 cellTable.destroy();
                 create_template_table();
             });
-            $('#btn_delete').on('click', function(){
+            $('#btn_delete').on('click', function () {
                 var jsonArr = [];
-                $.each(hot_checks_values_data, function(index, item) {
+                $.each(hot_checks_values_data, function (index, item) {
                     if (item.select == false) {
                         jsonArr.push(item);
                     }
@@ -137,7 +136,7 @@
                     create_template_table();
                 });
             });
-            $('#btn_delete_all').on('click', function(){
+            $('#btn_delete_all').on('click', function () {
                 hot_checks_values_data = [];
                 cellTable.destroy();
                 create_template_table();
@@ -145,12 +144,25 @@
 
 
             // When Submit
-            $('form').on('submit', function(e) {
+            $('form').on('submit', function (e) {
                 e.preventDefault();
                 if (hot_checks_values_data.length == 0) {
-                    alert("You must add a activity at least");
+                    alert("You must add at least one activity");
                 } else {
                     $(this).submit();
+                }
+            });
+
+            // Select with search
+            $('.select-search').select2({
+                placeholder: function(){
+                    $(this).data('placeholder');
+                }
+            });
+
+            $('.select-lawyer').select2({
+                placeholder: function(){
+                    $(this).data('placeholder');
                 }
             });
         });
@@ -167,7 +179,9 @@
             </div>
 
             <div class="heading-elements">
-                <a href="{{url('admin/files')}}"><button type="button" class="btn btn-default heading-btn"><i class="icon-circle-left2 position-left"></i> BACK</button></a>
+                <a href="{{url('admin/files')}}">
+                    <button type="button" class="btn btn-default heading-btn"><i class="icon-circle-left2 position-left"></i> BACK</button>
+                </a>
             </div>
         </div>
     </div>
@@ -223,6 +237,11 @@
                                         <div class="form-group">
                                             <label class="control-label col-lg-2">File Ref</label>
                                             <div class="col-lg-10">
+                                                <div class="row">
+                                                    <div class="col-lg-4"><input type="text" class="form-control"></div>
+                                                    <div class="col-lg-4"><input type="text" class="form-control"></div>
+                                                    <div class="col-lg-4"><input type="text" class="form-control"></div>
+                                                </div>
                                                 @if (isset($file))
                                                     <input type="text" class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly required>
                                                 @else
@@ -232,7 +251,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="control-label col-lg-2">Project Name</label>
+                                            <label class="control-label col-lg-2">File Name</label>
                                             <div class="col-lg-10">
                                                 <input type="text" class="form-control" name="project_name" value="{{ isset($file) ? $file->project_name : old('project_name') }}" required>
                                             </div>
@@ -244,9 +263,9 @@
                                                 <select class="select1" name="department_id">
                                                     @foreach($departments as $department)
                                                         @if (isset($file))
-                                                        <option value="{{ $department->department_id }}" {{ $department->department_id == $file->department_id ? 'selected' : '' }}>{{ $department->department_name }}</option>
+                                                            <option value="{{ $department->department_id }}" {{ $department->department_id == $file->department_id ? 'selected' : '' }}>{{ $department->department_name }}</option>
                                                         @else
-                                                        <option value="{{ $department->department_id }}">{{ $department->department_name }}</option>
+                                                            <option value="{{ $department->department_id }}">{{ $department->department_name }}</option>
                                                         @endif
                                                     @endforeach
                                                 </select>
@@ -254,20 +273,20 @@
                                         </div>
 
                                         {{--<div class="form-group">--}}
-                                            {{--<label class="control-label col-lg-2">Date</label>--}}
-                                            {{--<div class="col-lg-10">--}}
-                                                {{--<input type="text" class="form-control daterange-basic">--}}
-                                            {{--</div>--}}
+                                        {{--<label class="control-label col-lg-2">Date</label>--}}
+                                        {{--<div class="col-lg-10">--}}
+                                        {{--<input type="text" class="form-control daterange-basic">--}}
+                                        {{--</div>--}}
                                         {{--</div>--}}
 
                                         {{--<div class="form-group">--}}
-                                            {{--<label class="control-label col-lg-2">Status</label>--}}
-                                            {{--<div class="col-lg-10">--}}
-                                                {{--<select class="select">--}}
-                                                    {{--<option value="0">Active</option>--}}
-                                                    {{--<option value="1">Close</option>--}}
-                                                {{--</select>--}}
-                                            {{--</div>--}}
+                                        {{--<label class="control-label col-lg-2">Status</label>--}}
+                                        {{--<div class="col-lg-10">--}}
+                                        {{--<select class="select">--}}
+                                        {{--<option value="0">Active</option>--}}
+                                        {{--<option value="1">Close</option>--}}
+                                        {{--</select>--}}
+                                        {{--</div>--}}
                                         {{--</div>--}}
                                     </fieldset>
 
@@ -276,14 +295,15 @@
                                         <div class="form-group">
                                             <label class="control-label col-lg-2">Matter</label>
                                             <div class="col-lg-10">
-                                                <input type="text" class="form-control" name="subject_matter" value="{{ isset($file) ? $file->subject_matter : old('subject_matter') }}" >
+                                                <input type="text" class="form-control" name="subject_matter" value="{{ isset($file) ? $file->subject_matter : old('subject_matter') }}">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="control-label col-lg-2">Description</label>
                                             <div class="col-lg-10">
-                                                <textarea rows="3" cols="5" class="form-control" name="subject_description">{{ isset($file) ? $file->subject_description : old('subject_description') }}</textarea>
+                                                <textarea rows="3" cols="5" class="form-control"
+                                                          name="subject_description">{{ isset($file) ? $file->subject_description : old('subject_description') }}</textarea>
                                             </div>
                                         </div>
 
@@ -291,6 +311,20 @@
                                             <label class="control-label col-lg-2">Tags</label>
                                             <div class="col-lg-10">
                                                 <input type="text" name="tags" value="{{ isset($file) ? $file->tags : old('tags') }}" class="tagsinput-custom-tag-class">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-2">Residential Address</label>
+                                            <div class="col-lg-10">
+                                                <input type="text" class="form-control" name="residential_address" value="{{ isset($file) ? $file->residential_address : old('residential_address') }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-2">Mailing Address</label>
+                                            <div class="col-lg-10">
+                                                <input type="text" class="form-control" name="mailing_address" value="{{ isset($file) ? $file->mailing_address : old('mailing_address') }}">
                                             </div>
                                         </div>
                                     </fieldset>
@@ -307,12 +341,18 @@
                                         <div class="form-group">
                                             <label class="control-label col-lg-2" data-placeholder="select lawyer">Lawyer</label>
                                             <div class="col-lg-10">
-                                                <select class="select-search" name="lawyers[]" multiple>
+                                                <select class="select-lawyer" name="lawyers[]" multiple>
                                                     @foreach($lawyers as $lawyer)
                                                         @if (isset($file))
-                                                        <option value="{{ $lawyer->id }}" >{{ $lawyer->name }}</option>
+                                                            <option value="{{ $lawyer->id }}"
+                                                                @foreach($file->participants as $participant)
+                                                                    @if ($participant->user_id == $lawyer->id)
+                                                                        selected
+                                                                    @endif
+                                                                @endforeach
+                                                             >{{ $lawyer->name }}</option>
                                                         @else
-                                                        <option value="{{ $lawyer->id }}">{{ $lawyer->name }}</option>
+                                                            <option value="{{ $lawyer->id }}">{{ $lawyer->name }}</option>
                                                         @endif
                                                     @endforeach
                                                 </select>
@@ -325,9 +365,15 @@
                                                 <select class="select-search" name="staffs[]" multiple>
                                                     @foreach($staffs as $staff)
                                                         @if (isset($file))
-                                                        <option value="{{ $staff->id }}">{{ $staff->name }}</option>
+                                                            <option value="{{ $staff->id }}"
+                                                                @foreach($file->participants as $participant)
+                                                                    @if ($participant->user_id == $staff->id)
+                                                                    selected
+                                                                    @endif
+                                                                @endforeach
+                                                            >{{ $staff->name }}</option>
                                                         @else
-                                                        <option value="{{ $staff->id }}">{{ $staff->name }}</option>
+                                                            <option value="{{ $staff->id }}">{{ $staff->name }}</option>
                                                         @endif
                                                     @endforeach
                                                 </select>
@@ -340,15 +386,23 @@
                                                 <select class="select-remote-clients" name="clients[]" multiple></select>
                                             </div>
                                         </div>
+
                                         <div class="form-group">
                                             <label class="control-label col-lg-2">Spectators</label>
                                             <div class="col-lg-10">
                                                 <select class="select-remote-clients" name="spectators[]" multiple></select>
                                             </div>
                                         </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-2">Introducer</label>
+                                            <div class="col-lg-10">
+                                                <input type="text" class="form-control" name="introducer" value="{{ isset($file) ? $file->introducer : old('introducer') }}">
+                                            </div>
+                                        </div>
                                     </fieldset>
                                     <fieldset class="content-group">
-                                        <legend class="text-bold">Contact Person <span class="text-muted"> (optional)</legend>
+                                        <legend class="text-bold">Contact Person <span class="text-muted"> (optional)</span></legend>
                                         <div class="form-group">
                                             <label class="control-label col-lg-2">Name</label>
                                             <div class="col-lg-10">
@@ -400,7 +454,11 @@
                                     <div class="form-group">
                                         <label class="control-label col-lg-2">Sub Category</label>
                                         <div class="col-lg-10">
-                                            <select id="subcategory" class="select" name="subcategory_id"></select>
+                                            <select id="subcategory" class="select" name="subcategory_id">
+                                                @foreach($subcategories as $subcategory)
+                                                    <option value="{{ $subcategory->subcategory_id }}">{{ $subcategory->name }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
 
@@ -441,7 +499,7 @@
                     </div>
                 </form>
             </div>
-        </div>
+    </div>
     </div>
     <!-- /content area -->
 

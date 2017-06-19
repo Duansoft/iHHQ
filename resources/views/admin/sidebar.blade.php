@@ -78,6 +78,13 @@
                         <a href="{{URL::to('admin/templates')}}"><span>Legal Templates</span></a>
                     </li>
 
+                    <!-- Announcements -->
+                    @role('admin')
+                    <li class="{{ Request::is('admin/options*')? 'active': '' }}">
+                        <a href="{{URL::to('admin/options')}}"><span>Options</span></a>
+                    </li>
+                    @endrole
+
                     <!-- Account Setting Page -->
                     <li class="{{ Request::is('admin/setting*')? 'active': '' }}">
                         <a href="{{URL::to('admin/setting')}}"><span>Account Settings</span></a>
