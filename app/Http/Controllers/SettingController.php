@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 
 class SettingController extends Controller
 {
@@ -20,9 +21,9 @@ class SettingController extends Controller
     public function index()
     {
         $me = Auth::user();
-        $countries = Country::all();
+        $country = Country::findOrFail($me->country_id);
 
-        return View('pages.setting', compact('me', 'countries'));
+        return View('pages.setting', compact('me', 'country'));
     }
 
     public function postProfile(Request $request)
@@ -34,7 +35,7 @@ class SettingController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255',
             'passport_no' => 'required|max:50',
-            'country_id' => 'required|numeric'
+            'country_id' => 'required|numeric',
         ]);
 
         if ($validator->fails()) {
@@ -43,8 +44,8 @@ class SettingController extends Controller
 
         $me->name = $data['name'];
         $me->address = $data['address'];
-        $me->save();
 
+        // Update Profile Photo
         if (Input::hasFile('photo')) {
             $photo = Input::file('photo');
             $fileName = $me->id . str_random(2) . '.' . $photo->extension();
@@ -52,8 +53,32 @@ class SettingController extends Controller
             Image::make($photo)->encode('png')->resize(150, 150)->save($img_dir);
 
             $me->photo = $fileName;
-            $me->save();
         }
+
+        // Update Password
+        if (Input::has('password')) {
+            $validator = Validator::make($data, [
+                'password' => 'required|min:6|confirmed',
+                'current_password' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator->messages())->withInput();
+            }
+
+            $password = Input::get('password');
+            $confirm = Input::get('password_confirmation');
+
+            if (!Hash::check(Input::get('current_password'), $me->password)) {
+                return redirect()->back()->withErrors(['The password does not match']);
+            } else if ($password != $confirm) {
+                return redirect()->back()->withErrors(['The password confirmation does not match']);
+            }
+
+            $me->password = bcrypt($password);
+        }
+
+        $me->save();
 
         return redirect()->back()->with('flash_message', 'Your Profile have been updated successfully');
     }

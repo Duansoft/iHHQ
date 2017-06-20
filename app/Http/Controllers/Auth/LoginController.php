@@ -94,7 +94,7 @@ class LoginController extends Controller
         $user = Auth::user();
         if (!$user->is_allow) {
             Auth::logout();
-            return redirect()->back()->withErrors('Thanks. We will contact soon.');
+            return redirect()->back()->withErrors('Thanks, We will contact you soon');
         }
 
         return redirect()->intended($this->redirectTo());

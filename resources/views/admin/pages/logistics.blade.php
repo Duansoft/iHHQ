@@ -30,7 +30,7 @@
             </div>
 
             <div class="heading-elements">
-                <a href="{{ url('admin/logistics/create') }}"><button type="button" class="btn btn-default heading-btn"><i class="icon-add position-left"></i>Create Dispatch</button></a>
+                <a href="{{ url('admin/logistics/create') }}"><button type="button" class="btn btn-default heading-btn"><i class="icon-add position-left"></i>New Logistic</button></a>
             </div>
         </div>
     </div>

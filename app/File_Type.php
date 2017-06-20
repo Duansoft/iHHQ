@@ -10,7 +10,7 @@ class File_Type extends Model
 
     protected $primaryKey = 'type_id';
 
-    protected $fillable = ['name', 'display_name'];
+    protected $fillable = ['name'];
 
     public $timestamps = null;
 }

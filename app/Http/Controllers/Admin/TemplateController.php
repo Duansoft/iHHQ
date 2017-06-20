@@ -30,13 +30,11 @@ class TemplateController extends Controller
     public function getTemplatesAjax()
     {
         $templates = DB::table('templates')
-            ->select('template_id', 'file_extensions.icon AS extension', 'path', 'templates.name', 'template_categories.name AS category', 'templates.created_at', 'users.name AS created_by')
-            ->leftJoin('users', 'users.id', 'templates.created_by')
+            ->select('template_id', 'file_extensions.icon AS extension', 'path', 'size', 'templates.name', 'templates.description', 'template_categories.name AS category')
             ->leftJoin('template_categories', 'template_categories.category_id', 'templates.category_id')
             ->leftJoin('file_extensions', 'file_extensions.id', 'templates.extension_id');
 
         return Datatables::of($templates)
-            ->editColumn('created_at', '{!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $created_at)->diffForHumans() !!}')
             ->make(true);
     }
 
@@ -52,10 +50,11 @@ class TemplateController extends Controller
     {
         $data = $request->all();
         $validator = Validator::make($data, [
-            'file' => 'required|file',//|mimes:pdf,docx,xls',
+            'file' => 'required|file',
             'category_id' => 'required',
             'name' => 'required|max:255',
-            'extension_id' => 'required'
+            'extension_id' => 'required',
+            'description' => 'required|max:500',
         ]);
 
         if ($validator->fails()) {
@@ -67,7 +66,9 @@ class TemplateController extends Controller
 
         DB::beginTransaction();
         try {
-            $path = $request->file('file')->storeAs('templates', $fileName);
+            $category_id = $request->category_id;
+            $category = Template_Category::findOrFail($category_id);
+            $path = $request->file('file')->storeAs('templates/' . $category->name, $fileName);
 
             $template = New Template();
             $template->extension_id = $request->extension_id;
@@ -75,6 +76,8 @@ class TemplateController extends Controller
             $template->created_by = Auth::user()->id;
             $template->name = $fileName;
             $template->path = $path;
+            $template->description = $request->description;
+            $template->size = $this->formatBytes($file->getClientSize());
             $template->save();
 
             DB::commit();
@@ -103,7 +106,8 @@ class TemplateController extends Controller
         $validator = Validator::make($data, [
             'category_id' => 'required|numeric',
             'name' => 'required|max:255',
-            'extension_id' => 'required'
+            'extension_id' => 'required',
+            'description' => 'required|max:500',
         ]);
 
         if ($validator->fails()) {
@@ -115,6 +119,7 @@ class TemplateController extends Controller
             $template = Template::findOrFail($id);
             $template->extension_id = $request->extension_id;
             $template->category_id = $request->category_id;
+            $template->description = $request->description;
             $template->created_by = Auth::user()->id;
 
             if (!$this->hasExtension($name)) {

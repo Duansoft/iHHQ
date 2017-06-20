@@ -115,16 +115,8 @@
                 <div class="col-lg-9 no-padding">
                     <!-- Left annotation position -->
                     <div class="panel panel-white">
-                        <div class="panel-heading" style="margin-top: 10px;">
-                            <h5 class="panel-title" style="margin-right: 100px;">{{ isset($ticket) ? $ticket->subject : 'Ticket' }}</h5>
-                            <div class="heading-elements">
-                                <div class="heading-btn no-margin-left">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-default btn-icon text-grey pt-5 pb-5 pl-15 pr-15"><i class="icon-cog7"></i></button>
-                                        <button type="button" class="btn btn-default btn-icon text-grey pt-5 pb-5 pl-15 pr-15"><i class="icon-paperplane"></i></button>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="panel-heading mt-10">
+                            <h5 class="panel-title">{{ isset($ticket) ? $ticket->subject : 'Ticket' }}</h5>
                         </div>
 
                         @if(sizeof($messages) > 0)
@@ -211,7 +203,7 @@
                         <div class="form-group bg-grey-F8FAFC no-margin p-10 text-grey-300">
                             <label class="control-label col-md-8">Messages are kept confidential</label>
                             <div class="col-md-4">
-                                <button type="submit" class="btn btn-success form-control">Create New Ticket</button>
+                                <button type="submit" class="btn btn-success form-control">Create Ticket</button>
                             </div>
                         </div>
                     </form>

@@ -48,7 +48,7 @@ $(function() {
                 else if (row.status == 1)
                     return '<span class="label label-success">RECEIVED</span>';
                 else if (row.status ==2)
-                    return '<span class="label label-danger">RETURN</span>';
+                    return '<span class="label label-danger">RETURNED</span>';
             },
             targets: 7,
         }],
@@ -104,7 +104,7 @@ $(function() {
                 else if (row.status == 1)
                     return '<span class="label label-success">RECEIVED</span>';
                 else if (row.status ==2)
-                    return '<span class="label label-danger">RETURN</span>';
+                    return '<span class="label label-danger">RETURNED</span>';
             },
             targets: 7,
         }],
@@ -137,6 +137,7 @@ $(function() {
         minimumResultsForSearch: Infinity,
         width: 'auto'
     });
+
 
 
     // Format displayed data
@@ -211,18 +212,45 @@ $(function() {
 
     // Default select initialization
     var fileRefSelect = $('.select-file-ref').select2({
-        minimumResultsForSearch: Infinity,
-        placeholder: function(){
-            $(this).data('placeholder');
-        }
+        ajax: {
+            url: $('meta[name="_searchFiles"]').attr('content'),
+            headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return {
+                    q: params.term || '',
+                    page: params.page || 1
+                }
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+
+                return {
+                    results: data.results,
+                    pagination: {
+                        more: (params.page * 50) < data.total_count
+                    }
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+        minimumInputLength: 1,
+        templateResult: formatRepo, // omitted for brevity, see the source of this page
+        templateSelection: formatRepoSelection, // omitted for brevity, see the source of this page
+        placeholder: 'Search client',
+        allowClear: true
     });
 
     function initializeFileRefs(data) {
+        /*
         fileRefSelect.empty();
         fileRefSelect.select2({
             minimumResultsForSearch: Infinity,
             data: data,
         })
+        */
     }
 
     // Print SVG

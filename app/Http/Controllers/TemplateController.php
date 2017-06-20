@@ -23,7 +23,7 @@ class TemplateController extends Controller
     public function getTemplatesAjax()
     {
         $templates = DB::table('templates')
-            ->select('template_id', 'file_extensions.icon AS extension', 'path', 'templates.name', 'template_categories.name AS category')
+            ->select('template_id', 'file_extensions.icon AS extension', 'path', 'description', 'size', 'templates.name', 'template_categories.name AS category')
             ->leftJoin('template_categories', 'template_categories.category_id', 'templates.category_id')
             ->leftJoin('file_extensions', 'file_extensions.id', 'templates.extension_id');
 

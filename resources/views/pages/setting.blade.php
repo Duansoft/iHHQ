@@ -140,9 +140,7 @@
                                     <label class="control-label col-lg-2 no-padding-left">Country</label>
                                     <div class="col-lg-10">
                                         <select class="select" name="country_id">
-                                            @foreach($countries as $country)
-                                                <option value="{{ $country->country_id }}" {{$me->country_id == $country->country_id ? 'selected' : '' }}>{{ $country->country_name }}</option>
-                                            @endforeach
+                                            <option value="{{ $country->country_id }}" {{$me->country_id == $country->country_id ? 'selected' : '' }}>{{ $country->country_name }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -159,7 +157,7 @@
                                     </div>
                                     {{--pattern="^\d{4}-\d{3}-\d{4}$"--}}
                                 </div>
-                                <div class="form-group mr-5 ml-5">
+                                <div class="form-group border-bottom mr-5 ml-5">
                                     <label class="control-label col-lg-2 no-padding-left">Preferred Mailing Address</label>
                                     <div class="col-lg-10">
                                         <textarea rows="2" class="form-control no-border" placeholder="118 Heritage Lane, Jalan PJU 8/8A, Damansara Perdanna, PJ 48720, Selangor, Malaysia." name="address">{{ $me->address }}</textarea>
@@ -167,6 +165,30 @@
                                     </div>
                                 </div>
                             </fieldset>
+
+                            <fieldset class="content-group">
+                                <div class="form-group">
+                                    <label class="control-label col-lg-2">Current Password</label>
+                                    <div class="col-lg-10">
+                                        <input type="password" class="form-control" name="current_password" placeholder="Current Password">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-lg-2">New Password</label>
+                                    <div class="col-lg-10">
+                                        <input type="password" class="form-control" name="password" placeholder="New Password">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-lg-2">Confirm Password</label>
+                                    <div class="col-lg-10">
+                                        <input type="password" class="form-control" name="password_confirmation" placeholder="Confirmation">
+                                    </div>
+                                </div>
+                            </fieldset>
+
                             <div class="text-right">
                                 <button type="submit" class="btn btn-primary">Save changes<i class="icon-arrow-right14 position-right"></i></button>
                             </div>

@@ -69,7 +69,7 @@
                     <!-- Announcements -->
                     @role('admin')
                     <li class="{{ Request::is('admin/announcements*')? 'active': '' }}">
-                        <a href="{{URL::to('admin/announcements')}}"><span>Announcement</span></a>
+                        <a href="{{URL::to('admin/announcements')}}"><span>Announcements</span></a>
                     </li>
                     @endrole
 

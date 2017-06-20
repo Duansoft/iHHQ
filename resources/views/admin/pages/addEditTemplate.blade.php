@@ -6,13 +6,32 @@
 
 
 @section("js")
-    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/selects/select2.min.js') }}"></script>
-
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/uploaders/fileinput.min.js') }}"></script>
+
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/core/app.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/uploader_bootstrap.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/tickets.js') }}"></script>
+    <script type="text/javascript">
+        $(function(){
+            // Default initialization
+            $('.select').select2({
+                minimumResultsForSearch: Infinity
+            });
+
+            // Basic example
+            $('.file-input').fileinput({
+                browseLabel: 'Browse',
+                browseIcon: '<i class="icon-file-plus"></i>',
+                uploadIcon: '<i class="icon-file-upload2"></i>',
+                removeIcon: '<i class="icon-cross3"></i>',
+                browseClass: 'btn btn-default',
+                showUpload: false,
+                layoutTemplates: {
+                    icon: '<i class="icon-file-check"></i>'
+                },
+                initialCaption: "No file selected"
+            });
+        });
+    </script>
 @endsection
 
 
@@ -105,8 +124,14 @@
                         <div class="form-group">
                             <label class="control-label col-lg-2">File Name</label>
                             <div class="col-lg-10">
-                                <input type="text" class="form-control" name="name" placeholder="file name" maxlength="100"
-                                       value="{{ isset($template->name) ? $template->name : old('name') }}" required>
+                                <input type="text" class="form-control" name="name" placeholder="file name" maxlength="100" value="{{ isset($template->name) ? $template->name : old('name') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Description</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="description" placeholder="description" maxlength="100" value="{{ isset($template->description) ? $template->description : old('description') }}" required>
                             </div>
                         </div>
 
@@ -114,7 +139,6 @@
                             <label class="control-label col-lg-2">Template File</label>
                             <div class="col-lg-10">
                                 <input type="file" class="file-input" name="file" accept=".xlsx, .xls, .doc, .docx, .ppt, .pptx, .pdf" {{ isset($template) ? '' : 'required' }}>
-                                <span>Format: pdf, doc, xls, ppt</span>
                             </div>
                         </div>
                     </fieldset>

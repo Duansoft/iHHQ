@@ -184,6 +184,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     /* Options */
     Route::group(['middleware' => ['role:admin']], function() {
         Route::get('options', 'OptionController@index');
+        Route::post('options/offices', 'OptionController@postOffice');
+        Route::post('options/offices/{id}', 'OptionController@postOffice');
+        Route::get('options/offices/{id}/delete', 'OptionController@deleteOffice');
     });
 
     /* Settings */
