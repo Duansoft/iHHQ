@@ -87,11 +87,11 @@
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>
                                                 <ul class="dropdown-menu">
                                                 @if ($payment->status == "REQUEST")
-                                                    <li><a href="{{ url('payments/' . $payment->payment_id . '/invoice/download')}}" download> Download Invoice</a></li>
+                                                    <li><a href="{{ url('payments/' . $payment->payment_id . '/invoice/download')}}" download> View Invoice</a></li>
                                                     <li><a class="btn_pay" href="#" data-dismiss="modal" data-toggle="modal" data-target="#modal_make_payment" data-amount="{{$payment->amount}}" data-id="{{$payment->payment_id}}">Make Payment</a></li>
                                                 @else
                                                     @if (!empty($payment->receipt))
-                                                        <li><a href="{{ url('payment/' . $payment->payment_id . '/download') }}"> Download Receipt</a></li>
+                                                        <li><a href="{{ url('payment/' . $payment->payment_id . '/download') }}"> View Receipt</a></li>
                                                     @endif
                                                 @endif
                                                 </ul>

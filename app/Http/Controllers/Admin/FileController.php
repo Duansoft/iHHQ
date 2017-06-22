@@ -557,8 +557,8 @@ class FileController extends Controller
         $validator = Validator::make($data, [
             'file_ref' => 'required',
             'activity' => 'required',
-            'milestone' => 'required',
-            'duration' => 'required|numeric'
+//            'milestone' => 'required',
+//            'duration' => 'required|numeric'
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator->messages())->withInput();
@@ -567,15 +567,15 @@ class FileController extends Controller
         $case = [];
         $case["no"] = sizeof(json_decode($file->cases)) + 1;
         $case["activity"] = $data["activity"];
-        $case["select"] = true;
         $case["status"] = "In Progress";
-        $case["duration"] = $data["duration"];
-        $case["milestone"] = $data["milestone"];
+//        $case["duration"] = $data["duration"];
+//        $case["milestone"] = $data["milestone"];
 
         $cases = json_decode($file->cases);
         $cases[] = $case;
         $file->cases = json_encode($cases);
-        $file->outstanding_amount = $this->calculateTotalOutstandingAmount(json_encode($cases));
+//        $file->outstanding_amount = $this->calculateTotalOutstandingAmount(json_encode($cases));
+        $file->percent = $this->calculateCompletionPercent($file->cases);
         $file->save();
 
         return redirect()->back()->with('flash_message', 'New Milestone has been created successfully');

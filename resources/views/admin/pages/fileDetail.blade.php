@@ -182,8 +182,8 @@
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>
                                                 @if ($payment->status == "BANK DEPOSIT")
                                                     <ul class="dropdown-menu">
-                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/invoice/download')}}" download> Download Invoice</a></li>
-                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}" download> Download Receipt</a></li>
+                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/invoice/download')}}" download> View Invoice</a></li>
+                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}" download> View Receipt</a></li>
                                                         <li><a href="{{ url('admin/files/' . $file->file_id . '/payments/' . $payment->payment_id) }}">Confirmed</a></li>
                                                     </ul>
                                                 @elseif ($payment->status == "RECEIVED")
@@ -191,13 +191,13 @@
                                                         @if ($payment->receipt == null)
                                                             <li><a class="btn_upload" data-toggle="modal" data-target="#modal_upload_receipt" data-ref="{{$payment->file_ref}}" data-amount="{{$payment->amount}}" data-url="{{ url('admin/payments/' . $payment->payment_id . '/upload')}}"> Upload Receipt</a></li>
                                                         @else
-                                                            <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}" download> Download Receipt</a></li>
+                                                            <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}" download> View Receipt</a></li>
                                                         @endif
-                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/invoice/download')}}" download> Download Invoice</a></li>
+                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/invoice/download')}}" download> View Invoice</a></li>
                                                     </ul>
                                                 @elseif ($payment->status == "REQUEST")
                                                     <ul class="dropdown-menu">
-                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/invoice/download')}}" download> Download Invoice</a></li>
+                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/invoice/download')}}" download> View Invoice</a></li>
                                                         <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/resend')}}"> Resend Request</a></li>
                                                     </ul>
                                                 @endif
@@ -318,23 +318,23 @@
                         <legend class="text-bold p-5 mb-10"></legend>
 
                         <div class="row">
-                            <p class="col-md-6">Total Outstanding</p>
-                            <p class="col-md-6 text-right">RM{{ $file->outstanding_amount }}</p>
+                            <p class="col-md-4">Total Outstanding</p>
+                            <p class="col-md-8 text-right">RM{{ $file->outstanding_amount }}</p>
                         </div>
                         <div class="row">
-                            <p class="col-md-6">Total Paid</p>
-                            <p class="col-md-6 text-right">RM{{ $file->paid_amount }}</p>
+                            <p class="col-md-4">Total Paid</p>
+                            <p class="col-md-8 text-right">RM{{ $file->paid_amount }}</p>
                         </div>
 
                         <legend class="text-bold p-5 mb-10"></legend>
 
                         <div class="row">
-                            <p class="col-md-6">Tags</p>
-                            <p class="col-md-6 text-right">{{$file->tags}}</p>
+                            <p class="col-md-4">Tags</p>
+                            <p class="col-md-8 text-right">{{$file->tags}}</p>
                         </div>
                         <div class="row">
-                            <p class="col-md-6">Open Date</p>
-                            <p class="col-md-6 text-right">{!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $file->created_at)->toFormattedDateString() !!}</p>
+                            <p class="col-md-4">Open Date</p>
+                            <p class="col-md-8 text-right">{!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $file->created_at)->toFormattedDateString() !!}</p>
                         </div>
                     </div>
                 </div>
@@ -450,15 +450,15 @@
                             <input type="text" class="form-control reset_control" name="activity" placeholder="" required>
                         </div>
 
-                        <div class="form-group">
-                            <label>Milestone</label>
-                            <input type="number" step="1" class="form-control reset_control" name="milestone" placeholder="RM 1,000.00" required>
-                        </div>
+                        {{--<div class="form-group">--}}
+                            {{--<label>Milestone</label>--}}
+                            {{--<input type="number" step="1" class="form-control reset_control" name="milestone" placeholder="RM 1,000.00" required>--}}
+                        {{--</div>--}}
 
-                        <div class="form-group">
-                            <label>Duration</label>
-                            <input type="number" step="1" class="form-control reset_control" name="duration" placeholder="5 days" required>
-                        </div>
+                        {{--<div class="form-group">--}}
+                            {{--<label>Duration</label>--}}
+                            {{--<input type="number" step="1" class="form-control reset_control" name="duration" placeholder="5 days" required>--}}
+                        {{--</div>--}}
 
                         <div class="form-group">
                             <label>File Ref</label>

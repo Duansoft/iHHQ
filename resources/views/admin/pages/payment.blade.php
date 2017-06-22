@@ -182,15 +182,15 @@
                                         <div class="btn-group btn-group-fade">
                                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>
                                             <ul class="dropdown-menu">
-                                                <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/invoice/download')}}" download> Download Invoice</a></li>
+                                                <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/invoice/download')}}" download> View Invoice</a></li>
                                                 @if ($payment->status == "BANK DEPOSIT")
-                                                    <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}" download> Download Receipt</a></li>
+                                                    <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}" download> View Receipt</a></li>
                                                     <li><a href="{{ url('admin/files/' . $file->file_id . '/payments/' . $payment->payment_id) }}">Confirmed</a></li>
                                                 @elseif ($payment->status == "RECEIVED")
                                                     @if ($payment->receipt == null)
                                                     <li><a class="btn_upload" data-toggle="modal" data-target="#modal_upload_receipt" data-ref="{{$payment->file_ref}}" data-amount="{{$payment->amount}}" data-url="{{ url('admin/payments/' . $payment->payment_id . '/upload')}}">Upload Receipt</a></li>
                                                     @else
-                                                    <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}" download> Download Receipt</a></li>
+                                                    <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}" download> View Receipt</a></li>
                                                     @endif
                                                 @elseif ($payment->status == "REQUEST")
                                                     <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/resend')}}"> Resend Request</a></li>

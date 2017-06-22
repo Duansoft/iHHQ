@@ -182,7 +182,7 @@
                                         <div class="btn-group btn-group-fade">
                                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>
                                             <ul class="dropdown-menu">
-                                                <li><a href="{{ url('payments/' . $payment->payment_id . '/invoice/download')}}" download> Download Invoice</a></li>
+                                                <li><a href="{{ url('payments/' . $payment->payment_id . '/invoice/download')}}" download> View Invoice</a></li>
                                                 @if ($payment->status == "REQUEST")
                                                      <li><a class="btn_pay" href="#" data-toggle="modal" data-target="#modal_make_payment" data-amount="{{$payment->amount}}" data-id="{{$payment->payment_id}}">Make Payment</a></li>
                                                 @else

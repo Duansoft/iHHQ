@@ -24,6 +24,7 @@
                 dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
                 columnDefs: [{
                     orderable: true,
+                    visible: false,
                     width: '50px',
                     targets: [ 0 ]
                 },{
