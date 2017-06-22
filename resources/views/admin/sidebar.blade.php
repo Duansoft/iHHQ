@@ -62,7 +62,7 @@
 
                     <!-- Support Page -->
                     <li class="{{ Request::is('admin/tickets*')? 'active': '' }}">
-                        <a href="{{URL::to('admin/tickets/')}}"><span>Tickets</span></a>
+                        <a href="{{URL::to('admin/tickets/')}}"><span>Support</span></a>
                         {{--<a href="{{URL::to('admin/tickets/')}}"><span>Tickets<span class="badge bg-warning">5</span></span></a>--}}
                     </li>
 
@@ -78,10 +78,17 @@
                         <a href="{{URL::to('admin/templates')}}"><span>Legal Templates</span></a>
                     </li>
 
-                    <!-- Announcements -->
+                    <!-- options -->
                     @role('admin')
                     <li class="{{ Request::is('admin/options*')? 'active': '' }}">
                         <a href="{{URL::to('admin/options')}}"><span>Options</span></a>
+                    </li>
+                    @endrole
+
+                    <!-- Milestone Template -->
+                    @role('admin')
+                    <li class="{{ Request::is('admin/milestones*')? 'active': '' }}">
+                        <a href="{{URL::to('admin/milestones')}}"><span>Milestone Templates</span></a>
                     </li>
                     @endrole
 

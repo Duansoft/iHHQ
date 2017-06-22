@@ -43,6 +43,16 @@ class PaymentController extends Controller
         return response()->download(Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix() . $payment->receipt);
     }
 
+    public function downloadInvoice($id)
+    {
+        $payment = Payment::findOrFail($id);
+        if ($payment->invoice == null) {
+            return redirect()->back()->withErrors(['No uploaded invoice']);
+        }
+
+        return response()->download(Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix() . $payment->invoice);
+    }
+
     public function uploadReceipt($id)
     {
         $data = Input::all();
@@ -83,4 +93,14 @@ class PaymentController extends Controller
 
         return redirect()->back()->with('flash_message', 'Receipt is uploaded successfully');
     }
+
+    public function resendRequest($id)
+    {
+        $payment = Payment::findOrFail($id);
+
+        // Send Payment Request again
+
+        return redirect()->back()->with(['flash_message' => 'Have sent request email again']);
+    }
+
 }

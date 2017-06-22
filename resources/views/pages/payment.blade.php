@@ -124,15 +124,15 @@
         <!-- Highlighted tabs -->
         <div class="row">
             <div class="col-lg-11">
-                @foreach($files as $file)
-                    <div class="panel panel-white panel-collapsed file_panel" data-fileRef="{!! $file->file_ref !!}", data-tags="{!! $file->tags !!}" data-pName="{!! $file->project_name !!}">
+                @foreach($files as $key => $file)
+                    <div class="panel panel-white file_panel {{ $key == 0 ? "panel-collapse" : "panel-collapsed" }}" data-fileRef="{!! $file->file_ref !!}", data-tags="{!! $file->tags !!}" data-pName="{!! $file->project_name !!}">
                         <div class="panel-heading">
                             <h4 class="panel-title no-margin-bottom"><span>{{ $file->project_name }}</span></h4>
                             <span class="no-margin text-muted">File Ref - {{ $file->file_ref }}</span>
                             <div class="heading-elements">
                                 <form class="heading-form pr-5" action="#">
                                     <div class="form-group">
-                                        <span>{{$file->currency}}{{$file->outstanding_amount}}</span>
+                                        <span class="{{ $file->outstanding_amount > 0 ? "text-danger-400" : "" }}">{{$file->currency}}{{$file->outstanding_amount}}</span>
                                         <span class="display-block text-muted text-size-small">Total Outstanding</span>
                                     </div>
                                 </form>
@@ -181,17 +181,16 @@
                                     <td>
                                         <div class="btn-group btn-group-fade">
                                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>
-                                            @if ($payment->status == "REQUEST")
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="btn_pay" href="#" data-toggle="modal" data-target="#modal_make_payment" data-amount="{{$payment->amount}}" data-id="{{$payment->payment_id}}">Make Payment</a></li>
-                                                </ul>
-                                            @else
-                                                @if (!empty($payment->receipt))
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="text-muted" onclick="return false;">Download Receipt</a></li>
-                                                </ul>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="{{ url('payments/' . $payment->payment_id . '/invoice/download')}}" download> Download Invoice</a></li>
+                                                @if ($payment->status == "REQUEST")
+                                                     <li><a class="btn_pay" href="#" data-toggle="modal" data-target="#modal_make_payment" data-amount="{{$payment->amount}}" data-id="{{$payment->payment_id}}">Make Payment</a></li>
+                                                @else
+                                                    @if (!empty($payment->receipt))
+                                                        <li><a class="text-muted" onclick="return false;">Download Receipt</a></li>
+                                                    @endif
                                                 @endif
-                                            @endif
+                                            </ul>
                                         </div>
                                     </td>
                                     @endforeach

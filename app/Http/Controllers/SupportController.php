@@ -6,10 +6,12 @@ use App\Department;
 use App\File;
 use App\Ticket;
 use App\Ticket_Message;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class SupportController extends Controller
 {
@@ -59,22 +61,42 @@ class SupportController extends Controller
             return redirect()->back()->withErrors($validator->messages())->withInput();
         }
 
+        // Create Ticket
         $ticket = new Ticket();
         $ticket = $ticket->fill($data);
         $ticket->client_id = $user->id;
         if (Input::has('file_ref') && !empty(Input::get('file_ref'))) {
             $ticket->file_ref = Input::get('file_ref');
-            $ticket->status_id = 2;
+            $ticket->status_id = 2; //active
         } else {
-            $ticket->status_id = 1;
+            $ticket->status_id = 1; //pending
         }
         $ticket->save();
 
+        // Create Ticket message
         $message = new Ticket_Message();
-        $message->fill($data);
         $message->ticket_id = $ticket->ticket_id;
         $message->client_id = $user->id;
         $message->sender_id = $user->id;
+
+        $content = [];
+
+        if (Input::hasFile('attachments')) {
+            $attachments = Input::file('attachments');
+            $files = [];
+
+            foreach ($attachments as $attachment) {
+                $fileName = $attachment->getClientOriginalName();// . $attachment->getClientOriginalExtension();
+                $directory = 'tickets/'.$ticket->ticket_id;
+                $path = $attachment->storeAs($directory, Carbon::now()->toDateString() . '-' . str_random(5) . '-' . $fileName);
+                $size = $this->formatBytes($attachment->getClientSize());
+
+                $files[] = ['name' => $fileName, 'size' => $size, 'path' => $path];
+            }
+            $content['attachments'] = $files;
+        }
+        $content['text'] =  Input::get('message');
+        $message->message = json_encode($content);
         $message->save();
 
         return redirect('support');
@@ -118,13 +140,39 @@ class SupportController extends Controller
             return redirect()->back()->withErrors($validator->messages());
         }
 
+        $content = [];
+
+        if (Input::hasFile('attachments')) {
+            $attachments = Input::file('attachments');
+            $files = [];
+
+            foreach ($attachments as $attachment) {
+                $fileName = $attachment->getClientOriginalName();// . $attachment->getClientOriginalExtension();
+                $directory = 'tickets/'.$ticket->ticket_id;
+                $path = $attachment->storeAs($directory, Carbon::now()->toDateString() . '-' . str_random(5) . '-' . $fileName);
+                $size = $this->formatBytes($attachment->getClientSize());
+
+                $files[] = ['name' => $fileName, 'size' => $size, 'path' => $path];
+            }
+            $content['attachments'] = $files;
+        }
+        $content['text'] =  Input::get('message');
+
         $ticket_message = new Ticket_Message();
         $ticket_message->ticket_id = $ticket->ticket_id;
-        $ticket_message->message = $message;
+        $ticket_message->message = json_encode($content);
         $ticket_message->sender_id = Auth::id();
         $ticket_message->client_id = $ticket->client_id;
         $ticket_message->save();
 
         return redirect()->back();
+    }
+
+    public function download()
+    {
+        $path = Input::get('path');
+        $name = Input::get('name');
+
+        return response()->download(Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix() . $path, $name);
     }
 }

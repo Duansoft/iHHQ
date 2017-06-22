@@ -82,7 +82,6 @@
                 <th>hidden</th>
                 <th>hidden</th>
                 <th>Receiver & Description</th>
-                <th>hidden</th>
                 <th>File Ref</th>
                 <th>Last Update</th>
                 <th>Status</th>

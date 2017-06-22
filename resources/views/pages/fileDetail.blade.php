@@ -85,17 +85,16 @@
                                         <td class="no-border pull-right">
                                             <div class="btn-group btn-group-fade">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>
+                                                <ul class="dropdown-menu">
                                                 @if ($payment->status == "REQUEST")
-                                                    <ul class="dropdown-menu">
-                                                        <li><a class="btn_pay" href="#" data-dismiss="modal" data-toggle="modal" data-target="#modal_make_payment" data-amount="{{$payment->amount}}" data-id="{{$payment->payment_id}}">Make Payment</a></li>
-                                                    </ul>
+                                                    <li><a href="{{ url('payments/' . $payment->payment_id . '/invoice/download')}}" download> Download Invoice</a></li>
+                                                    <li><a class="btn_pay" href="#" data-dismiss="modal" data-toggle="modal" data-target="#modal_make_payment" data-amount="{{$payment->amount}}" data-id="{{$payment->payment_id}}">Make Payment</a></li>
                                                 @else
                                                     @if (!empty($payment->receipt))
-                                                        <ul class="dropdown-menu">
-                                                            <li><a href="{{ url('payment/' . $payment->payment_id . '/download') }}">Download Receipt</a></li>
-                                                        </ul>
+                                                        <li><a href="{{ url('payment/' . $payment->payment_id . '/download') }}"> Download Receipt</a></li>
                                                     @endif
                                                 @endif
+                                                </ul>
                                             </div>
                                         </td>
                                     </tr>

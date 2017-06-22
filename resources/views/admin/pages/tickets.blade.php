@@ -91,7 +91,7 @@
     <div class="page-header">
         <div class="page-header-content col-lg-11">
             <div class="page-title">
-                <h2><span>Tickets</span></h2>
+                <h2><span> Support</span></h2>
             </div>
 
             @role('admin')

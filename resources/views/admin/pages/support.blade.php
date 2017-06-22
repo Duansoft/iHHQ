@@ -42,7 +42,7 @@
         <!-- Header content -->
         <div class="page-header-content">
             <div class="page-title">
-                <h2> Tickets</h2>
+                <h2> Support</h2>
             </div>
         </div>
         <!-- /header content -->
@@ -139,7 +139,17 @@
                                             <a class="text-semibold text-grey">{{$message->name}}</a>
                                             <span class="media-annotation dotted">{{ \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $message->created_at)->format('h:i: A - j M') }}</span>
                                         </div>
-                                        {{$message->message}}
+                                        @foreach(json_decode($message->message) as $key => $value)
+                                            @if ($key == "text")
+                                                {{ $value }}
+                                            @elseif ($key == "attachments")
+                                                @foreach($value as $val)
+                                                    <div class="mt-10">
+                                                        <a href="{{ url('support/download?path=' . $val->path . '&name=' . $val->name) }}" download><i class="icon-file-download"></i> {{ $val->name }}</a> <span class="text-muted"> - {{ $val->size }}</span>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                        @endforeach
                                     </div>
                                 </li>
                                 @endforeach

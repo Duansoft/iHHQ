@@ -28,60 +28,101 @@
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/file.js') }}"></script>
     <script type="text/javascript">
 
+        String.prototype.replaceAll = function(search, replacement) {
+            var target = this;
+            return target.split(search).join(replacement);
+        };
+
         $(function () {
-            // trigger after selecting from ajax
+            /*
+             * SubCategory
+             */
             var hot_checks_values_data = [];
-            var selectedData;
+            var subCategoriesData;
+            var defaultData;
+
             var cellTable;
+            var tableContainer = document.getElementById('activity-table');
 
-            $('#category').on("select2:select", function (event) {
-                $.ajax({
-                    type: "GET",
-                    url: '{{ url("admin/files/subcategories") }}',
-                    data: {"id": event.currentTarget.value},
-                    dataType: 'json',
-                    success: function (data) {
-                        initializeSubCategory(data);
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
-                });
-            });
 
-            // Default select initialization
-            var subCategorySelect = $('#subcategory').select2({
-                minimumResultsForSearch: Infinity
-            });
-
-            function initializeSubCategory(data) {
-                subCategorySelect.empty();
-                subCategorySelect.select2({
-                    minimumResultsForSearch: Infinity,
-                    data: data,
-                });
-                selectedData = data[0].data;
-                $("#subcategory > option").each(function (index) { // iterate through all options of selectbox
-                    $(this).attr('data-id', data[index].data); // add attribute to option with value of i
-                });
-            }
-
-            $('#btn-load-template').on('click', function () {
-                hot_checks_values_data = JSON.parse(selectedData);
-                cellTable.destroy();
+            @if (isset($file))
+                var rawString = "{{ $file->cases }}";
+                var str = rawString.replaceAll('&quot;', '"')
+                hot_checks_values_data = JSON.parse(str);
+                defaultData = str;
                 create_template_table();
-            });
+            @else
+                initialSubcategoryLoad();
+                create_template_table();
 
+                function initialSubcategoryLoad() {
+                    var id = "{{ isset($subcategories) ? $subcategories[0]->subcategory_id : null }}";
+                    if (id) {
+                        $.ajax({
+                            type: "GET",
+                            url: '{{ url("admin/files/subcategories") }}',
+                            data: {"id": id},
+                            dataType: 'json',
+                            success: function (data) {
+                                initializeSubCategory(data);
+                                initTable(data, 0);
+                            },
+                            error: function (data) {
+                                console.log('Error:', data);
+                            }
+                        });
+                    }
+                }
 
-            // Handson Table Setup
-            // ------------------------------
+                $('#category').on("select2:select", function (event) {
+                    $.ajax({
+                        type: "GET",
+                        url: '{{ url("admin/files/subcategories") }}',
+                        data: {"id": event.currentTarget.value},
+                        dataType: 'json',
+                        success: function (data) {
+                            initializeSubCategory(data);
+                            initTable(data, 0);
+                        },
+                        error: function (data) {
+                            console.log('Error:', data);
+                        }
+                    });
+                });
+                $('#subcategory').on("select2:select", function (event) {
+                    var id = event.currentTarget.value;
+                    $.each(subCategoriesData, function(index, value) {
+                        if (id == value.id) {
+                            initTable(subCategoriesData, index);
+                        }
+                    });
+                });
 
-            // Define element
-            var hot_checks_values = document.getElementById('activity-table');
+                function initializeSubCategory(data) {
+                    $('#subcategory').empty();
+                    $('#subcategory').select2({
+                        minimumResultsForSearch: Infinity,
+                        data: data,
+                    });
+                }
+
+                function initTable(data, index) {
+                    subCategoriesData = data;
+                    defaultData = data[index].data;
+                    $("#subcategory > option").each(function (index) { // iterate through all options of selectbox
+                        $(this).attr('data-id', data[index].data); // add attribute to option with value of i
+                    });
+
+                    hot_checks_values_data = JSON.parse(defaultData);
+                    cellTable.destroy();
+                    create_template_table();
+                }
+            @endif
+
 
             // Initialize with options
             function create_template_table() {
-                cellTable = new Handsontable(hot_checks_values, {
+                cellTable = new Handsontable(tableContainer, {
                     data: hot_checks_values_data,
                     rowHeaders: true,
                     colHeaders: ['Select', 'Activity Desc', 'Status', 'Price', 'Duration'],
@@ -91,47 +132,51 @@
                         {
                             data: 'select',
                             type: 'checkbox',
-                            width: 30
+                            width: 20,
                         },
                         {
                             data: 'activity'
                         },
                         {
                             data: 'status',
-                            width: 40
-                        },
-                        {
-                            data: 'milestone',
-                            type: 'numeric',
-                            format: '0,0.00',
-                            width: 40
-                        },
-                        {
-                            data: 'duration',
-                            width: 30
-                        },
+                            editor: 'select',
+                            selectOptions: ['In Progress', 'Completed']
+                        }
                     ]
                 });
 
                 $('#case').val(JSON.stringify(hot_checks_values_data));
             }
 
-            create_template_table();
-
+            /**
+             * Button Event
+             */
             $('#btn_add').on('click', function () {
-                hot_checks_values_data.push(
-                        {no: "10", status: "In Progress", activity: "", duration: 0, milestone: 0, select: true}
-                );
+                hot_checks_values_data.push({status: "", select: true});
                 cellTable.destroy();
                 create_template_table();
             });
             $('#btn_delete').on('click', function () {
                 var jsonArr = [];
                 $.each(hot_checks_values_data, function (index, item) {
-                    if (item.select == false) {
+                    if (!item.select) {
                         jsonArr.push(item);
                     }
                     hot_checks_values_data = jsonArr;
+                    cellTable.destroy();
+                    create_template_table();
+                });
+            });
+            $('#btn_select_all').on('click', function(){
+                $.each(hot_checks_values_data, function(index, item) {
+                    item.select = true;
+                    cellTable.destroy();
+                    create_template_table();
+                });
+            });
+            $('#btn_deselect_all').on('click', function(){
+                $.each(hot_checks_values_data, function(index, item) {
+                    item.select = false;
                     cellTable.destroy();
                     create_template_table();
                 });
@@ -141,29 +186,182 @@
                 cellTable.destroy();
                 create_template_table();
             });
-
-
-            // When Submit
-            $('form').on('submit', function (e) {
-                e.preventDefault();
-                if (hot_checks_values_data.length == 0) {
-                    alert("You must add at least one activity");
-                } else {
-                    $(this).submit();
-                }
+            $('#btn_default').on('click', function(){
+                hot_checks_values_data = JSON.parse(defaultData);
+                cellTable.destroy();
+                create_template_table();
             });
+
+
+            /**
+             * Set File Ref
+             */
+            var file_ref = $('#file_ref').val();
+            if (file_ref) {
+                var refArr = file_ref.split('/');
+                $('#file_ref1').val(refArr[0]);
+                $('#file_ref2').val(refArr[1]);
+                $('#file_ref3').val(refArr[2]);
+            }
 
             // Select with search
             $('.select-search').select2({
-                placeholder: function(){
-                    $(this).data('placeholder');
-                }
+                placeholder: "select staff",
             });
 
             $('.select-lawyer').select2({
-                placeholder: function(){
-                    $(this).data('placeholder');
+                placeholder: "select lawyer",
+            });
+
+
+            //
+            // Loading remote data
+            //
+
+            // Format displayed data
+            function formatRepo (repo) {
+                if (repo.loading) return repo.text;
+
+                var markup = repo.name + " (" + repo.passport_no + ")";
+
+                return markup;
+            }
+
+            // Format selection
+            function formatRepoSelection (repo) {
+                return repo.name || repo.passport_no;
+            }
+
+            function initSelectClient(values) {
+                var selected = [];
+                var initials = [];
+
+                for (var s in values) {
+                    var id = parseInt(values[s].id);
+                    initials.push({id: id, name: values[s].name});
+                    selected.push(id);
                 }
+
+                $('.select-remote-clients').select2({
+                    data: initials,
+                    ajax: {
+                        url: $('meta[name="_searchUser"]').attr('content'),
+                        headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                q: params.term || '',
+                                page: params.page || 1
+                            }
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+
+                            return {
+                                results: data.results,
+                                pagination: {
+                                    more: (params.page * 50) < data.total_count
+                                }
+                            };
+                        },
+                        cache: true,
+                    },
+                    placeholder: "search user",
+                    escapeMarkup: function (markup) { return markup; },
+                    minimumInputLength: 1,
+                    templateResult: formatRepo,
+                    templateSelection: formatRepoSelection,
+                });
+
+                $('.select-remote-clients').val(selected).trigger('change');
+            }
+
+            function initSelectSpectator(values) {
+                var selected = [];
+                var initials = [];
+
+                for (var s in values) {
+                    var id = parseInt(values[s].id);
+                    initials.push({id: id, name: values[s].name});
+                    selected.push(id);
+                }
+
+                console.log(initials);
+
+                $('.select-remote-spectators').select2({
+                    data: initials,
+                    ajax: {
+                        url: $('meta[name="_searchUser"]').attr('content'),
+                        headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                q: params.term || '',
+                                page: params.page || 1
+                            }
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+
+                            return {
+                                results: data.results,
+                                pagination: {
+                                    more: (params.page * 50) < data.total_count
+                                }
+                            };
+                        },
+                        cache: true,
+                    },
+                    placeholder: "search user",
+                    escapeMarkup: function (markup) { return markup; },
+                    minimumInputLength: 1,
+                    templateResult: formatRepo,
+                    templateSelection: formatRepoSelection,
+                });
+
+                $('.select-remote-spectators').val(selected).trigger('change');
+            }
+
+            var clients = [];
+            var spectators = [];
+
+            @if (isset($file))
+                @foreach($clients as $client)
+                    clients.push({id: "{{ $client->id }}", name: "{{ $client->name }}"})
+                @endforeach
+                @foreach($spectators as $spectator)
+                    spectators.push({id: "{{ $spectator->id }}", name: "{{ $spectator->name }}"})
+                @endforeach
+                initSelectClient(clients);
+                initSelectSpectator(spectators);
+            @else
+                initSelectClient([]);
+                initSelectSpectator([]);
+            @endif
+
+            /**
+             * For Submit
+             */
+            $('#form_file').on('submit', function () {
+                if (hot_checks_values_data.length == 0) {
+                    alert("You must add at least one activity");
+                    return false;
+                }
+
+                var data = cellTable.getData();
+                var template = [];
+                $.each(data, function(index, value) {
+                    var dic = {no: index, activity: value[1], status: value[2]};
+                    template.push(dic);
+                });
+                $('#template').val(JSON.stringify(template));
+
+                // Set File Ref
+                var file_ref = $('#file_ref1').val() + '/' + $('#file_ref2').val() + '/' + $('#file_ref3').val();
+                $('#file_ref').val(file_ref);
+                return true;
             });
         });
     </script>
@@ -224,7 +422,7 @@
                 <h4>File Information</h4>
             </div>
             <div class="panel-body">
-                <form class="form-horizontal" action="{{ url('admin/files/create') }}" method="post">
+                <form id="form_file" class="form-horizontal" action="{{ isset($file) ? url('admin/files/' . $file->file_id) : url('admin/files/create') }}" method="post">
                     {{ csrf_field() }}
 
                     <div class="row">
@@ -238,14 +436,20 @@
                                             <label class="control-label col-lg-2">File Ref</label>
                                             <div class="col-lg-10">
                                                 <div class="row">
-                                                    <div class="col-lg-4"><input type="text" class="form-control"></div>
-                                                    <div class="col-lg-4"><input type="text" class="form-control"></div>
-                                                    <div class="col-lg-4"><input type="text" class="form-control"></div>
+                                                    <div class="col-lg-4">
+                                                        <input id="file_ref1" type="text" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <input id="file_ref2" type="text" class="form-control" value="{{ isset($autoID) ? $autoID : "" }}" readonly required>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <input id="file_ref3" type="text" class="form-control" required>
+                                                    </div>
                                                 </div>
                                                 @if (isset($file))
-                                                    <input type="text" class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly required>
+                                                    <input id="file_ref" type="hidden" class="form-control" name="file_ref" value="{{ $file->file_ref }}" readonly required>
                                                 @else
-                                                    <input type="text" class="form-control" name="file_ref" value="{{ old('file_ref') }}" required>
+                                                    <input id="file_ref" type="hidden" class="form-control" name="file_ref" value="{{ old('file_ref') }}" readonly required>
                                                 @endif
                                             </div>
                                         </div>
@@ -261,33 +465,16 @@
                                             <label class="control-label col-lg-2">File Type</label>
                                             <div class="col-lg-10">
                                                 <select class="select1" name="department_id">
-                                                    @foreach($departments as $department)
+                                                    @foreach($file_types as $file_type)
                                                         @if (isset($file))
-                                                            <option value="{{ $department->department_id }}" {{ $department->department_id == $file->department_id ? 'selected' : '' }}>{{ $department->department_name }}</option>
+                                                            <option value="{{ $file_type->type_id }}" {{ $file_type->type_id == $file->type_id ? 'selected' : '' }}>{{ $file_type->name }}</option>
                                                         @else
-                                                            <option value="{{ $department->department_id }}">{{ $department->department_name }}</option>
+                                                            <option value="{{ $file_type->type_id }}">{{ $file_type->name }}</option>
                                                         @endif
                                                     @endforeach
                                                 </select>
                                             </div>
                                         </div>
-
-                                        {{--<div class="form-group">--}}
-                                        {{--<label class="control-label col-lg-2">Date</label>--}}
-                                        {{--<div class="col-lg-10">--}}
-                                        {{--<input type="text" class="form-control daterange-basic">--}}
-                                        {{--</div>--}}
-                                        {{--</div>--}}
-
-                                        {{--<div class="form-group">--}}
-                                        {{--<label class="control-label col-lg-2">Status</label>--}}
-                                        {{--<div class="col-lg-10">--}}
-                                        {{--<select class="select">--}}
-                                        {{--<option value="0">Active</option>--}}
-                                        {{--<option value="1">Close</option>--}}
-                                        {{--</select>--}}
-                                        {{--</div>--}}
-                                        {{--</div>--}}
                                     </fieldset>
 
                                     <fieldset class="content-group">
@@ -390,7 +577,7 @@
                                         <div class="form-group">
                                             <label class="control-label col-lg-2">Spectators</label>
                                             <div class="col-lg-10">
-                                                <select class="select-remote-clients" name="spectators[]" multiple></select>
+                                                <select class="select-remote-spectators" name="spectators[]" multiple></select>
                                             </div>
                                         </div>
 
@@ -430,6 +617,54 @@
                         </div>
                     </div>
 
+                    <!-- /milestone area -->
+                    @if(isset($file))
+                    <div class="row no-margin">
+                        <div class="panel panel-flat">
+                            <div class="panel-body">
+                                <fieldset class="content-group">
+                                    <legend class="text-bold"> Milestone</legend>
+
+                                    <div class="form-group">
+                                        <div class="col-lg-10 col-lg-offset-1 mt-20">
+                                            <div class="btn-group btn-group-justified">
+                                                <div class="btn-group">
+                                                    <button id="btn_add" type="button" class="btn btn-default">Add</button>
+                                                </div>
+
+                                                <div class="btn-group">
+                                                    <button id="btn_select_all" type="button" class="btn btn-default">Select all</button>
+                                                </div>
+
+                                                <div class="btn-group">
+                                                    <button id="btn_deselect_all" type="button" class="btn btn-default">Deselect all</button>
+                                                </div>
+
+                                                <div class="btn-group">
+                                                    <button id="btn_delete" type="button" class="btn btn-default">Del</button>
+                                                </div>
+
+                                                <div class="btn-group">
+                                                    <button id="btn_delete_all" type="button" class="btn btn-default">Delete all</button>
+                                                </div>
+
+                                                <div class="btn-group">
+                                                    <button id="btn_default" type="button" class="btn btn-default">Default</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <div class="hot-container">
+                                    <div id="activity-table"></div>
+                                </div>
+
+                                <input type="hidden" id="case" name="cases" value="">
+                            </div>
+                        </div>
+                    </div>
+                    @else
                     <div class="row no-margin">
                         <div class="panel panel-flat">
                             <div class="panel-body">
@@ -462,12 +697,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group text-right">
-                                        <button id="btn-load-template" type="button" class="btn btn-default mr-10"><i class="icon-download7 position-left"></i> Load Milestone Template</button>
-                                    </div>
-
                                     <div class="form-group">
-                                        <div class="col-lg-8 col-lg-offset-2">
+                                        <div class="col-lg-10 col-lg-offset-1 mt-20">
                                             <div class="btn-group btn-group-justified">
                                                 <div class="btn-group">
                                                     <button id="btn_add" type="button" class="btn btn-default">Add</button>
@@ -478,7 +709,19 @@
                                                 </div>
 
                                                 <div class="btn-group">
-                                                    <button id="btn_delete_all" type="button" class="btn btn-default">Delete All</button>
+                                                    <button id="btn_select_all" type="button" class="btn btn-default">Select all</button>
+                                                </div>
+
+                                                <div class="btn-group">
+                                                    <button id="btn_deselect_all" type="button" class="btn btn-default">Deselect all</button>
+                                                </div>
+
+                                                <div class="btn-group">
+                                                    <button id="btn_delete_all" type="button" class="btn btn-default">Delete all</button>
+                                                </div>
+
+                                                <div class="btn-group">
+                                                    <button id="btn_default" type="button" class="btn btn-default">Default</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -493,44 +736,17 @@
                             </div>
                         </div>
                     </div>
+                    @endif
+                    <input type="hidden" id="template" name="cases" value="{{ isset($file) ? $file->cases : "" }}">
+                    <!-- /milestone area -->
 
                     <div class="text-right mt-20">
                         <button type="submit" class="btn btn-primary"> {{isset($file->file_id) ? 'Save Changes' : 'Open New File'}} <i class="icon-arrow-right14 position-right"></i></button>
                     </div>
                 </form>
             </div>
-    </div>
+        </div>
     </div>
     <!-- /content area -->
 
-    <!-- New Ticket Modal Dialog -->
-    <div id="modal_select_template" class="modal fade modal-full">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-yellow-800">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h5 class="modal-title">Select Activities</h5>
-                </div>
-
-                <form id="create_ticket_form" class="form-horizontal" action="{{url('support/tickets/create')}}" method="post">
-                    {{ csrf_field() }}
-
-                    <fieldset class="ml-20 mr-20 p-10">
-                        <div class="form-group">
-                            <div class="hot-container">
-                                <div id="activity_templates"></div>
-                            </div>
-                        </div>
-                    </fieldset>
-                    <div class="form-group bg-grey-F8FAFC no-margin p-10 text-grey-300">
-                        <label class="control-label col-md-8">Messages are kept confidential</label>
-                        <div class="col-md-4">
-                            <button type="submit" class="btn btn-success form-control">Create Ticket</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- /New Ticket Modal Dialog -->
 @endsection

@@ -132,14 +132,14 @@
                                 <thead>
                                     <tr class="no-border active">
                                         <th>Activities</th>
-                                        <th>Milestones</th>
+                                        <th>Remarks</th>
                                         <th class="text-center col-lg-1">Actions</th>
                                     </tr>
                                 </thead>
                                 @foreach(json_decode($file->cases) as $index => $case)
                                 <tr class="no-border">
                                     <td class="no-border"><span class="text-size-large">{{ $case->activity }}</span></td>
-                                    <td class="no-border"><span>RM{{ $case->milestone }}</span></td>
+                                    <td class="no-border"><span></span></td>
                                     <td class="no-border pull-right">
                                         @if ($case->status == "Completed")
                                             <button type="button" class="btn pl-10 pr-10 bg-slate" readonly="readonly"> Completed</button>
@@ -182,16 +182,23 @@
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>
                                                 @if ($payment->status == "BANK DEPOSIT")
                                                     <ul class="dropdown-menu">
-                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}">Download Receipt</a></li>
+                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/invoice/download')}}" download> Download Invoice</a></li>
+                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}" download> Download Receipt</a></li>
                                                         <li><a href="{{ url('admin/files/' . $file->file_id . '/payments/' . $payment->payment_id) }}">Confirmed</a></li>
                                                     </ul>
                                                 @elseif ($payment->status == "RECEIVED")
                                                     <ul class="dropdown-menu">
                                                         @if ($payment->receipt == null)
-                                                            <li><a class="btn_upload" data-toggle="modal" data-target="#modal_upload_receipt" data-ref="{{$payment->file_ref}}" data-amount="{{$payment->amount}}" data-url="{{ url('admin/payments/' . $payment->payment_id . '/upload')}}">Upload Receipt</a></li>
+                                                            <li><a class="btn_upload" data-toggle="modal" data-target="#modal_upload_receipt" data-ref="{{$payment->file_ref}}" data-amount="{{$payment->amount}}" data-url="{{ url('admin/payments/' . $payment->payment_id . '/upload')}}"> Upload Receipt</a></li>
                                                         @else
-                                                            <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}">Download Receipt</a></li>
+                                                            <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}" download> Download Receipt</a></li>
                                                         @endif
+                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/invoice/download')}}" download> Download Invoice</a></li>
+                                                    </ul>
+                                                @elseif ($payment->status == "REQUEST")
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/invoice/download')}}" download> Download Invoice</a></li>
+                                                        <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/resend')}}"> Resend Request</a></li>
                                                     </ul>
                                                 @endif
                                             </div>

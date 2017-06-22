@@ -29,14 +29,14 @@ class LogisticsController extends Controller
     {
         if (Auth::user()->hasRole('admin')) {
             $dispatches = DB::table('dispatches')
-                ->select('couriers.logo', 'couriers.name AS courier', 'delivery_by', 'dispatches.file_ref', 'users.name', 'description', 'dispatches.updated_at', 'dispatches.status', 'dispatch_id')
+                ->select('couriers.logo', 'couriers.name AS courier', 'dispatches.file_ref', 'users.name', 'description', 'dispatches.updated_at', 'dispatches.status', 'dispatch_id')
                 ->leftJoin('files', 'files.file_ref', 'dispatches.file_ref')
                 ->leftJoin('couriers', 'couriers.courier_id', 'dispatches.courier_id')
                 ->leftJoin('users', 'users.id', 'dispatches.client_id')
                 ->where('files.status', 0);
         } else {
             $dispatches = DB::table('dispatches')
-                ->select('couriers.logo', 'couriers.name AS courier', 'delivery_by', 'dispatches.file_ref', 'users.name', 'description', 'dispatches.updated_at', 'dispatches.status', 'dispatch_id')
+                ->select('couriers.logo', 'couriers.name AS courier', 'dispatches.file_ref', 'users.name', 'description', 'dispatches.updated_at', 'dispatches.status', 'dispatch_id')
                 ->leftJoin('files', 'files.file_ref', 'dispatches.file_ref')
                 ->leftJoin('couriers', 'couriers.courier_id', 'dispatches.courier_id')
                 ->leftJoin('users', 'users.id', 'dispatches.client_id')
@@ -111,7 +111,6 @@ class LogisticsController extends Controller
             'file_ref' => 'required',
             'description' => 'required',
             'courier_id' => 'required',
-            'delivery_by' => 'required',
             'qr_code' => 'required',
         ]);
 

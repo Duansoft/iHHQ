@@ -22,13 +22,13 @@ $(function() {
         columnDefs: [{
             orderable: false,
             width: "120px",
-            targets: [ 8 ]
+            targets: [ 7 ]
         },{
             visible: false,
-            targets: [ 1, 2, 4 ]
+            targets: [ 1, 2]
         },{
             render: function ( data, type, row ) {
-                return '<div class="media-left media-middle"><a href="#"><img src="' + $('meta[name="_publicURL"]').attr('content') + '/' + row.logo + '" class="img-lg, img-rounded" alt=""></a></div><div class="media-left"> <h6 class="no-margin">' + row.courier + '<small class="display-block text-muted text-size-small">' + row.delivery_by + '</small></h6></div>';
+                return '<div class="media-left media-middle"><a href="#"><img src="' + $('meta[name="_publicURL"]').attr('content') + '/' + row.logo + '" class="img-lg, img-rounded" alt=""></a></div><div class="media-left media-middle"> <h6 class="no-margin">' + row.courier + '</h6></div>';
             },
             targets: 0,
         }, {
@@ -38,11 +38,6 @@ $(function() {
             targets: 3,
         },{
             render: function ( data, type, row ) {
-                return '<span class="no-margin text-size-large">' + row.name + '<small class="display-block text-muted text-size-small">' + row.description + '</small></span>';
-            },
-            targets: 4,
-        }, {
-            render: function ( data, type, row ) {
                 if (row.status == 0) // delivery
                     return '<span class="label bg-dashboard-user">DELIVERED</span>';
                 else if (row.status == 1)
@@ -50,7 +45,7 @@ $(function() {
                 else if (row.status ==2)
                     return '<span class="label label-danger">RETURNED</span>';
             },
-            targets: 7,
+            targets: 6,
         }],
         language: {
             search: '<span>Filter:</span> _INPUT_',
@@ -64,7 +59,6 @@ $(function() {
         "columns": [
             {data: 'logo', name: 'couriers.logo'},
             {data: 'courier', name: 'couriers.name'},
-            {data: 'delivery_by', name: 'delivery_by'},
             {data: 'name', name: 'users.name'},
             {data: 'description', name: 'description'},
             {data: 'file_ref', name: 'dispatches.file_ref'},
@@ -86,10 +80,10 @@ $(function() {
         dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
         columnDefs: [{
             visible: false,
-            targets: [ 1, 2, 4 ]
+            targets: [ 1, 2 ]
         },{
             render: function ( data, type, row ) {
-                return '<div class="media-left media-middle"><a href="#"><img src="' + $('meta[name="_publicURL"]').attr('content') + '/' + row.logo + '" class="img-lg, img-rounded" alt=""></a></div><div class="media-left"> <h6 class="no-margin">' + row.courier + '<small class="display-block text-muted text-size-small">' + row.delivery_by + '</small></h6></div>';
+                return '<div class="media-left media-middle"><a href="#"><img src="' + $('meta[name="_publicURL"]').attr('content') + '/' + row.logo + '" class="img-lg, img-rounded" alt=""></a></div><div class="media-left media-middle"> <h6 class="no-margin">' + row.courier + '</h6></div>';
             },
             targets: 0,
         }, {
@@ -106,7 +100,7 @@ $(function() {
                 else if (row.status ==2)
                     return '<span class="label label-danger">RETURNED</span>';
             },
-            targets: 7,
+            targets: 6,
         }],
         language: {
             search: '<span>Filter:</span> _INPUT_',
@@ -120,7 +114,6 @@ $(function() {
         "columns": [
             {data: 'logo', name: 'couriers.logo'},
             {data: 'courier', name: 'couriers.name'},
-            {data: 'delivery_by', name: 'delivery_by'},
             {data: 'name', name: 'users.name'},
             {data: 'description', name: 'description'},
             {data: 'file_ref', name: 'dispatches.file_ref'},
@@ -140,23 +133,56 @@ $(function() {
 
 
 
-    // Format displayed data
-    function formatRepo (repo) {
-        if (repo.loading) return repo.text;
+    //// Format displayed data
+    //function formatRepo (repo) {
+    //    if (repo.loading) return repo.text;
+    //
+    //    var markup = repo.name + " (" + repo.passport_no + ")";
+    //
+    //    return markup;
+    //}
+    //
+    //// Format selection
+    //function formatRepoSelection (repo) {
+    //    return repo.name || repo.passport_no;
+    //}
+    //
+    //$(".select-remote-client").select2({
+    //    ajax: {
+    //        url: $('meta[name="_searchClients"]').attr('content'),
+    //        headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
+    //        dataType: 'json',
+    //        delay: 250,
+    //        data: function(params) {
+    //            return {
+    //                q: params.term || '',
+    //                page: params.page || 1
+    //            }
+    //        },
+    //        processResults: function (data, params) {
+    //            params.page = params.page || 1;
+    //
+    //            return {
+    //                results: data.results,
+    //                pagination: {
+    //                    more: (params.page * 50) < data.total_count
+    //                }
+    //            };
+    //        },
+    //        cache: true
+    //    },
+    //    escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+    //    minimumInputLength: 1,
+    //    templateResult: formatRepo, // omitted for brevity, see the source of this page
+    //    templateSelection: formatRepoSelection, // omitted for brevity, see the source of this page
+    //    placeholder: 'Search client',
+    //    allowClear: true
+    //});
 
-        var markup = repo.name + " (" + repo.passport_no + ")";
-
-        return markup;
-    }
-
-    // Format selection
-    function formatRepoSelection (repo) {
-        return repo.name || repo.passport_no;
-    }
-
-    $(".select-remote-client").select2({
+    // Default select initialization
+    $('.select-file-ref').select2({
         ajax: {
-            url: $('meta[name="_searchClients"]').attr('content'),
+            url: $('meta[name="_searchFiles"]').attr('content'),
             headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
             dataType: 'json',
             delay: 250,
@@ -169,8 +195,14 @@ $(function() {
             processResults: function (data, params) {
                 params.page = params.page || 1;
 
+                var select2Data = $.map(data.results, function (obj) {
+                    obj.id = obj.file_ref;
+                    obj.text = obj.file_ref;
+                    return obj;
+                });
+
                 return {
-                    results: data.results,
+                    results: select2Data,
                     pagination: {
                         more: (params.page * 50) < data.total_count
                     }
@@ -178,23 +210,27 @@ $(function() {
             },
             cache: true
         },
+        id: function(item) {return item.file_ref.toString();},
         escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
         minimumInputLength: 1,
-        templateResult: formatRepo, // omitted for brevity, see the source of this page
-        templateSelection: formatRepoSelection, // omitted for brevity, see the source of this page
-        placeholder: 'Search client',
-        allowClear: true
+        templateResult: function (item) {
+            if (item.loading) return item.text;
+            return item.file_ref;
+        },
+        templateSelection: function (item) {return item.file_ref;},
+        placeholder: "search file",
+        allowClear: true,
     });
 
     // trigger after selecting from ajax
-    $('.select-remote-client').on("select2:select", function(event) {
+    $('.select-file-ref').on("select2:select", function(event) {
         $.ajax({
             type: "GET",
-            url: $('meta[name="_searchFiles"]').attr('content'),
-            data: {"id": event.currentTarget.value},
+            url: $('meta[name="_searchClients"]').attr('content'),
+            data: {"file_ref": event.currentTarget.value},
             dataType: 'json',
             success: function (data) {
-                initializeFileRefs(data);
+                initializeClientRefs(data);
             },
             error: function (data) {
                 console.log('Error:', data);
@@ -210,47 +246,18 @@ $(function() {
         }
     });
 
-    // Default select initialization
-    var fileRefSelect = $('.select-file-ref').select2({
-        ajax: {
-            url: $('meta[name="_searchFiles"]').attr('content'),
-            headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
-            dataType: 'json',
-            delay: 250,
-            data: function(params) {
-                return {
-                    q: params.term || '',
-                    page: params.page || 1
-                }
-            },
-            processResults: function (data, params) {
-                params.page = params.page || 1;
-
-                return {
-                    results: data.results,
-                    pagination: {
-                        more: (params.page * 50) < data.total_count
-                    }
-                };
-            },
-            cache: true
-        },
-        escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-        minimumInputLength: 1,
-        templateResult: formatRepo, // omitted for brevity, see the source of this page
-        templateSelection: formatRepoSelection, // omitted for brevity, see the source of this page
-        placeholder: 'Search client',
-        allowClear: true
+    var select2Client = $(".select-remote-client").select2({
+        minimumResultsForSearch: Infinity,
+        placeholder: "select client",
     });
 
-    function initializeFileRefs(data) {
-        /*
-        fileRefSelect.empty();
-        fileRefSelect.select2({
+    function initializeClientRefs(data) {
+        select2Client.empty();
+        select2Client.select2({
             minimumResultsForSearch: Infinity,
             data: data,
         })
-        */
+
     }
 
     // Print SVG

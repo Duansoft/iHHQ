@@ -23,7 +23,7 @@ class LogisticsController extends Controller
         $id = Auth::id();
 
         $dispatches = DB::table('dispatches')
-            ->select('couriers.logo', 'couriers.name AS courier', 'delivery_by', 'dispatches.file_ref', 'users.name', 'description', 'dispatches.updated_at', 'dispatches.status')
+            ->select('couriers.logo', 'couriers.name AS courier', 'dispatches.file_ref', 'users.name', 'description', 'dispatches.updated_at', 'dispatches.status')
             ->leftJoin('files', 'files.file_ref', 'dispatches.file_ref')
             ->leftJoin('couriers', 'couriers.courier_id', 'dispatches.courier_id')
             ->leftJoin('users', 'users.id', 'dispatches.client_id')

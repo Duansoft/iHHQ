@@ -61,12 +61,14 @@ Route::group(['middleware' => ['auth', 'role:client']], function () {
     Route::get('payment', 'PaymentController@index');
     Route::post('payment/pay', 'PaymentController@proceedPay');
     Route::get('payment/{id}/download', 'PaymentController@downloadReceipt');
+    Route::get('payment/{id}/invoice/download', 'TemplateController@downloadInvoice');
 
     /* Support */
     Route::get('support', 'SupportController@index');
     Route::post('support/tickets/create', 'SupportController@createTicket');
     Route::get('support/tickets/{id}', 'SupportController@getTicket');
     Route::post('support/tickets/{id}/messages', 'SupportController@postMessage');
+    Route::get('support/download', 'SupportController@download');
 
     /* Templates */
     Route::get('templates', 'TemplateController@index');
@@ -116,6 +118,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     Route::get('files/create', ['middleware' => ['role:admin|lawyer'], 'uses' => 'FileController@getFile']);
     Route::post('files/create', ['middleware' => ['role:admin|lawyer'], 'uses' => 'FileController@postFile']);
     Route::get('files/search', 'FileController@searchFileAjax');
+    Route::get('files/seek', 'FileController@seekFileAjax');
+    Route::get('files/clients', 'FileController@getFileClientsAjax');
     Route::get('files/subcategories', 'FileController@getSubCategoriesAjax');
     Route::get('files/{id}', 'FileController@getFile');
     Route::post('files/{id}', 'FileController@postFile');
@@ -141,6 +145,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     /* Payment */
     Route::get('payments', 'PaymentController@index');
     Route::get('payments/{id}/download', 'PaymentController@downloadReceipt');
+    Route::get('payments/{id}/invoice/download', 'PaymentController@downloadInvoice');
+    Route::get('payments/{id}/resend', 'PaymentController@resendRequest');
     Route::post('payments/{id}/upload', 'PaymentController@uploadReceipt');
 
     /* Tickets */
@@ -152,6 +158,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     Route::get('tickets/pending/get', 'TicketController@getPendingTicketsAjax');
     Route::get('tickets/create', 'TicketController@getCreateTicket');
     Route::post('tickets/create', 'TicketController@postCreateTicket');
+    Route::get('tickets/download', 'TicketController@download');
     Route::get('tickets/{id}', 'TicketController@getTicket');
     Route::post('tickets/{id}/messages', 'TicketController@sendMessage');
     Route::get('tickets/{id}/delete', 'TicketController@deleteTicket');
@@ -186,7 +193,31 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
         Route::get('options', 'OptionController@index');
         Route::post('options/offices', 'OptionController@postOffice');
         Route::post('options/offices/{id}', 'OptionController@postOffice');
-        Route::get('options/offices/{id}/delete', 'OptionController@deleteOffice');
+        Route::post('options/offices/{id}/delete', 'OptionController@deleteOffice');
+        Route::post('options/file_types', 'OptionController@postFileType');
+        Route::post('options/file_types/{id}', 'OptionController@postFileType');
+        Route::post('options/file_types/{id}/delete', 'OptionController@deleteFileType');
+        Route::post('options/categories', 'OptionController@postCategory');
+        Route::post('options/categories/{id}', 'OptionController@postCategory');
+        Route::post('options/categories/{id}/delete', 'OptionController@deleteCategory');
+        Route::post('options/subcategories', 'OptionController@postSubCategory');
+        Route::post('options/subcategories/{id}', 'OptionController@postSubCategory');
+        Route::post('options/subcategories/{id}/delete', 'OptionController@deleteSubCategory');
+        Route::post('options/couriers', 'OptionController@postCourier');
+        Route::post('options/couriers/{id}', 'OptionController@postCourier');
+        Route::post('options/couriers/{id}/delete', 'OptionController@deleteCourier');
+        Route::post('options/ticket_categories', 'OptionController@postTicketCategory');
+        Route::post('options/ticket_categories/{id}', 'OptionController@postTicketCategory');
+        Route::post('options/ticket_categories/{id}/delete', 'OptionController@deleteTicketCategory');
+        Route::post('options/template_categories', 'OptionController@postTemplateCategory');
+        Route::post('options/template_categories/{id}', 'OptionController@postTemplateCategory');
+        Route::post('options/template_categories/{id}/delete', 'OptionController@deleteTemplateCategory');
+    });
+
+    /* Options */
+    Route::group(['middleware' => ['role:admin']], function() {
+        Route::get('milestones', 'MilestoneTemplate@index');
+        Route::post('milestones', 'MilestoneTemplate@postMilestone');
     });
 
     /* Settings */

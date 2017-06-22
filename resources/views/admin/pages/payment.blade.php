@@ -124,19 +124,19 @@
         <!-- Highlighted tabs -->
         <div class="row">
             <div class="col-lg-11">
-                @foreach($files as $file)
-                <div class="panel panel-white panel-collapsed file_panel" data-fileRef="{!! $file->file_ref !!}", data-tags="{!! $file->tags !!}" data-pName="{!! $file->project_name !!}">
+                @foreach($files as $key => $file)
+                <div class="panel panel-white file_panel {{ $key == 0 ? "panel-collapse" : "panel-collapsed" }}" data-fileRef="{!! $file->file_ref !!}", data-tags="{!! $file->tags !!}" data-pName="{!! $file->project_name !!}">
                     <div class="panel-heading">
                         <h4 class="panel-title no-margin-bottom"><span>{{ $file->project_name }}</span></h4>
                         <span class="no-margin text-muted">File Ref - {{ $file->file_ref }}</span>
                         <div class="heading-elements">
                             <form class="heading-form pr-5" action="#">
                                 <div class="form-group">
-                                    <span>{{$file->currency}}{{$file->outstanding_amount}}</span>
+                                    <span class="{{ $file->outstanding_amount > 0 ? "text-danger-400" : "" }}">{{$file->currency}}{{$file->outstanding_amount}}</span>
                                     <span class="display-block text-muted text-size-small">Total Outstanding</span>
                                 </div>
                             </form>
-                            <form class="heading-form pr-5" action="#">
+                            <form class="heading-form pr-5" style="min-width: 80px;" action="#">
                                 <div class="form-group">
                                     <span>{{$file->currency}}{{$file->paid_amount}}</span>
                                     <span class="display-block text-muted text-size-small">Total Paid</span>
@@ -181,20 +181,21 @@
                                     <td>
                                         <div class="btn-group btn-group-fade">
                                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">  Actions <span class="caret pl-15"></span></button>
-                                            @if ($payment->status == "BANK DEPOSIT")
                                             <ul class="dropdown-menu">
-                                                <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}">Download Receipt</a></li>
-                                                <li><a href="{{ url('admin/files/' . $file->file_id . '/payments/' . $payment->payment_id) }}">Confirmed</a></li>
-                                            </ul>
-                                            @elseif ($payment->status == "RECEIVED")
-                                            <ul class="dropdown-menu">
-                                                @if ($payment->receipt == null)
-                                                <li><a class="btn_upload" data-toggle="modal" data-target="#modal_upload_receipt" data-ref="{{$payment->file_ref}}" data-amount="{{$payment->amount}}" data-url="{{ url('admin/payments/' . $payment->payment_id . '/upload')}}">Upload Receipt</a></li>
-                                                @else
-                                                <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}">Download Receipt</a></li>
+                                                <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/invoice/download')}}" download> Download Invoice</a></li>
+                                                @if ($payment->status == "BANK DEPOSIT")
+                                                    <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}" download> Download Receipt</a></li>
+                                                    <li><a href="{{ url('admin/files/' . $file->file_id . '/payments/' . $payment->payment_id) }}">Confirmed</a></li>
+                                                @elseif ($payment->status == "RECEIVED")
+                                                    @if ($payment->receipt == null)
+                                                    <li><a class="btn_upload" data-toggle="modal" data-target="#modal_upload_receipt" data-ref="{{$payment->file_ref}}" data-amount="{{$payment->amount}}" data-url="{{ url('admin/payments/' . $payment->payment_id . '/upload')}}">Upload Receipt</a></li>
+                                                    @else
+                                                    <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/download')}}" download> Download Receipt</a></li>
+                                                    @endif
+                                                @elseif ($payment->status == "REQUEST")
+                                                    <li><a href="{{ url('admin/payments/' . $payment->payment_id . '/resend')}}"> Resend Request</a></li>
                                                 @endif
                                             </ul>
-                                            @endif
                                         </div>
                                     </td>
                             @endforeach

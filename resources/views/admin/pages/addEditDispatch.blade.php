@@ -39,8 +39,8 @@
 
 @section("content")
     <meta name="_token" content="{!! csrf_token() !!}"/>
-    <meta name="_searchClients" content="{{ url('admin/users/clients/search') }}"/>
-    <meta name="_searchFiles" content="{{ url('admin/files/search') }}"/>
+    <meta name="_searchClients" content="{{ url('admin/files/clients') }}"/>
+    <meta name="_searchFiles" content="{{ url('admin/files/seek') }}"/>
 
     <div class="content col-lg-11">
         <!-- Error Message -->
@@ -96,7 +96,7 @@
                                 @if (isset($dispatch))
                                     <input type="text" class="form-control" name="file_ref" value="{{$dispatch->file_ref}}" readonly>
                                 @else
-                                    <select class="select-file-ref" name="file_ref" readonly></select>
+                                    <select class="select-file-ref" name="file_ref" data-placeholder="search file" readonly></select>
                                 @endif
                             </div>
                         </div>
@@ -108,7 +108,7 @@
                                     <input type="text" class="form-control" value="{{$user->name}}" readonly required>
                                     <input type="hidden" class="form-control" name="client_id" value="{{$user->id}}" readonly required>
                                 @else
-                                    <select class="select-remote-client" name="client_id" data-placeholder="search client"></select>
+                                    <select class="select-remote-client" name="client_id" data-placeholder="select client"></select>
                                 @endif
                             </div>
                         </div>
@@ -116,7 +116,7 @@
                         <div class="form-group">
                             <label class="control-label col-lg-2">Description</label>
                             <div class="col-lg-10">
-                                <input type="text" class="form-control" name="description" maxlength="20" placeholder="e.g. Conveyancing documents" value="{{ isset($dispatch) ? $dispatch->description : old('description') }}">
+                                <input type="text" class="form-control" name="description" maxlength="20" placeholder="tracking ID12213" value="{{ isset($dispatch) ? $dispatch->description : old('description') }}">
                             </div>
                         </div>
 
@@ -136,19 +136,26 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label col-lg-2">Delivery By</label>
+                            <label class="control-label col-lg-2">Address</label>
                             <div class="col-lg-10">
-                                <select class="select" name="delivery_by">
-                                    @if (isset($dispatch))
-                                    <option value="Ground" {{$dispatch->delivery_by == "Ground" ? 'selected' : ''}}>Ground</option>
-                                    <option value="Airplane" {{$dispatch->delivery_by == "Airplane" ? 'selected' : ''}}>Airplane</option>
-                                    @else
-                                    <option value="Ground">Ground</option>
-                                    <option value="Airplane">Airplane</option>
-                                    @endif
-                                </select>
+                                <input class="form-control" name="address" value="{{ isset($dispatch) ? $dispatch->address : old('address') }}" required>
                             </div>
                         </div>
+
+                        {{--<div class="form-group">--}}
+                            {{--<label class="control-label col-lg-2">Delivery By</label>--}}
+                            {{--<div class="col-lg-10">--}}
+                                {{--<select class="select" name="delivery_by">--}}
+                                    {{--@if (isset($dispatch))--}}
+                                    {{--<option value="Ground" {{$dispatch->delivery_by == "Ground" ? 'selected' : ''}}>Ground</option>--}}
+                                    {{--<option value="Airplane" {{$dispatch->delivery_by == "Airplane" ? 'selected' : ''}}>Airplane</option>--}}
+                                    {{--@else--}}
+                                    {{--<option value="Ground">Ground</option>--}}
+                                    {{--<option value="Airplane">Airplane</option>--}}
+                                    {{--@endif--}}
+                                {{--</select>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
 
                         <div class="form-group">
                             <label class="control-label col-lg-2">Status</label>

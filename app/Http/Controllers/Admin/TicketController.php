@@ -16,6 +16,7 @@ use App\File;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Department;
+use Illuminate\Support\Facades\Storage;
 
 class TicketController extends Controller
 {
@@ -161,6 +162,32 @@ class TicketController extends Controller
         }
         $ticket->save();
 
+        // Create Ticket message
+        $message = new Ticket_Message();
+        $message->ticket_id = $ticket->ticket_id;
+        $message->client_id = $data['client_id'];
+        $message->sender_id = Auth::id();
+
+        $content = [];
+        if (Input::hasFile('attachments')) {
+            $attachments = Input::file('attachments');
+            $files = [];
+
+            foreach ($attachments as $attachment) {
+                $fileName = $attachment->getClientOriginalName();// . $attachment->getClientOriginalExtension();
+                $directory = 'tickets/'.$ticket->ticket_id;
+                $path = $attachment->storeAs($directory, Carbon::now()->toDateString() . '-' . str_random(5) . '-' . $fileName);
+                $size = $this->formatBytes($attachment->getClientSize());
+
+                $files[] = ['name' => $fileName, 'size' => $size, 'path' => $path];
+            }
+            $content['attachments'] = $files;
+        }
+        $content['text'] =  Input::get('message');
+
+        $message->message = json_encode($content);
+        $message->save();
+
         return redirect('admin/tickets/pending')->with('flash_message', 'Ticket have been created successfully');
     }
 
@@ -235,8 +262,25 @@ class TicketController extends Controller
             return redirect()->back()->withErrors($validator->messages());
         }
 
+        $content = [];
+        if (Input::hasFile('attachments')) {
+            $attachments = Input::file('attachments');
+            $files = [];
+
+            foreach ($attachments as $attachment) {
+                $fileName = $attachment->getClientOriginalName();// . $attachment->getClientOriginalExtension();
+                $directory = 'tickets/'.$ticket->ticket_id;
+                $path = $attachment->storeAs($directory, Carbon::now()->toDateString() . '-' . str_random(5) . '-' . $fileName);
+                $size = $this->formatBytes($attachment->getClientSize());
+
+                $files[] = ['name' => $fileName, 'size' => $size, 'path' => $path];
+            }
+            $content['attachments'] = $files;
+        }
+        $content['text'] =  Input::get('message');
+
         $message = new Ticket_Message();
-        $message->fill($data);
+        $message->json_encode($content);
         $message->ticket_id = $ticket->ticket_id;
         $message->sender_id = $me->id;
         $message->client_id = $ticket->client_id;
@@ -293,6 +337,14 @@ class TicketController extends Controller
         $ticket->save();
 
         return redirect('admin/tickets/' . $id)->with('flash_message', 'The Ticket have been updated successfully');
+    }
+
+    public function download()
+    {
+        $path = Input::get('path');
+        $name = Input::get('name');
+
+        return response()->download(Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix() . $path, $name);
     }
 
 }

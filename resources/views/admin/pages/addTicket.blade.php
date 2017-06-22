@@ -19,7 +19,7 @@
     <div class="page-header">
         <div class="page-header-content col-lg-11">
             <div class="page-title">
-                <h2><span class="text-semibold">Tickets</span></h2>
+                <h2><span class="text-semibold">Support</span></h2>
             </div>
 
             <div class="heading-elements">

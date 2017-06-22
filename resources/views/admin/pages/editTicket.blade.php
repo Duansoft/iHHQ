@@ -15,7 +15,11 @@
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/tickets.js') }}"></script>
     <script type="text/javascript">
         // Scroll Bottom
-        $('#chat_window').scrollTop($('#chat_window')[0].scrollHeight);
+        try {
+            $('#chat_window').scrollTop($('#chat_window')[0].scrollHeight);
+        }
+        catch(err) {
+        }
     </script>
 @endsection
 
@@ -25,7 +29,7 @@
     <div class="page-header">
         <div class="page-header-content col-lg-11">
             <div class="page-title">
-                <h2><span class="text-semibold">Tickets</span></h2>
+                <h2><span class="text-semibold">Support</span></h2>
             </div>
 
             <div class="heading-elements">
@@ -135,7 +139,17 @@
                                             <a class="text-semibold text-grey">{{ $message->sender_name }}</a>
                                             <span class="media-annotation dotted">{!! \Carbon\Carbon::createFromFormat("Y-m-d H:i:s", $message->created_at)->diffForHumans() !!}</span>
                                         </div>
-                                        {{ $message->message }}
+                                        @foreach(json_decode($message->message) as $key => $value)
+                                            @if ($key == "text")
+                                                {{ $value }}
+                                            @elseif ($key == "attachments")
+                                                @foreach($value as $val)
+                                                    <div class="mt-10">
+                                                        <a href="{{ url('admin/tickets/download?path=' . $val->path . '&name=' . $val->name) }}" download><i class="icon-file-download"></i> {{ $val->name }}</a> <span class="text-muted"> - {{ $val->size }}</span>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                        @endforeach
                                     </div>
                                 </li>
                             @endforeach

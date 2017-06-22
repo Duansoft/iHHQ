@@ -11,6 +11,7 @@
 
 
 @section("js")
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/tables/handsontable/handsontable.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/selects/select2.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/loaders/progressbar.min.js') }}"></script>
@@ -31,18 +32,39 @@
                     $('#office_name').val("");
                     $('#office_location').val("");
                     $('#submit_office').text("Create");
+                    $('#modal_office form').attr('action', "{{url('admin/options/offices')}}");
                     $('#modal_office').modal('show');
                 } else if (target.trim() == 'File Type') {
+                    $('#file_type').val("");
+                    $('#modal_file_type .btn').text("Create");
+                    $('#modal_file_type form').attr('action', "{{url('admin/options/file_types')}}");
                     $('#modal_file_type').modal('show');
                 } else if (target.trim() == "Category") {
-                    $('#').modal('show');
+                    $('#modal_category input').val("");
+                    $('#modal_category .btn-success').text("Create");
+                    $('#modal_category form').attr('action', "{{url('admin/options/categories')}}");
+                    $('#modal_category').modal('show');
                 } else if (target.trim() == "Sub Category") {
-                    $('#').modal('show');
+                    $('#modal_subcategory input').val("");
+                    $('#modal_subcategory .btn-success').text("Create");
+                    $('#modal_subcategory form').attr('action', "{{url('admin/options/subcategories')}}");
+                    $('#modal_subcategory').modal('show');
                 } else if (target.trim() == "Courier") {
+                    $('#modal_courier input').val("");
+                    $('#modal_courier .btn-success').text("Create");
+                    $('#modal_courier form').attr('action', "{{url('admin/options/ticket_categories')}}");
                     $('#modal_courier').modal('show');
                 } else if (target.trim() == "Ticket Category") {
+                    $('#file_type').val("");
+                    $('#modal_ticket_category input').val("");
+                    $('#modal_ticket_category .btn').text("Create");
+                    $('#modal_ticket_category form').attr('action', "{{url('admin/options/ticket_categories')}}");
                     $('#modal_ticket_category').modal('show');
                 } else if (target.trim() == "Legal Template Category") {
+                    $('#file_type').val("");
+                    $('#modal_template_category input').val("");
+                    $('#modal_template_category .btn').text("Create");
+                    $('#modal_template_category form').attr('action', "{{url('admin/options/template_categories')}}");
                     $('#modal_template_category').modal('show');
                 }
             });
@@ -67,6 +89,7 @@
                 $('#office_name').val($(this).data('name'));
                 $('#office_location').val($(this).data('location'));
                 $('#submit_office').text("Update");
+                $('#modal_office form').attr('action', $(this).data('url'));
                 $('#modal_office').modal('show');
             });
 
@@ -76,25 +99,227 @@
                 $('#office_name').val($(this).data('name'));
                 $('#office_location').val($(this).data('location'));
                 $('#submit_office').text("Delete");
+                $('#modal_office form').attr('action', $(this).data('url'));
                 $('#modal_office').modal('show');
             });
 
             // Edit File Type
             $('.btn_file_type_edit').on('click', function(e){
                 e.preventDefault();
-                $('#office_name').val($(this).data('name'));
-                $('#office_location').val($(this).data('location'));
-                $('#submit_office').text("Update");
-                $('#modal_office').modal('show');
+                $('#file_type').val($(this).data('name'));
+                $('#modal_file_type .btn').text("Update");
+                $('#modal_file_type form').attr('action', $(this).data('url'));
+                $('#modal_file_type').modal('show');
             });
             // Delete File Type
             $('.btn_file_type_delete').on('click', function(e){
                 e.preventDefault();
-                $('#office_name').val($(this).data('name'));
-                $('#office_location').val($(this).data('location'));
-                $('#submit_office').text("Update");
-                $('#modal_office').modal('show');
+                $('#file_type').val($(this).data('name'));
+                $('#modal_file_type .btn').text("Delete");
+                $('#modal_file_type form').attr('action', $(this).data('url'));
+                $('#modal_file_type').modal('show');
             });
+
+            // Edit File Category
+            $('.btn_category_edit').on('click', function(e){
+                e.preventDefault();
+                $('#modal_category #company_name').val($(this).data('name'));
+                $('#modal_category .btn-success').text("Update");
+                $('#modal_category form').attr('action', $(this).data('url'));
+                $('#modal_category').modal('show');
+            });
+            // Delete File Category
+            $('.btn_category_delete').on('click', function(e){
+                e.preventDefault();
+                $('#modal_category #company_name').val($(this).data('name'));
+                $('#modal_category .btn-success').text("Delete");
+                $('#modal_category form').attr('action', $(this).data('url'));
+                $('#modal_category').modal('show');
+            });
+
+            // Edit File Subcategory
+            $('.btn_subcategory_edit').on('click', function(e){
+                e.preventDefault();
+                $('#modal_subcategory #company_name').val($(this).data('name'));
+                $('#modal_subcategory .btn-success').text("Update");
+                $('#modal_subcategory form').attr('action', $(this).data('url'));
+                $('#modal_subcategory').modal('show');
+            });
+            // Delete File Category
+            $('.btn_subcategory_delete').on('click', function(e){
+                e.preventDefault();
+                $('#modal_subcategory #company_name').val($(this).data('name'));
+                $('#modal_subcategory .btn-success').text("Delete");
+                $('#modal_subcategory form').attr('action', $(this).data('url'));
+                $('#modal_subcategory').modal('show');
+            });
+
+            // Edit Ticket Category
+            $('.btn_ticket_category_edit').on('click', function(e){
+                e.preventDefault();
+                $('#modal_ticket_category input').val($(this).data('name'));
+                $('#modal_ticket_category .btn').text("Update");
+                $('#modal_ticket_category form').attr('action', $(this).data('url'));
+                $('#modal_ticket_category').modal('show');
+            });
+            // Delete Ticket Category
+            $('.btn_ticket_category_delete').on('click', function(e){
+                e.preventDefault();
+                $('#modal_ticket_category input').val($(this).data('name'));
+                $('#modal_ticket_category .btn').text("Delete");
+                $('#modal_ticket_category form').attr('action', $(this).data('url'));
+                $('#modal_ticket_category').modal('show');
+            });
+
+            // Edit Template Category
+            $('.btn_template_category_edit').on('click', function(e){
+                e.preventDefault();
+                $('#modal_template_category input').val($(this).data('name'));
+                $('#modal_template_category .btn').text("Update");
+                $('#modal_template_category form').attr('action', $(this).data('url'));
+                $('#modal_template_category').modal('show');
+            });
+            // Delete Ticket Category
+            $('.btn_template_category_delete').on('click', function(e){
+                e.preventDefault();
+                $('#modal_template_category input').val($(this).data('name'));
+                $('#modal_template_category .btn').text("Delete");
+                $('#modal_template_category form').attr('action', $(this).data('url'));
+                $('#modal_ticket_category').modal('show');
+            });
+
+            // Edit Courier
+            $('.btn_courier_edit').on('click', function(e){
+                e.preventDefault();
+                $('#modal_courier #company_name').val($(this).data('name'));
+                $('#modal_courier .btn-success').text("Update");
+                $('#modal_courier form').attr('action', $(this).data('url'));
+                $('#modal_courier').modal('show');
+            });
+            // Delete Courier
+            $('.btn_courier_delete').on('click', function(e){
+                e.preventDefault();
+                $('#modal_courier #company_name').val($(this).data('name'));
+                $('#modal_courier .btn-success').text("Delete");
+                $('#modal_courier form').attr('action', $(this).data('url'));
+                $('#modal_courier').modal('show');
+            });
+
+            /*
+             * SubCategory
+             */
+            var hot_checks_values_data = [];
+            var selectedData;
+            var cellTable;
+
+            $('#category').on("select2:select", function (event) {
+                $.ajax({
+                    type: "GET",
+                    url: '{{ url("admin/files/subcategories") }}',
+                    data: {"id": event.currentTarget.value},
+                    dataType: 'json',
+                    success: function (data) {
+                        initializeSubCategory(data);
+                    },
+                    error: function (data) {
+                        console.log('Error:', data);
+                    }
+                });
+            });
+
+            function initializeSubCategory(data) {
+                subCategorySelect.empty();
+                subCategorySelect.select2({
+                    minimumResultsForSearch: Infinity,
+                    data: data,
+                });
+                selectedData = data[0].data;
+                $("#subcategory > option").each(function (index) { // iterate through all options of selectbox
+                    $(this).attr('data-id', data[index].data); // add attribute to option with value of i
+                });
+
+                hot_checks_values_data = JSON.parse(selectedData);
+                cellTable.destroy();
+                create_template_table();
+            }
+
+
+            // Handson Table Setup
+            // ------------------------------
+
+            // Define element
+            var hot_checks_values = document.getElementById('activity-table');
+
+            // Initialize with options
+            function create_template_table() {
+                cellTable = new Handsontable(hot_checks_values, {
+                    data: hot_checks_values_data,
+                    rowHeaders: true,
+                    colHeaders: ['Select', 'Activity Desc', 'Status', 'Price', 'Duration'],
+                    manualColumnMove: true,
+                    stretchH: 'all',
+                    columns: [
+                        {
+                            data: 'select',
+                            type: 'checkbox',
+                        },
+                        {
+                            data: 'activity'
+                        },
+                        {
+                            data: 'status',
+                        },
+                        {
+                            data: 'milestone',
+                            type: 'numeric',
+                            format: '0,0.00',
+                        },
+                        {
+                            data: 'duration',
+                        },
+                    ]
+                });
+
+                $('#case').val(JSON.stringify(hot_checks_values_data));
+            }
+
+            create_template_table();
+
+            $('#btn_add').on('click', function () {
+                hot_checks_values_data.push(
+                        {no: "10", status: "In Progress", activity: "", duration: 0, milestone: 0, select: true}
+                );
+                cellTable.destroy();
+                create_template_table();
+            });
+            $('#btn_delete').on('click', function () {
+                var jsonArr = [];
+                $.each(hot_checks_values_data, function (index, item) {
+                    if (item.select == false) {
+                        jsonArr.push(item);
+                    }
+                    hot_checks_values_data = jsonArr;
+                    cellTable.destroy();
+                    create_template_table();
+                });
+            });
+            $('#btn_delete_all').on('click', function () {
+                hot_checks_values_data = [];
+                cellTable.destroy();
+                create_template_table();
+            });
+
+            // When Submit
+            $('#form_file').on('submit', function (e) {
+                e.preventDefault();
+                $('#file_ref').val($('#file_ref1').val() + '/' + $('#file_ref2').val() + '/' + $('#file_ref3').val());
+                if (hot_checks_values_data.length == 0) {
+                    alert("You must add at least one activity");
+                } else {
+                    $(this).submit();
+                }
+            });
+
         });
     </script>
 @endsection
@@ -187,8 +412,8 @@
                                             <div class="btn-group btn-group-fade">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a class="btn_office_edit" data-name="{{$office->name}}" data-location="{{$office->location}}"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
-                                                    <li><a class="btn_office_delete" data-name="{{$office->name}}" data-location="{{$office->location}}"><i class="icon-cross2 text-danger"></i> Delete</a></li>
+                                                    <li><a class="btn_office_edit" data-name="{{$office->name}}" data-location="{{$office->location}}" data-url="{{ url('admin/options/offices/' . $office->office_id) }}"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
+                                                    <li><a class="btn_office_delete" data-name="{{$office->name}}" data-location="{{$office->location}}" data-url="{{ url('admin/options/offices/' . $office->office_id . '/delete') }}"><i class="icon-cross2 text-danger"></i> Delete</a></li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -222,8 +447,8 @@
                                             <div class="btn-group btn-group-fade">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a class="btn_file_type_edit" href="#"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
-                                                    <li><a href="#"><i class="icon-cross2 text-danger"></i> Delete</a></li>
+                                                    <li><a class="btn_file_type_edit" data-name="{{ $file_type->name }}" data-url="{{ url('admin/options/file_types/' . $file_type->type_id) }}"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
+                                                    <li><a class="btn_file_type_delete" data-name="{{ $file_type->name }}" data-url="{{ url('admin/options/file_types/' . $file_type->type_id . '/delete') }}"><i class="icon-cross2 text-danger"></i> Delete</a></li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -245,20 +470,20 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($file_categories as $file_category)
+                                @foreach($categories as $category)
                                     <tr>
                                         <td class="text-center">
-                                            <h6 class="no-margin">{{$file_category->category_id}}</h6>
+                                            <h6 class="no-margin">{{$category->category_id}}</h6>
                                         </td>
                                         <td>
-                                            <span>{{$file_category->name}}</span>
+                                            <span>{{$category->name}}</span>
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group btn-group-fade">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="#"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
-                                                    <li><a href="#"><i class="icon-cross2 text-danger"></i> Delete</a></li>
+                                                    <li><a class="btn_category_edit" data-name="{{$category->name}}" data-url="{{ url('admin/options/categories/' . $category->category_id) }}"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
+                                                    <li><a class="btn_category_delete" data-name="{{$category->name}}" data-url="{{ url('admin/options/categories/' . $category->category_id . '/delete') }}"><i class="icon-cross2 text-danger"></i> Delete</a></li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -270,6 +495,51 @@
                     </div>
 
                     <div class="tab-pane" id="tab-sub-category">
+                        <div class="row mb-10">
+                            <div class="form-group">
+                                <label class="control-label col-lg-2">Category</label>
+                                <div class="col-lg-10">
+                                    <select id="category" class="select form-control" name="category_id">
+                                        @foreach($categories as $category)
+                                            <option value="{{$category->category_id}}">{{$category->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel">
+                            <table class="table text-nowrap">
+                                <thead>
+                                <tr class="active">
+                                    <th style="width: 50px"> ID</th>
+                                    <th> Name</th>
+                                    <th class="text-center" style="width: 50px;">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($categories as $category)
+                                    <tr>
+                                        <td class="text-center">
+                                            <h6 class="no-margin">{{$category->category_id}}</h6>
+                                        </td>
+                                        <td>
+                                            <span>{{$category->name}}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group btn-group-fade">
+                                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="btn_category_edit" data-name="{{$category->name}}" data-url="{{ url('admin/options/categories/' . $category->category_id) }}"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
+                                                    <li><a class="btn_category_delete" data-name="{{$category->name}}" data-url="{{ url('admin/options/categories/' . $category->category_id . '/delete') }}"><i class="icon-cross2 text-danger"></i> Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <div class="tab-pane" id="tab-courier">
@@ -299,8 +569,8 @@
                                             <div class="btn-group btn-group-fade">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="#"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
-                                                    <li><a href="#"><i class="icon-cross2 text-danger"></i> Delete</a></li>
+                                                    <li><a class="btn_courier_edit" data-name="{{$courier->name}}" data-logo="{{url($courier->logo)}}" data-url="{{ url('admin/options/couriers/' . $courier->courier_id) }}"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
+                                                    <li><a class="btn_courier_delete" data-name="{{$courier->name}}" data-logo="{{url($courier->logo)}}" data-url="{{ url('admin/options/couriers/' . $courier->courier_id . '/delete') }}"><i class="icon-cross2 text-danger"></i> Delete</a></li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -334,8 +604,8 @@
                                             <div class="btn-group btn-group-fade">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="#"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
-                                                    <li><a href="#"><i class="icon-cross2 text-danger"></i> Delete</a></li>
+                                                    <li><a class="btn_ticket_category_edit" data-name="{{ $ticket_category->name }}" data-url="{{ url('admin/options/ticket_categories/' . $ticket_category->category_id) }}"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
+                                                    <li><a class="btn_ticket_category_delete" data-name="{{ $ticket_category->name }}" data-url="{{ url('admin/options/ticket_categories/' . $ticket_category->category_id . '/delete') }}"><i class="icon-cross2 text-danger"></i> Delete</a></li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -369,8 +639,8 @@
                                             <div class="btn-group btn-group-fade">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="#"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
-                                                    <li><a href="#"><i class="icon-cross2 text-danger"></i> Delete</a></li>
+                                                    <li><a class="btn_template_category_edit" data-name="{{ $template_category->name }}" data-url="{{ url('admin/options/template_categories/' . $template_category->category_id) }}"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
+                                                    <li><a class="btn_template_category_delete" data-name="{{ $template_category->name }}" data-url="{{ url('admin/options/template_categories/' . $template_category->category_id . '/delete') }}"><i class="icon-cross2 text-danger"></i> Delete</a></li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -392,7 +662,7 @@
         <div class="modal-content">
             <div class="modal-header bg-yellow-800">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h5 class="modal-title">New Office</h5>
+                <h5 class="modal-title"> Office</h5>
             </div>
 
             <form id="upload_form" action="{{ url('admin/options/offices') }}" method="post">
@@ -425,20 +695,20 @@
         <div class="modal-content">
             <div class="modal-header bg-yellow-800">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h5 class="modal-title">New File Type</h5>
+                <h5 class="modal-title"> File Type</h5>
             </div>
 
-            <form id="upload_form" action="#" method="post" enctype="multipart/form-data">
+            <form id="upload_form" action="#" method="post">
                 {{ csrf_field() }}
 
                 <div class="modal-body">
                     <div class="form-group">
                         <label>File Type</label>
-                        <input type="text" placeholder="" name="department_name" class="form-control" required>
+                        <input id="file_type" type="text" placeholder="" name="name" class="form-control" required>
                     </div>
 
                     <div class="form-group">
-                        <button type="submit" class="btn btn-success form-control">Create New File Type</button>
+                        <button type="submit" class="btn btn-success form-control"> Create</button>
                     </div>
                 </div>
             </form>
@@ -447,13 +717,69 @@
 </div>
 <!-- /New File Type modal -->
 
+<!-- File Category modal -->
+<div id="modal_category" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-yellow-800">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title"> Category</h5>
+            </div>
+
+            <form id="upload_form" method="post">
+                {{ csrf_field() }}
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Category Name</label>
+                        <input type="text" placeholder="" name="name" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success form-control"> Create</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /File Category modal -->
+
+<!-- File Category modal -->
+<div id="modal_subcategory" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-yellow-800">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title"> Subcategory</h5>
+            </div>
+
+            <form id="upload_form" method="post">
+                {{ csrf_field() }}
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Subcategory Name</label>
+                        <input type="text" placeholder="" name="name" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success form-control"> Create</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /File Category modal -->
+
 <!-- New Courier modal -->
 <div id="modal_courier" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-yellow-800">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h5 class="modal-title">New Courier</h5>
+                <h5 class="modal-title"> Service Provider</h5>
             </div>
 
             <form id="upload_form" action="#" method="post" enctype="multipart/form-data">
@@ -462,7 +788,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Company Name</label>
-                        <input type="text" placeholder="" name="department_name" class="form-control" required>
+                        <input id="company_name" type="text" placeholder="" name="name" class="form-control" required>
                     </div>
 
                     <div class="form-group">
@@ -471,7 +797,7 @@
                     </div>
 
                     <div class="form-group">
-                        <button type="submit" class="btn btn-success form-control">Create New Courier</button>
+                        <button type="submit" class="btn btn-success form-control"> Create</button>
                     </div>
                 </div>
             </form>
@@ -480,33 +806,33 @@
 </div>
 <!-- /New Courier modal -->
 
-<!-- New Ticket Category modal -->
+<!-- Ticket Category modal -->
 <div id="modal_ticket_category" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-yellow-800">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h5 class="modal-title">New Ticket Category</h5>
+                <h5 class="modal-title"> Ticket Category</h5>
             </div>
 
-            <form id="upload_form" action="#" method="post" enctype="multipart/form-data">
+            <form id="upload_form" method="post">
                 {{ csrf_field() }}
 
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Category Name</label>
-                        <input type="text" placeholder="" name="category" class="form-control" required>
+                        <input type="text" placeholder="" name="name" class="form-control" required>
                     </div>
 
                     <div class="form-group">
-                        <button type="submit" class="btn btn-success form-control">Create Category</button>
+                        <button type="submit" class="btn btn-success form-control"> Create</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<!-- /New Ticket Category modal -->
+<!-- /Ticket Category modal -->
 
 <!-- Legal Template Category modal -->
 <div id="modal_template_category" class="modal fade">
@@ -514,7 +840,7 @@
         <div class="modal-content">
             <div class="modal-header bg-yellow-800">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h5 class="modal-title">New Legal Template Category</h5>
+                <h5 class="modal-title"> Legal Template Category</h5>
             </div>
 
             <form id="upload_form" action="#" method="post" enctype="multipart/form-data">

@@ -143,4 +143,14 @@ class PaymentController extends Controller
         return response()->download(Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix() . $payment->receipt);
     }
 
+    public function downloadInvoice($id)
+    {
+        $payment = Payment::findOrFail($id);
+        if (empty($payment->receipt)) {
+            return redirect()->back()->withErrors(['No uploaded Invoice']);
+        }
+
+        return response()->download(Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix() . $payment->invoice);
+    }
+
 }
