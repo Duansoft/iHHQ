@@ -420,6 +420,9 @@
         <div class="panel panel-flat">
             <div class="panel-heading">
                 <h4>File Information</h4>
+                <div class="heading-elements">
+                    <a href="{{ url('admin/users/clients/create') }}"><button type="button" class="btn btn-default heading-btn">Add New User</button></a>
+                </div>
             </div>
             <div class="panel-body">
                 <form id="form_file" class="form-horizontal" action="{{ isset($file) ? url('admin/files/' . $file->file_id) : url('admin/files/create') }}" method="post">

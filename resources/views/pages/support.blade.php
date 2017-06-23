@@ -18,19 +18,14 @@
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/support.js') }}"></script>
     <script type="text/javascript">
         $(function(){
-            $('#btn-create').on('click', function(e){
+            $('.btn-create').on('click', function(e){
                 e.preventDefault();
-                var subject = $('#title').val();
-                if (subject) {
-                    $('#subject').val(subject);
-                    $('#modal_new_ticket').modal('show');
-                    $('#title').val("");
-                    $('#attachment').show();
-                    $('#file-uploader').hide();
-                    $('input:checkbox').attr('checked', false);
-                } else {
-                    alert('Required Subject to Create Ticket');
-                }
+                $('#subject').val("");
+                $('#modal_new_ticket').modal('show');
+                $('#title').val("");
+                $('#attachment').show();
+                $('#file-uploader').hide();
+                $('input:checkbox').attr('checked', false);
             });
 
             $('input:checkbox').change(function() {
@@ -117,9 +112,9 @@
                 <div class="panel panel-white">
                     <div class="panel-heading">
                         <div class="input-group">
-                            <input id="title" type="text" class="form-control" placeholder="Create a new ticket...">
+                            <button class="form-control btn btn-default btn-create"> <span class="text-muted">Create a new ticket</span></button>
                             <span class="input-group-btn">
-                                <button id="btn-create" class="btn btn-default pl-20 pr-20" type="button" data-toggle="modal"><i class="icon-plus3 text-grey"></i></button>
+                                <button class="btn btn-default pl-20 pr-20 btn-create" type="button" data-toggle="modal"><i class="icon-plus3 text-grey"></i></button>
                             </span>
                         </div>
                     </div>
@@ -240,7 +235,10 @@
                         </select>
                     </div>
 
-                    <input id="subject" type="hidden" name="subject" class="form-control" placeholder="" required>
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input id="subject" type="text" name="subject" class="form-control" placeholder="" required>
+                    </div>
 
                     <div class="form-group mb-10">
                         <textarea name="message" class="form-control" rows="3" cols="1" placeholder="Write your question..." required></textarea>

@@ -80,12 +80,14 @@
             </div>
             <div class="heading-elements">
                 <form class="heading-form" action="#">
+
                     <div class="form-group has-feedback">
                         <input id="search" type="search" class="form-control" placeholder="Search by file ref, name or tags">
                         <div class="form-control-feedback">
                             <i class="icon-search4 text-size-base text-muted"></i>
                         </div>
                     </div>
+                    <button type="button" class="btn btn-default ml-5"><i class="icon-plus2"></i> Create Payment</button>
                 </form>
             </div>
         </div>

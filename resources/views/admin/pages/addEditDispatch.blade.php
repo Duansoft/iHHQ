@@ -114,6 +114,13 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="control-label col-lg-2">Receiver</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="receiver" placeholder="receiver" value="{{ isset($dispatch) ? $dispatch->receiver : old('receiver') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="control-label col-lg-2">Description</label>
                             <div class="col-lg-10">
                                 <input type="text" class="form-control" name="description" maxlength="20" placeholder="tracking ID12213" value="{{ isset($dispatch) ? $dispatch->description : old('description') }}">

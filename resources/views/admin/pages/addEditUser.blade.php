@@ -221,6 +221,23 @@
                                 </div>
                             </div>
                         </div>
+
+                        @if (isset($user))
+                            @if (!$user->hasRole('client'))
+                            <div class="form-group">
+                                <label class="control-label col-lg-2"> Role</label>
+                                <div class="col-lg-10">
+                                    <select class="select" name="role">
+                                        <option value="admin" {{ $user->hasRole('admin') ? "selected" : "" }}> SuperAdmin</option>
+                                        <option value="lawyer" {{ $user->hasRole('lawyer') ? "selected" : "" }}> Lawyer</option>
+                                        <option value="billing" {{ $user->hasRole('billing') ? "selected" : "" }}> Billing</option>
+                                        <option value="logistic" {{ $user->hasRole('logistic') ? "selected" : "" }}> Logistic</option>
+                                        <option value="staff" {{ $user->hasRole('staff') ? "selected" : "" }}> Legal Staff</option>
+                                    </select>
+                                </div>
+                            </div>
+                            @endif
+                        @endif
                     </fieldset>
 
                     <div class="text-right">

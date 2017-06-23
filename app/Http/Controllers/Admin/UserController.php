@@ -207,6 +207,7 @@ class UserController extends Controller
     public function postUser(Request $request)
     {
         $data = $request->all();
+        $roleName = Input::get('role');
 
         if ($request->get('id')) {
             $role =  [
@@ -238,6 +239,11 @@ class UserController extends Controller
             $user->is_allow = Input::get('is_allow') == "on" ? true : false;
             $user->is_review = Input::get('is_allow') == "on" ? true : false;
             $user->save();
+
+            if (!$user->hasRole($roleName)) {
+                $user->detachRole($user->roles->first());
+                $user->attachRole(Role::where('name', $roleName)->first());
+            }
 
             return redirect('admin/users')->with('flash_message', 'The user have been updated successfully');
         } else {

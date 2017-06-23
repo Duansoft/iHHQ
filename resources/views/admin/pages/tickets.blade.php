@@ -32,10 +32,11 @@
                 autoWidth: false,
                 processing: true,
                 serverSide: true,
+                sScrollX: "100%",
+                bScrollCollapse: true,
                 dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
                 columnDefs: [{
                     orderable: true,
-                    width: '50px',
                     targets: [ 0 ]
                 },{
                     render: function ( data, type, row ) {
@@ -46,11 +47,7 @@
                     render: function ( data, type, row ) {
                         return '<span class="label label-info">' + data + '</span>';
                     },
-                    width: '100px',
                     targets: 3,
-                },{
-                    width: '150px',
-                    targets: [ 2, 4, 5, 6, 7 ]
                 }],
                 language: {
                     search: '<span>Filter:</span> _INPUT_',
