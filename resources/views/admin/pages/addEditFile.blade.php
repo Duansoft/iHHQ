@@ -2,6 +2,44 @@
 
 
 @section("css")
+    <style>
+        .row.is-flex {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .row.is-flex > [class*='col-'] {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /*
+        * And with max cross-browser enabled.
+        * Nobody should ever write this by hand.
+        * Use a preprocesser with autoprefixing.
+        */
+        .row.is-flex {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-flex-wrap: wrap;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+        }
+
+        .row.is-flex > [class*='col-'] {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            -ms-flex-direction: column;
+            flex-direction: column;
+        }
+    </style>
+
 @endsection
 
 
@@ -363,6 +401,26 @@
                 $('#file_ref').val(file_ref);
                 return true;
             });
+
+            $('#btn_conflict').on('click', function(e){
+                e.preventDefault();
+                var clients = $('.select-remote-clients').val();
+                if (clients) {
+                    $.ajax({
+                        url: "{{ url('admin/files/conflict') }}",
+                        data: {'clients': clients},
+                        method: "GET",
+                        success: function (data) {
+                            $('#modal_conflict').html(data);
+                            $('#modal_conflict').modal('show');
+                        },
+                        error: function (data) {
+                        }
+                    });
+                } else {
+                    alert('Please select at least a client for conflict check');
+                }
+            });
         });
     </script>
 @endsection
@@ -428,7 +486,7 @@
                 <form id="form_file" class="form-horizontal" action="{{ isset($file) ? url('admin/files/' . $file->file_id) : url('admin/files/create') }}" method="post">
                     {{ csrf_field() }}
 
-                    <div class="row">
+                    <div class="row is-flex">
                         <div class="col-md-6">
                             <div class="panel panel-flat">
                                 <div class="panel-body">
@@ -590,7 +648,12 @@
                                                 <input type="text" class="form-control" name="introducer" value="{{ isset($file) ? $file->introducer : old('introducer') }}">
                                             </div>
                                         </div>
+
+                                        <div class="form-group">
+                                            <a id="btn_conflict" class="btn btn-default pull-right heading-btn mr-10"> Check Conflict</a>
+                                        </div>
                                     </fieldset>
+
                                     <fieldset class="content-group">
                                         <legend class="text-bold">Contact Person <span class="text-muted"> (optional)</span></legend>
                                         <div class="form-group">
@@ -616,7 +679,6 @@
                                     </fieldset>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
@@ -751,5 +813,11 @@
         </div>
     </div>
     <!-- /content area -->
+
+
+    <!-- Conflict Modal Dialog -->
+    <div id="modal_conflict" class="modal fade">
+    </div>
+    <!-- /Conflict Modal Dialog -->
 
 @endsection

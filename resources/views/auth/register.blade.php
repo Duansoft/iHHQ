@@ -23,7 +23,13 @@
     <!-- /core JS files -->
 
     <!-- Theme JS files -->
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/core/libraries/jasny_bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/inputs/autosize.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/inputs/formatter.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/inputs/typeahead/typeahead.bundle.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/inputs/typeahead/handlebars.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/inputs/maxlength.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/selects/select2.min.js') }}"></script>
 
@@ -89,17 +95,29 @@
                                                     @endif
                                                 </div>
 
+                                                <div class="form-group {{ $errors->has('name') ? ' has-error' : '' }}">
+                                                    <label class="control-label">
+                                                        Name
+                                                        <small class="text-grey">(as per NRIC/Passport)</small>
+                                                    </label>
+                                                    <input type="text" class="form-control" name="name" placeholder="Your Name" value="{{old('name')}}" required>
+                                                    @if ($errors->has('name'))
+                                                        <span class="help-block">
+                                                            {{ $errors->first('name') }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <div class="form-group {{ $errors->has('name') ? ' has-error' : '' }}">
+                                                        <div class="form-group {{ $errors->has('company_number') ? ' has-error' : '' }}">
                                                             <label class="control-label">
-                                                                Name
-                                                                <small class="text-grey">(as per NRIC/Passport)</small>
+                                                                Company Registration Number
                                                             </label>
-                                                            <input type="text" class="form-control" name="name" placeholder="Your Name" value="{{old('name')}}" required>
-                                                            @if ($errors->has('name'))
+                                                            <input type="text" class="form-control" name="company_number" placeholder="123456-A" value="{{old('company_number')}}" maxlength="20" required>
+                                                            @if ($errors->has('company_number'))
                                                                 <span class="help-block">
-                                                                    {{ $errors->first('name') }}
+                                                                    {{ $errors->first('company_number') }}
                                                                 </span>
                                                             @endif
                                                         </div>
@@ -108,7 +126,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group {{ $errors->has('passport_no') ? ' has-error' : '' }}">
                                                             <label class="control-label">NRIC/Passport No.</label>
-                                                            <input type="text" class="form-control" name="passport_no" placeholder="123456-7890" pattern="^\d{6}-\d{4}$"
+                                                            <input type="text" class="form-control passport_no" name="passport_no" placeholder="123456-78-9101" pattern="^\d{6}-\d{2}-\d{4}$"
                                                                    value="{{old('passport_no')}}" required>
                                                             @if ($errors->has('passport_no'))
                                                                 <span class="help-block">

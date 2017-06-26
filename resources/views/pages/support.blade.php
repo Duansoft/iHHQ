@@ -82,32 +82,32 @@
 @section("content")
 <!-- Content area -->
 <div class="content">
-
-    <!-- Error Message -->
-    @if (count($errors) > 0)
-        <div class="alert alert-danger no-border">
-            <ul>
-                <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
-                @foreach ($errors->all() as $error)
-                    <li>
-                        <span class="text-semibold">{{ $error }}</span>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <!-- Success Message -->
-    @if(Session::has('flash_message'))
-        <div class="alert alert-success no-border">
-            <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
-            <span class="text-semibold">{{ Session::get('flash_message') }}</span>
-        </div>
-    @endif
-
     <!-- Highlighted tabs -->
     <div class="row">
         <div class="col-lg-11 col-md-12">
+
+            <!-- Error Message -->
+            @if (count($errors) > 0)
+                <div class="alert alert-danger no-border">
+                    <ul>
+                        <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
+                        @foreach ($errors->all() as $error)
+                            <li>
+                                <span class="text-semibold">{{ $error }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <!-- Success Message -->
+            @if(Session::has('flash_message'))
+                <div class="alert alert-success no-border">
+                    <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
+                    <span class="text-semibold">{{ Session::get('flash_message') }}</span>
+                </div>
+            @endif
+
             <div class="col-lg-3 no-padding">
                 <div class="panel panel-white">
                     <div class="panel-heading">

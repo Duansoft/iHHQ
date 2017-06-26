@@ -23,14 +23,14 @@
     <script type="text/javascript">
         $(function(){
             $('#search').on( 'keyup click', function (e) {
-               var key = e.target.value;
+               var key = e.target.value.toLowerCase();
                $('.file_panel').each(function(){
                     if (key == "") {
                         $(this).show();
                     } else {
-                        var file_ref = $(this).attr("data-fileRef");
-                        var project_name = $(this).attr("data-pName");
-                        var tags = $(this).attr("data-tags");
+                        var file_ref = $(this).attr("data-fileRef").toLowerCase();
+                        var project_name = $(this).attr("data-pName").toLowerCase();
+                        var tags = $(this).attr("data-tags").toLowerCase();
 
                         if (isContain(key, file_ref, project_name, tags)) {
                             $(this).show();
@@ -87,7 +87,9 @@
                             <i class="icon-search4 text-size-base text-muted"></i>
                         </div>
                     </div>
+                    @role('admin')
                     <button type="button" class="btn btn-default ml-5"><i class="icon-plus2"></i> Create Payment</button>
+                    @endrole
                 </form>
             </div>
         </div>

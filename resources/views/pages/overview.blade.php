@@ -201,6 +201,9 @@
                                         </ul>
                                     </div>
                                 </td>
+                                <td>
+                                    <span>{{ $file->tags }}</span>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

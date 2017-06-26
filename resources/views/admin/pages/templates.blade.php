@@ -38,12 +38,14 @@
                     targets: 3,
                 },{
                     width: '120px',
+                    orderable: false,
                     targets: 5,
                 },{
                     render: function ( data, type, row ) {
                         return '<div class="media-left media-middle"><a href="./templates/' + row.template_id + '/download" download><img src="' + $('meta[name="_publicURL"]').attr('content') + '/' + row.extension + '" class="img-xs" alt=""></a></div>';
                     },
                     width: '140px',
+                    orderable: false,
                     targets: 6,
                 }],
                 language: {

@@ -104,6 +104,24 @@ class FileController extends Controller
         return View('admin.pages.addEditFile', compact('lawyers', 'staffs', 'file_types', 'subcategories', 'categories', 'subcategories', 'autoID'));
     }
 
+    public function checkConflict()
+    {
+        $clients = Input::get('clients');
+        if (sizeof($clients) > 0) {
+            $files = DB::table('file_users')
+                ->join('files', 'files.file_ref', 'file_users.file_ref')
+                ->join('users', 'file_users.user_id', 'users.id')
+                ->where('file_users.role', 'client')
+                ->whereIn('file_users.user_id', $clients)
+                ->orderBy('files.created_at', 'desc')
+                ->get();
+
+            return View('admin.pages.checkFileConflict', compact('files'));
+        } else {
+            return response()->json();
+        }
+    }
+
     /**
      * Create New File
      */
@@ -315,7 +333,6 @@ class FileController extends Controller
     /**
      * Ajax Functions
      */
-
     public function searchFileAjax()
     {
         $user_id = Input::get('id');

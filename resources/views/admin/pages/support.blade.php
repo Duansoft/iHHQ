@@ -119,14 +119,6 @@
                     <div class="panel panel-white">
                         <div class="panel-heading" style="margin-bottom: 10px; margin-top: 10px;">
                             <h5 class="panel-title" style="margin-right: 100px;">{{ isset($ticket) ? $ticket->subject : 'Ticket' }}</h5>
-                            <div class="heading-elements">
-                                <div class="heading-btn no-margin-left">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-default btn-icon text-grey pt-5 pb-5 pl-15 pr-15"><i class="icon-cog7"></i></button>
-                                        <button type="button" class="btn btn-default btn-icon text-grey pt-5 pb-5 pl-15 pr-15"><i class="icon-paperplane"></i></button>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                         <div class="panel-body">

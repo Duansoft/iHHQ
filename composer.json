@@ -17,6 +17,7 @@
         "laravelcollective/html": "^5.4",
         "nesbot/carbon": "^1.22",
         "php-http/guzzle6-adapter": "^1.1",
+        "predis/predis": "^1.1",
         "santigarcor/laratrust": "3.2.*",
         "simplesoftwareio/simple-qrcode": "~1",
         "sofa/eloquence": "~5.4",

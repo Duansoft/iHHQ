@@ -23,6 +23,7 @@
                     width: '50px',
                     targets: [ 0, 1 ]
                 },{
+                    orderable: false,
                     width: '120px',
                     targets: 5,
                 },{

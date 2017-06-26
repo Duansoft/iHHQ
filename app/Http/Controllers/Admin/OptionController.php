@@ -30,14 +30,9 @@ class OptionController extends Controller
         $couriers = Courier::all();
         $ticket_categories = Ticket_Category::all();
         $template_categories = Template_Category::all();
-        if (sizeof($categories) > 0) {
-            $category = $categories->first();
-            $subcategories = File_Subcategory::where('category_id', $category->category_id)->get();
+        $subcategories = File_Subcategory::all();
 
-            return View('admin.pages.options', compact('offices', 'file_types', 'couriers', 'categories', 'subcategories', 'ticket_categories', 'template_categories'));
-        }
-
-        return View('admin.pages.options', compact('offices', 'file_types', 'couriers', 'categories', 'ticket_categories', 'template_categories'));
+        return View('admin.pages.options', compact('offices', 'file_types', 'couriers', 'categories', 'subcategories', 'ticket_categories', 'template_categories'));
     }
 
     public function postOffice($id = null)

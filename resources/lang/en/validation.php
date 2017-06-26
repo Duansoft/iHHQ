@@ -114,6 +114,8 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'passport_no.unique' => 'NRIC/Passport No is already registered.',
+    ],
 
 ];

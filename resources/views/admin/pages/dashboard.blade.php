@@ -25,6 +25,19 @@
                         $('#search').val()
                 ).draw();
             });
+
+            $('.dispatch').on('click', function(){
+                window.location = $(this).data('url');
+            });
+            $('.payment').on('click', function(){
+                window.location = $(this).data('url');
+            });
+            $('.user').on('click', function(){
+                window.location = $(this).data('url');
+            });
+            $('.ticket').on('click', function(){
+                window.location = $(this).data('url');
+            });
         });
     </script>
 @endsection
@@ -73,7 +86,7 @@
 
         <div class="row">
             <div class="col-lg-11 no-padding">
-                <div class="col-md-3">
+                <div class="col-md-3 dispatch" data-url="{{ url('admin/dashboard/dispatches') }}">
                     <div class="panel bg-dashboard-dispatch">
                         <div class="panel-body">
                             <div class="heading-elements">
@@ -90,7 +103,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-3 payment" data-url="{{ url('admin/dashboard/payments') }}">
                     <div class="panel bg-dashboard-payment">
                         <div class="panel-body">
                             <div class="heading-elements">
@@ -107,7 +120,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-3 ticket" data-url="{{ url('admin/dashboard/tickets') }}">
                     <div class="panel bg-dashboard-ticket">
                         <div class="panel-body">
                             <div class="heading-elements">
@@ -124,7 +137,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-3 user" data-url="{{ url('admin/dashboard/users') }}">
                     <div class="panel bg-dashboard-user">
                         <div class="panel-body">
                             <div class="heading-elements">

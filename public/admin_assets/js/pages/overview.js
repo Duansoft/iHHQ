@@ -45,6 +45,11 @@ $(function() {
             orderable: false,
             width: '100px',
             targets: [ 4 ]
+        },{
+            orderable: false,
+            searchable: true,
+            visible: false,
+            targets: [ 5 ]
         }],
     });
 

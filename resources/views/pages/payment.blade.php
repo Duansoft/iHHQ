@@ -34,7 +34,7 @@
 
             // Search function
             $('#search').on('keyup click', function(e){
-                var key = e.target.value;
+                var key = e.target.value.toLowerCase();
                 $('.file_panel').each(function(){
                     if (key == "") {
                         $(this).show();
@@ -43,7 +43,7 @@
                         var name = $(this).attr("data-pName");
                         var tags = $(this).attr("data-tags");
 
-                        if (fileRef.match(key) || name.match(key) || tags.match(key)) {
+                        if (fileRef.toLowerCase().match(key) || name.toLowerCase().match(key) || tags.toLowerCase().match(key)) {
                             $(this).show();
                         } else {
                             $(this).hide();
@@ -136,7 +136,7 @@
                                         <span class="display-block text-muted text-size-small">Total Outstanding</span>
                                     </div>
                                 </form>
-                                <form class="heading-form pr-5" action="#">
+                                <form class="heading-form pr-5" action="#" style="min-width: 80px;">
                                     <div class="form-group">
                                         <span>{{$file->currency}}{{$file->paid_amount}}</span>
                                         <span class="display-block text-muted text-size-small">Total Paid</span>

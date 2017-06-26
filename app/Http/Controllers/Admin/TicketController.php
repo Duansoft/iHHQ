@@ -280,7 +280,7 @@ class TicketController extends Controller
         $content['text'] =  Input::get('message');
 
         $message = new Ticket_Message();
-        $message->json_encode($content);
+        $message->message = json_encode($content);
         $message->ticket_id = $ticket->ticket_id;
         $message->sender_id = $me->id;
         $message->client_id = $ticket->client_id;

@@ -105,7 +105,7 @@
                                 <div class="form-group border-bottom mr-5 ml-5">
                                     <label class="control-label col-lg-2 no-padding-left">Name</label>
                                     <div class="col-lg-10">
-                                        <input type="text" class="form-control no-border" name="name" placeholder="Your Name" value="{{ $me->name }}" required>
+                                        <input type="text" class="form-control no-border" name="name" placeholder="Your Name" value="{{ $me->name }}" readonly required>
                                     </div>
                                 </div>
                                 <div class="form-group border-bottom mr-5 ml-5">

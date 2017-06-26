@@ -11,6 +11,7 @@ use Billplz\Client;
 use Http\Client\Common\HttpMethodsClient;
 use Http\Adapter\Guzzle6\Client as GuzzleHttpClient;
 use Http\Message\MessageFactory\GuzzleMessageFactory;
+use App\Jobs\SendRequestPaymentNotification;
 
 
 class Controller extends BaseController
@@ -86,6 +87,15 @@ class Controller extends BaseController
         } else {
             return $size;
         }
+    }
+
+    /**
+     * Queue Jobs
+     */
+    public function sendPaymentRequest()
+    {
+        $job = (new SendRequestPaymentNotification());
+        dispatch($job);
     }
 
 }

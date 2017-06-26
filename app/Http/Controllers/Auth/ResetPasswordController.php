@@ -25,7 +25,7 @@ class ResetPasswordController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/overview/index';
+    protected $redirectTo = '/overview';
 
     /**
      * Create a new controller instance.
@@ -47,6 +47,13 @@ class ResetPasswordController extends Controller
 
     public function postReset()
     {
-        return redirect()->back();
+        if (Auth::user()->hasRole('admin')) {
+            return redirect('/admin/dashboard');
+        } else if (Auth::user()->hasRole('client')) {
+            return redirect('/overview');
+        } else {
+            return redirect('/admin/overview');
+        }
+        //return redirect()->back();
     }
 }

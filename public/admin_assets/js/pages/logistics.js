@@ -256,8 +256,7 @@ $(function() {
         select2Client.select2({
             minimumResultsForSearch: Infinity,
             data: data,
-        })
-
+        });
     }
 
     // Print SVG

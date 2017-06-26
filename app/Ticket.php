@@ -26,4 +26,13 @@ class Ticket extends Model
     {
         return $this->belongsTo(Ticket_Category::class, 'category_id', 'category_id');
     }
+
+    public function isActive()
+    {
+        if ($this->status_id == 2) {
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -131,6 +131,10 @@ class SupportController extends Controller
         $ticket = Ticket::findOrFail($id);
         $message = Input::get('message');
 
+        if (!$ticket->isActive()) {
+            return redirect()->back()->withErrors(['The Ticket is not active yet']);
+        }
+
         $validator = Validator::make([
             'message' => $message
         ],[

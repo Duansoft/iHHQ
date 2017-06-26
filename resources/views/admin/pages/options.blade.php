@@ -11,7 +11,6 @@
 
 
 @section("js")
-    <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/tables/handsontable/handsontable.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/forms/selects/select2.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/plugins/loaders/progressbar.min.js') }}"></script>
@@ -143,6 +142,10 @@
                 $('#modal_subcategory #company_name').val($(this).data('name'));
                 $('#modal_subcategory .btn-success').text("Update");
                 $('#modal_subcategory form').attr('action', $(this).data('url'));
+                $('#modal_subcategory .select').select2({
+                    minimumResultsForSearch: Infinity,
+                    data: { id: 1, text: "Some Text" }
+                });
                 $('#modal_subcategory').modal('show');
             });
             // Delete File Category
@@ -151,6 +154,10 @@
                 $('#modal_subcategory #company_name').val($(this).data('name'));
                 $('#modal_subcategory .btn-success').text("Delete");
                 $('#modal_subcategory form').attr('action', $(this).data('url'));
+                $('#modal_subcategory .select').select2({
+                    minimumResultsForSearch: Infinity,
+                    data: { id: 1, text: "Some Text" }
+                });
                 $('#modal_subcategory').modal('show');
             });
 
@@ -203,110 +210,6 @@
                 $('#modal_courier .btn-success').text("Delete");
                 $('#modal_courier form').attr('action', $(this).data('url'));
                 $('#modal_courier').modal('show');
-            });
-
-            /*
-             * SubCategory
-             */
-            var hot_checks_values_data = [];
-            var selectedData;
-            var cellTable;
-
-            $('#category').on("select2:select", function (event) {
-                $.ajax({
-                    type: "GET",
-                    url: '{{ url("admin/files/subcategories") }}',
-                    data: {"id": event.currentTarget.value},
-                    dataType: 'json',
-                    success: function (data) {
-                        initializeSubCategory(data);
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
-                });
-            });
-
-            function initializeSubCategory(data) {
-                subCategorySelect.empty();
-                subCategorySelect.select2({
-                    minimumResultsForSearch: Infinity,
-                    data: data,
-                });
-                selectedData = data[0].data;
-                $("#subcategory > option").each(function (index) { // iterate through all options of selectbox
-                    $(this).attr('data-id', data[index].data); // add attribute to option with value of i
-                });
-
-                hot_checks_values_data = JSON.parse(selectedData);
-                cellTable.destroy();
-                create_template_table();
-            }
-
-
-            // Handson Table Setup
-            // ------------------------------
-
-            // Define element
-            var hot_checks_values = document.getElementById('activity-table');
-
-            // Initialize with options
-            function create_template_table() {
-                cellTable = new Handsontable(hot_checks_values, {
-                    data: hot_checks_values_data,
-                    rowHeaders: true,
-                    colHeaders: ['Select', 'Activity Desc', 'Status', 'Price', 'Duration'],
-                    manualColumnMove: true,
-                    stretchH: 'all',
-                    columns: [
-                        {
-                            data: 'select',
-                            type: 'checkbox',
-                        },
-                        {
-                            data: 'activity'
-                        },
-                        {
-                            data: 'status',
-                        },
-                        {
-                            data: 'milestone',
-                            type: 'numeric',
-                            format: '0,0.00',
-                        },
-                        {
-                            data: 'duration',
-                        },
-                    ]
-                });
-
-                $('#case').val(JSON.stringify(hot_checks_values_data));
-            }
-
-            create_template_table();
-
-            $('#btn_add').on('click', function () {
-                hot_checks_values_data.push(
-                        {no: "10", status: "In Progress", activity: "", duration: 0, milestone: 0, select: true}
-                );
-                cellTable.destroy();
-                create_template_table();
-            });
-            $('#btn_delete').on('click', function () {
-                var jsonArr = [];
-                $.each(hot_checks_values_data, function (index, item) {
-                    if (item.select == false) {
-                        jsonArr.push(item);
-                    }
-                    hot_checks_values_data = jsonArr;
-                    cellTable.destroy();
-                    create_template_table();
-                });
-            });
-            $('#btn_delete_all').on('click', function () {
-                hot_checks_values_data = [];
-                cellTable.destroy();
-                create_template_table();
             });
 
             // When Submit
@@ -495,43 +398,34 @@
                     </div>
 
                     <div class="tab-pane" id="tab-sub-category">
-                        <div class="row mb-10">
-                            <div class="form-group">
-                                <label class="control-label col-lg-2">Category</label>
-                                <div class="col-lg-10">
-                                    <select id="category" class="select form-control" name="category_id">
-                                        @foreach($categories as $category)
-                                            <option value="{{$category->category_id}}">{{$category->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="panel">
                             <table class="table text-nowrap">
                                 <thead>
                                 <tr class="active">
                                     <th style="width: 50px"> ID</th>
-                                    <th> Name</th>
+                                    <th> Sub Category</th>
+                                    <th> Category</th>
                                     <th class="text-center" style="width: 50px;">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($categories as $category)
+                                @foreach($subcategories as $subcategory)
                                     <tr>
                                         <td class="text-center">
-                                            <h6 class="no-margin">{{$category->category_id}}</h6>
+                                            <h6 class="no-margin">{{$subcategory->subcategory_id}}</h6>
                                         </td>
                                         <td>
-                                            <span>{{$category->name}}</span>
+                                            <span>{{$subcategory->name}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{$subcategory->category->name}}</span>
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group btn-group-fade">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a class="btn_category_edit" data-name="{{$category->name}}" data-url="{{ url('admin/options/categories/' . $category->category_id) }}"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
-                                                    <li><a class="btn_category_delete" data-name="{{$category->name}}" data-url="{{ url('admin/options/categories/' . $category->category_id . '/delete') }}"><i class="icon-cross2 text-danger"></i> Delete</a></li>
+                                                    <li><a class="btn_subcategory_edit" data-name="{{$subcategory->name}}" data-category="{{$subcategory->category->name}}" data-categoryID="{{$subcategory->category_id}}" data-url="{{ url('admin/options/subcategories/' . $subcategory->category_id) }}"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
+                                                    <li><a class="btn_subcategory_delete" data-name="{{$subcategory->name}}" data-category="{{$subcategory->category->name}}" data-categoryID="{{$subcategory->category_id}}" data-url="{{ url('admin/options/subcategories/' . $subcategory->category_id . '/delete') }}"><i class="icon-cross2 text-danger"></i> Delete</a></li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -745,7 +639,7 @@
 </div>
 <!-- /File Category modal -->
 
-<!-- File Category modal -->
+<!-- File Sub Category modal -->
 <div id="modal_subcategory" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -761,6 +655,11 @@
                     <div class="form-group">
                         <label>Subcategory Name</label>
                         <input type="text" placeholder="" name="name" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label> Category</label>
+                        <select class="select" name="category_id"></select>
                     </div>
 
                     <div class="form-group">

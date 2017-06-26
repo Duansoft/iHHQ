@@ -15,10 +15,28 @@ use App\Permission;
 
 
 Route::get('/', function() {
-    return redirect('/login');
+    if (Auth::check()) {
+        if (Auth::user()->hasRole('admin')) {
+            return redirect('/admin/dashboard');
+        } else if (Auth::user()->hasRole('client')) {
+            return redirect('/overview');
+        } else {
+            return redirect('/admin/overview');
+        }
+    } else {
+        return redirect('/login');
+    }
 });
 Route::get('/admin/', function() {
-    return redirect('login');
+    if (Auth::check()) {
+        if (Auth::user()->hasRole('admin')) {
+            return redirect('/dashboard');
+        } else {
+            return redirect('/overview');
+        }
+    } else {
+        return redirect('/login');
+    }
 });
 
 
@@ -85,10 +103,16 @@ Route::group(['middleware' => ['auth', 'role:client']], function () {
 /**
  * SuperAdmin, Lawyer, Legal Staff URIs
  */
-Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['auth', 'role:admin|lawyer|staff']], function() {
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['auth', 'role:admin|lawyer|staff|billing|logistic']], function() {
 
     /* Dashboard */
-    Route::get('dashboard', 'DashboardController@index');
+    Route::group(['middleware' => ['role:admin']], function() {
+        Route::get('dashboard', 'DashboardController@index');
+        Route::get('dashboard/dispatches', 'DashboardController@getDispatches');
+        Route::get('dashboard/payments', 'DashboardController@getPayments');
+        Route::get('dashboard/users', 'DashboardController@getUsers');
+        Route::get('dashboard/tickets', 'DashboardController@getTickets');
+    });
 
     /* Main */
     Route::get('/overview', 'OverviewController@index');
@@ -114,12 +138,13 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
     Route::get('users/hhq/search', 'UserController@findHHQStaffsAjax');
 
     /* Files */
-    Route::get('files', 'FileController@index');
-    Route::get('files/create', ['middleware' => ['role:admin|lawyer'], 'uses' => 'FileController@getFile']);
-    Route::post('files/create', ['middleware' => ['role:admin|lawyer'], 'uses' => 'FileController@postFile']);
+    Route::get('files', ['middleware' => ['role:admin'], 'uses' => 'FileController@index']);
+    Route::get('files/create', ['middleware' => ['role:admin'], 'uses' => 'FileController@getFile']);
+    Route::post('files/create', ['middleware' => ['role:admin'], 'uses' => 'FileController@postFile']);
     Route::get('files/search', 'FileController@searchFileAjax');
     Route::get('files/seek', 'FileController@seekFileAjax');
     Route::get('files/clients', 'FileController@getFileClientsAjax');
+    Route::get('files/conflict', 'FileController@checkConflict');
     Route::get('files/subcategories', 'FileController@getSubCategoriesAjax');
     Route::get('files/{id}', 'FileController@getFile');
     Route::post('files/{id}', 'FileController@postFile');
@@ -151,32 +176,34 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
 
     /* Tickets */
     Route::get('tickets', 'TicketController@index');
-    Route::get('tickets/get', 'TicketController@getActiveTicketsAjax');
-    Route::get('tickets/complete', 'TicketController@getCompletedTickets');
-    Route::get('tickets/complete/get', 'TicketController@getCompletedTicketsAjax');
-    Route::get('tickets/pending', 'TicketController@getPendingTickets');
-    Route::get('tickets/pending/get', 'TicketController@getPendingTicketsAjax');
-    Route::get('tickets/create', 'TicketController@getCreateTicket');
-    Route::post('tickets/create', 'TicketController@postCreateTicket');
+    Route::get('tickets/get', ['middleware' => ['role:admin'], 'uses' => 'TicketController@getActiveTicketsAjax']);
+    Route::get('tickets/complete', ['middleware' => ['role:admin'], 'uses' => 'TicketController@getCompletedTickets']);
+    Route::get('tickets/complete/get', ['middleware' => ['role:admin'], 'uses' => 'TicketController@getCompletedTicketsAjax']);
+    Route::get('tickets/pending', ['middleware' => ['role:admin'], 'uses' => 'TicketController@getPendingTickets']);
+    Route::get('tickets/pending/get', ['middleware' => ['role:admin'], 'uses' => 'TicketController@getPendingTicketsAjax']);
+    Route::get('tickets/create', ['middleware' => ['role:admin'], 'uses' => 'TicketController@getCreateTicket']);
+    Route::post('tickets/create', ['middleware' => ['role:admin'], 'uses' => 'TicketController@postCreateTicket']);
     Route::get('tickets/download', 'TicketController@download');
     Route::get('tickets/{id}', 'TicketController@getTicket');
-    Route::post('tickets/{id}/messages', 'TicketController@sendMessage');
-    Route::get('tickets/{id}/delete', 'TicketController@deleteTicket');
-    Route::get('tickets/{id}/complete', 'TicketController@completeTicket');
-    Route::get('tickets/{id}/open', 'TicketController@reopenTicket');
     Route::post('tickets/{id}', 'TicketController@postTicket');
+    Route::post('tickets/{id}/messages', 'TicketController@sendMessage');
+    Route::get('tickets/{id}/delete', ['middleware' => ['role:admin'], 'uses' => 'TicketController@deleteTicket']);
+    Route::get('tickets/{id}/complete', ['middleware' => ['role:admin'], 'uses' => 'TicketController@completeTicket']);
+    Route::get('tickets/{id}/open', ['middleware' => ['role:admin'], 'uses' => 'TicketController@reopenTicket']);
 
     /* Announcements */
-    Route::get('announcements', 'AnnouncementController@index');
-    Route::get('announcements/get', 'AnnouncementController@getAnnouncementAjax');
-    Route::get('announcements/close', 'AnnouncementController@getClosedAnnouncement');
-    Route::get('announcements/close/get', 'AnnouncementController@getClosedAnnouncementAjax');
-    Route::get('announcements/create', 'AnnouncementController@getCreateAnnouncement');
-    Route::post('announcements/create', 'AnnouncementController@createAnnouncement');
-    Route::get('announcements/{id}', 'AnnouncementController@getAnnouncement');
-    Route::post('announcements/{id}', 'AnnouncementController@postAnnouncement');
-    Route::get('announcements/{id}/close', 'AnnouncementController@closeAnnouncement');
-    Route::get('announcements/{id}/delete', 'AnnouncementController@deleteAnnouncement');
+    Route::group(['middleware' => ['role:admin']], function() {
+        Route::get('announcements', 'AnnouncementController@index');
+        Route::get('announcements/get', 'AnnouncementController@getAnnouncementAjax');
+        Route::get('announcements/close', 'AnnouncementController@getClosedAnnouncement');
+        Route::get('announcements/close/get', 'AnnouncementController@getClosedAnnouncementAjax');
+        Route::get('announcements/create', 'AnnouncementController@getCreateAnnouncement');
+        Route::post('announcements/create', 'AnnouncementController@createAnnouncement');
+        Route::get('announcements/{id}', 'AnnouncementController@getAnnouncement');
+        Route::post('announcements/{id}', 'AnnouncementController@postAnnouncement');
+        Route::get('announcements/{id}/close', 'AnnouncementController@closeAnnouncement');
+        Route::get('announcements/{id}/delete', 'AnnouncementController@deleteAnnouncement');
+    });
 
     /* Legal Templates */
     Route::get('templates', 'TemplateController@index');
@@ -214,7 +241,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
         Route::post('options/template_categories/{id}/delete', 'OptionController@deleteTemplateCategory');
     });
 
-    /* Options */
+    /* milestones */
     Route::group(['middleware' => ['role:admin']], function() {
         Route::get('milestones', 'MilestoneTemplate@index');
         Route::post('milestones', 'MilestoneTemplate@postMilestone');
