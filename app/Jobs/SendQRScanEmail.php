@@ -8,13 +8,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class SendRequestPaymentNotification implements ShouldQueue
+class SendQRScanEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    public $tries = 3;
-
-    public $timeout = 120;
 
     /**
      * Create a new job instance.

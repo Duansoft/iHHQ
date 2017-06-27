@@ -87,9 +87,9 @@
                             <i class="icon-search4 text-size-base text-muted"></i>
                         </div>
                     </div>
-                    @role('admin')
-                    <button type="button" class="btn btn-default ml-5"><i class="icon-plus2"></i> Create Payment</button>
-                    @endrole
+                    {{--@role('admin')--}}
+                    {{--<button type="button" class="btn btn-default ml-5"><i class="icon-plus2"></i> Create Payment</button>--}}
+                    {{--@endrole--}}
                 </form>
             </div>
         </div>

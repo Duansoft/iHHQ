@@ -89,8 +89,9 @@ class Controller extends BaseController
         }
     }
 
+
     /**
-     * Queue Jobs
+     * Send Queueing Email
      */
     public function sendPaymentRequest()
     {

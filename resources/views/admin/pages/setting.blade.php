@@ -108,12 +108,14 @@
                                         <input type="text" class="form-control no-border" name="name" placeholder="Your Name" value="{{ $me->name }}" readonly required>
                                     </div>
                                 </div>
+
                                 <div class="form-group border-bottom mr-5 ml-5">
                                     <label class="control-label col-lg-2 no-padding-left">Email</label>
                                     <div class="col-lg-10">
                                         <input type="email" class="form-control no-border" name="email" placeholder="Email" value="{{ $me->email }}" readonly required>
                                     </div>
                                 </div>
+
                                 <div class="form-group border-bottom mr-5 ml-5">
                                     <label class="control-label col-lg-2 no-padding-left">Avatar</label>
                                     <div class="col-lg-10">
@@ -135,6 +137,7 @@
                                         <input type="file" class="file-input" name="photo" accept=".png, .jpg" data-allowed-file-extensions='["png", "jpg"]' data-show-caption="true">
                                     </div>
                                 </div>
+
                                 <div class="form-group mr-5 ml-5">
                                     <label class="control-label col-lg-2 no-padding-left">Country</label>
                                     <div class="col-lg-10">
@@ -143,12 +146,21 @@
                                         </select>
                                     </div>
                                 </div>
+
+                                {{--<div class="form-group border-bottom mr-5 ml-5">--}}
+                                    {{--<label class="control-label col-lg-2 no-padding-left">Company Number</label>--}}
+                                    {{--<div class="col-lg-10">--}}
+                                        {{--<input type="text" class="form-control no-border" name="company_number" placeholder="123456-A" value="{{ $me->company_number }}" readonly required>--}}
+                                    {{--</div>--}}
+                                {{--</div>--}}
+
                                 <div class="form-group border-bottom mr-5 ml-5">
                                     <label class="control-label col-lg-2 no-padding-left">IC/Passport</label>
                                     <div class="col-lg-10">
                                         <input type="text" class="form-control no-border" name="passport_no" placeholder="123456-7890" pattern="^\d{6}-\d{4}$" value="{{ $me->passport_no }}" readonly required>
                                     </div>
                                 </div>
+
                                 <div class="form-group border-bottom mr-5 ml-5">
                                     <label class="control-label col-lg-2 no-padding-left">Mobile No.</label>
                                     <div class="col-lg-10">
@@ -156,6 +168,7 @@
                                     </div>
                                     {{--pattern="^\d{4}-\d{3}-\d{4}$"--}}
                                 </div>
+
                                 <div class="form-group border-bottom mr-5 ml-5">
                                     <label class="control-label col-lg-2 no-padding-left">Preferred Mailing Address</label>
                                     <div class="col-lg-10">

@@ -44,10 +44,9 @@
                     $('#modal_category form').attr('action', "{{url('admin/options/categories')}}");
                     $('#modal_category').modal('show');
                 } else if (target.trim() == "Sub Category") {
-                    $('#modal_subcategory input').val("");
-                    $('#modal_subcategory .btn-success').text("Create");
-                    $('#modal_subcategory form').attr('action', "{{url('admin/options/subcategories')}}");
-                    $('#modal_subcategory').modal('show');
+                    $('#modal_new_subcategory input').val("");
+                    $('#modal_new_subcategory .btn-success').text("Create");
+                    $('#modal_new_subcategory').modal('show');
                 } else if (target.trim() == "Courier") {
                     $('#modal_courier input').val("");
                     $('#modal_courier .btn-success').text("Create");
@@ -139,7 +138,7 @@
             // Edit File Subcategory
             $('.btn_subcategory_edit').on('click', function(e){
                 e.preventDefault();
-                $('#modal_subcategory #company_name').val($(this).data('name'));
+                $('#modal_subcategory input').val($(this).data('name'));
                 $('#modal_subcategory .btn-success').text("Update");
                 $('#modal_subcategory form').attr('action', $(this).data('url'));
                 $('#modal_subcategory .select').select2({
@@ -151,7 +150,7 @@
             // Delete File Category
             $('.btn_subcategory_delete').on('click', function(e){
                 e.preventDefault();
-                $('#modal_subcategory #company_name').val($(this).data('name'));
+                $('#modal_subcategory input').val($(this).data('name'));
                 $('#modal_subcategory .btn-success').text("Delete");
                 $('#modal_subcategory form').attr('action', $(this).data('url'));
                 $('#modal_subcategory .select').select2({
@@ -612,7 +611,7 @@
 <!-- /New File Type modal -->
 
 <!-- File Category modal -->
-<div id="modal_category" class="modal fade">
+<div id="modal_category" class="modal fade"  >
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-yellow-800">
@@ -671,6 +670,43 @@
     </div>
 </div>
 <!-- /File Category modal -->
+
+<!-- New File Sub Category modal -->
+<div id="modal_new_subcategory" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-yellow-800">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title"> Subcategory</h5>
+            </div>
+
+            <form id="upload_form" method="post" action="{{ url('admin/options/subcategories') }}">
+                {{ csrf_field() }}
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Subcategory Name</label>
+                        <input type="text" placeholder="" name="name" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label> Category</label>
+                        <select class="select" name="category_id">
+                            @foreach($categories as $category)
+                                <option value="{{ $category->category_id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success form-control"> Create</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /New File Category modal -->
 
 <!-- New Courier modal -->
 <div id="modal_courier" class="modal fade">

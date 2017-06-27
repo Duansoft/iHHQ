@@ -159,6 +159,16 @@
                             </div>
                         </div>
 
+                        <div class="form-group {{ $errors->has('company_number') ? ' has-error' : '' }}">
+                            <label class="control-label col-lg-2">Company Number</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="company_number" placeholder="123456-A" value="{{isset($user) ? $user->company_number : old('company_number')}}" required>
+                                @if ($errors->has('company_number'))
+                                    <span class="help-block">{{ $errors->first('company_number') }}</span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group {{ $errors->has('mobile') ? ' has-error' : '' }}">
                             <label class="control-label col-lg-2">Mobile Number</label>
                             <div class="col-lg-10">
