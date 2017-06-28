@@ -11,4 +11,9 @@ class File_Document extends Model
     protected $primaryKey = "document_id";
 
     protected $fillable = ['file_ref', 'name', 'created_by', 'path', 'extension'];
+
+    public function created_by()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
 }

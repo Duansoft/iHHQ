@@ -13,6 +13,7 @@ use App\Ticket_Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 
 class OptionController extends Controller
@@ -181,6 +182,15 @@ class OptionController extends Controller
 
     public function postSubCategory($id = null)
     {
+        $data = Input::all();
+        $validator = Validator::make($data, [
+            'category_id' => 'required|numeric',
+            'name' => 'required|max:255',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->messages());
+        }
+
         if (empty($id)) {
             $category = new File_Subcategory();
             $message = ["flash_message" => "The sub category have been created successfully"];

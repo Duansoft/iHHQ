@@ -35,4 +35,12 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = \Hash::make($value);
     }
+
+    /**
+     * Documents of file
+     */
+    public function fileDocuments()
+    {
+        return $this->hasMany(File_Document::class, 'id', 'created_by');
+    }
 }

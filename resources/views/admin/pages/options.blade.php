@@ -31,37 +31,44 @@
                     $('#office_name').val("");
                     $('#office_location').val("");
                     $('#submit_office').text("Create");
+                    addTokenField($('#modal_office form'));
                     $('#modal_office form').attr('action', "{{url('admin/options/offices')}}");
                     $('#modal_office').modal('show');
                 } else if (target.trim() == 'File Type') {
                     $('#file_type').val("");
                     $('#modal_file_type .btn').text("Create");
+                    addTokenField($('#modal_file_type form'));
                     $('#modal_file_type form').attr('action', "{{url('admin/options/file_types')}}");
                     $('#modal_file_type').modal('show');
                 } else if (target.trim() == "Category") {
                     $('#modal_category input').val("");
                     $('#modal_category .btn-success').text("Create");
+                    addTokenField($('#modal_category form'));
                     $('#modal_category form').attr('action', "{{url('admin/options/categories')}}");
                     $('#modal_category').modal('show');
                 } else if (target.trim() == "Sub Category") {
                     $('#modal_new_subcategory input').val("");
                     $('#modal_new_subcategory .btn-success').text("Create");
+                    addTokenField($('#modal_new_subcategory form'));
                     $('#modal_new_subcategory').modal('show');
                 } else if (target.trim() == "Courier") {
                     $('#modal_courier input').val("");
                     $('#modal_courier .btn-success').text("Create");
+                    addTokenField($('#modal_courier form'));
                     $('#modal_courier form').attr('action', "{{url('admin/options/ticket_categories')}}");
                     $('#modal_courier').modal('show');
                 } else if (target.trim() == "Ticket Category") {
                     $('#file_type').val("");
                     $('#modal_ticket_category input').val("");
                     $('#modal_ticket_category .btn').text("Create");
+                    addTokenField($('#modal_ticket_category form'));
                     $('#modal_ticket_category form').attr('action', "{{url('admin/options/ticket_categories')}}");
                     $('#modal_ticket_category').modal('show');
                 } else if (target.trim() == "Legal Template Category") {
                     $('#file_type').val("");
                     $('#modal_template_category input').val("");
                     $('#modal_template_category .btn').text("Create");
+                    addTokenField($('#modal_template_category form'));
                     $('#modal_template_category form').attr('action', "{{url('admin/options/template_categories')}}");
                     $('#modal_template_category').modal('show');
                 }
@@ -81,12 +88,16 @@
                 initialCaption: "No file selected"
             });
 
+            /**
+             * Dialogs
+             */
             // Edit Office
             $('.btn_office_edit').on('click', function(e){
                 e.preventDefault();
                 $('#office_name').val($(this).data('name'));
                 $('#office_location').val($(this).data('location'));
                 $('#submit_office').text("Update");
+                addTokenField($('#modal_office form'));
                 $('#modal_office form').attr('action', $(this).data('url'));
                 $('#modal_office').modal('show');
             });
@@ -97,6 +108,7 @@
                 $('#office_name').val($(this).data('name'));
                 $('#office_location').val($(this).data('location'));
                 $('#submit_office').text("Delete");
+                addTokenField($('#modal_office form'));
                 $('#modal_office form').attr('action', $(this).data('url'));
                 $('#modal_office').modal('show');
             });
@@ -106,6 +118,7 @@
                 e.preventDefault();
                 $('#file_type').val($(this).data('name'));
                 $('#modal_file_type .btn').text("Update");
+                addTokenField($('#modal_file_type form'));
                 $('#modal_file_type form').attr('action', $(this).data('url'));
                 $('#modal_file_type').modal('show');
             });
@@ -114,6 +127,7 @@
                 e.preventDefault();
                 $('#file_type').val($(this).data('name'));
                 $('#modal_file_type .btn').text("Delete");
+                addTokenField($('#modal_file_type form'));
                 $('#modal_file_type form').attr('action', $(this).data('url'));
                 $('#modal_file_type').modal('show');
             });
@@ -123,6 +137,7 @@
                 e.preventDefault();
                 $('#modal_category #company_name').val($(this).data('name'));
                 $('#modal_category .btn-success').text("Update");
+                addTokenField($('#modal_category form'));
                 $('#modal_category form').attr('action', $(this).data('url'));
                 $('#modal_category').modal('show');
             });
@@ -131,6 +146,7 @@
                 e.preventDefault();
                 $('#modal_category #company_name').val($(this).data('name'));
                 $('#modal_category .btn-success').text("Delete");
+                addTokenField($('#modal_category form'));
                 $('#modal_category form').attr('action', $(this).data('url'));
                 $('#modal_category').modal('show');
             });
@@ -139,7 +155,10 @@
             $('.btn_subcategory_edit').on('click', function(e){
                 e.preventDefault();
                 $('#modal_subcategory input').val($(this).data('name'));
+                $('#modal_subcategory #category').val($(this).data('category'));
+                $('#modal_subcategory #categoryID').val($(this).data('category-id'));
                 $('#modal_subcategory .btn-success').text("Update");
+                addTokenField($('#modal_subcategory form'));
                 $('#modal_subcategory form').attr('action', $(this).data('url'));
                 $('#modal_subcategory .select').select2({
                     minimumResultsForSearch: Infinity,
@@ -151,7 +170,10 @@
             $('.btn_subcategory_delete').on('click', function(e){
                 e.preventDefault();
                 $('#modal_subcategory input').val($(this).data('name'));
+                $('#modal_subcategory #category').val($(this).data('category'));
+                $('#modal_subcategory #categoryID').val($(this).data('category-id'));
                 $('#modal_subcategory .btn-success').text("Delete");
+                addTokenField($('#modal_subcategory form'));
                 $('#modal_subcategory form').attr('action', $(this).data('url'));
                 $('#modal_subcategory .select').select2({
                     minimumResultsForSearch: Infinity,
@@ -166,6 +188,7 @@
                 $('#modal_ticket_category input').val($(this).data('name'));
                 $('#modal_ticket_category .btn').text("Update");
                 $('#modal_ticket_category form').attr('action', $(this).data('url'));
+                addTokenField($('#modal_ticket_category form'));
                 $('#modal_ticket_category').modal('show');
             });
             // Delete Ticket Category
@@ -174,6 +197,7 @@
                 $('#modal_ticket_category input').val($(this).data('name'));
                 $('#modal_ticket_category .btn').text("Delete");
                 $('#modal_ticket_category form').attr('action', $(this).data('url'));
+                addTokenField($('#modal_ticket_category form'));
                 $('#modal_ticket_category').modal('show');
             });
 
@@ -183,6 +207,7 @@
                 $('#modal_template_category input').val($(this).data('name'));
                 $('#modal_template_category .btn').text("Update");
                 $('#modal_template_category form').attr('action', $(this).data('url'));
+                addTokenField($('#modal_template_category form'));
                 $('#modal_template_category').modal('show');
             });
             // Delete Ticket Category
@@ -191,6 +216,7 @@
                 $('#modal_template_category input').val($(this).data('name'));
                 $('#modal_template_category .btn').text("Delete");
                 $('#modal_template_category form').attr('action', $(this).data('url'));
+                addTokenField($('#modal_ticket_category form'));
                 $('#modal_ticket_category').modal('show');
             });
 
@@ -199,6 +225,7 @@
                 e.preventDefault();
                 $('#modal_courier #company_name').val($(this).data('name'));
                 $('#modal_courier .btn-success').text("Update");
+                addTokenField($('#modal_courier form'));
                 $('#modal_courier form').attr('action', $(this).data('url'));
                 $('#modal_courier').modal('show');
             });
@@ -207,6 +234,7 @@
                 e.preventDefault();
                 $('#modal_courier #company_name').val($(this).data('name'));
                 $('#modal_courier .btn-success').text("Delete");
+                addTokenField($('#modal_courier form'));
                 $('#modal_courier form').attr('action', $(this).data('url'));
                 $('#modal_courier').modal('show');
             });
@@ -221,6 +249,15 @@
                     $(this).submit();
                 }
             });
+
+            function addTokenField(form)
+            {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: '_token',
+                    value: $('meta[name=_token]').attr('content'),
+                }).appendTo(form);
+            }
 
         });
     </script>
@@ -423,8 +460,8 @@
                                             <div class="btn-group btn-group-fade">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a class="btn_subcategory_edit" data-name="{{$subcategory->name}}" data-category="{{$subcategory->category->name}}" data-categoryID="{{$subcategory->category_id}}" data-url="{{ url('admin/options/subcategories/' . $subcategory->category_id) }}"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
-                                                    <li><a class="btn_subcategory_delete" data-name="{{$subcategory->name}}" data-category="{{$subcategory->category->name}}" data-categoryID="{{$subcategory->category_id}}" data-url="{{ url('admin/options/subcategories/' . $subcategory->category_id . '/delete') }}"><i class="icon-cross2 text-danger"></i> Delete</a></li>
+                                                    <li><a class="btn_subcategory_edit" data-name="{{$subcategory->name}}" data-category="{{$subcategory->category->name}}" data-category-id="{{$subcategory->category->category_id}}" data-url="{{ url('admin/options/subcategories/' . $subcategory->category_id) }}"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
+                                                    <li><a class="btn_subcategory_delete" data-name="{{$subcategory->name}}" data-category="{{$subcategory->category->name}}" data-category-id="{{$subcategory->category->category_id}}" data-url="{{ url('admin/options/subcategories/' . $subcategory->category_id . '/delete') }}"><i class="icon-cross2 text-danger"></i> Delete</a></li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -559,8 +596,6 @@
             </div>
 
             <form id="upload_form" action="{{ url('admin/options/offices') }}" method="post">
-                {{ csrf_field() }}
-
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Office Name</label>
@@ -592,8 +627,6 @@
             </div>
 
             <form id="upload_form" action="#" method="post">
-                {{ csrf_field() }}
-
                 <div class="modal-body">
                     <div class="form-group">
                         <label>File Type</label>
@@ -620,8 +653,6 @@
             </div>
 
             <form id="upload_form" method="post">
-                {{ csrf_field() }}
-
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Category Name</label>
@@ -648,8 +679,6 @@
             </div>
 
             <form id="upload_form" method="post">
-                {{ csrf_field() }}
-
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Subcategory Name</label>
@@ -658,7 +687,8 @@
 
                     <div class="form-group">
                         <label> Category</label>
-                        <select class="select" name="category_id"></select>
+                        <input id="categoryID" type="hidden" required>
+                        <input id="category" type="text" class="form-control" readonly required>
                     </div>
 
                     <div class="form-group">
@@ -681,8 +711,6 @@
             </div>
 
             <form id="upload_form" method="post" action="{{ url('admin/options/subcategories') }}">
-                {{ csrf_field() }}
-
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Subcategory Name</label>
@@ -718,8 +746,6 @@
             </div>
 
             <form id="upload_form" action="#" method="post" enctype="multipart/form-data">
-                {{ csrf_field() }}
-
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Company Name</label>
@@ -751,8 +777,6 @@
             </div>
 
             <form id="upload_form" method="post">
-                {{ csrf_field() }}
-
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Category Name</label>
@@ -779,8 +803,6 @@
             </div>
 
             <form id="upload_form" action="#" method="post" enctype="multipart/form-data">
-                {{ csrf_field() }}
-
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Category Name</label>
