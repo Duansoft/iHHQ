@@ -57,9 +57,23 @@ class RestfulAPIController extends Controller
             return $this->responseBadRequestError('Email or Password is not correct');
         }
 
+        if ($user->hasRole('admin')) {
+            $role = 'admin';
+        } elseif ($user->hasRole('lawyer')) {
+            $role = 'lawyer';
+        } elseif ($user->hasRole('staff')) {
+            $role = 'staff';
+        } elseif ($user->hasRole('billing')) {
+            $role = 'billing';
+        } elseif ($user->hasRole('logistic')) {
+            $role = 'logistic';
+        } elseif ($user->hasRole('client')) {
+            $role = 'client';
+        }
+
         // Create Token
         $token = JWTAuth::fromUser($user);
-        $response = array_merge($user->toArray(), ['token' => $token]);
+        $response = array_merge($user->toArray(), ['token' => $token, 'role' => $role]);
 
         return $this->responseSuccess($response);
     }
