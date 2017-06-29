@@ -30,7 +30,7 @@
             var cellTable;
 
             function init() {
-                var id = "{{ isset($subcategories) ? $subcategories[0]->subcategory_id : null }}";
+                var id = "{{ isset($subcategories) ? $subcategories[0]->category_id : null }}";
                 if (id) {
                     $.ajax({
                         type: "GET",
@@ -42,7 +42,7 @@
                             initTable(data, 0);
                         },
                         error: function (data) {
-                            console.log('Error:', data);
+                            //console.log('Error:', data);
                         }
                     });
                 }
@@ -60,7 +60,7 @@
                         initTable(data, 0);
                     },
                     error: function (data) {
-                        console.log('Error:', data);
+                        //console.log('Error:', data);
                     }
                 });
             });
@@ -83,12 +83,20 @@
 
             function initTable(data, index) {
                 subCategoriesData = data;
-                defaultData = data[index].data;
-                $("#subcategory > option").each(function (index) { // iterate through all options of selectbox
-                    $(this).attr('data-id', data[index].data); // add attribute to option with value of i
-                });
 
-                hot_checks_values_data = JSON.parse(defaultData);
+                try {
+                    defaultData = data[index].data;
+                    $("#subcategory > option").each(function (index) { // iterate through all options of selectbox
+                        $(this).attr('data-id', data[index].data); // add attribute to option with value of i
+                    });
+                    hot_checks_values_data = JSON.parse(defaultData);
+                } catch (exception) {
+                }
+
+                if (!hot_checks_values_data) {
+                    hot_checks_values_data = [];
+                }
+
                 cellTable.destroy();
                 create_template_table();
             }
@@ -118,6 +126,8 @@
                         },
                         {
                             data: 'status',
+                            editor: 'select',
+                            selectOptions: ['In Progress', 'Completed']
                         }
                     ]
                 });
