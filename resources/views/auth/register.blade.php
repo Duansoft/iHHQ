@@ -114,7 +114,7 @@
                                                             <label class="control-label">
                                                                 Company Registration Number
                                                             </label>
-                                                            <input type="text" class="form-control" name="company_number" placeholder="123456-A" value="{{old('company_number')}}" maxlength="20" required>
+                                                            <input type="text" class="form-control" name="company_number" placeholder="123456-A" value="{{old('company_number')}}" pattern="^\d{6,7}-[A-Za-z]{1}$" required>
                                                             @if ($errors->has('company_number'))
                                                                 <span class="help-block">
                                                                     {{ $errors->first('company_number') }}

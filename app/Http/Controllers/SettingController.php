@@ -48,7 +48,7 @@ class SettingController extends Controller
         // Update Profile Photo
         if (Input::hasFile('photo')) {
             $photo = Input::file('photo');
-            $fileName = $me->id . str_random(2) . '.' . $photo->extension();
+            $fileName = $me->id . str_random(1) . '.' . $photo->extension();
             $img_dir = public_path() . '/upload/avatars/' . $fileName;
             Image::make($photo)->encode('png')->resize(150, 150)->save($img_dir);
 

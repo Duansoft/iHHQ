@@ -20,7 +20,7 @@
     <script type="text/javascript" src="{{ URL::asset('admin_assets/js/pages/logistics.js') }}"></script>
     <script type="text/javascript">
         $(function(){
-            var target = "Office";
+            var target = "{{ Session::get('tab') }}";
             $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
                 target = $(e.target).text();  // activated tab
                 $('.panel-title').text(target);
@@ -31,43 +31,50 @@
                     $('#office_name').val("");
                     $('#office_location').val("");
                     $('#submit_office').text("Create");
+                    $('#modal_office input').prop('readonly', false);
                     addTokenField($('#modal_office form'));
                     $('#modal_office form').attr('action', "{{url('admin/options/offices')}}");
                     $('#modal_office').modal('show');
-                } else if (target.trim() == 'File Type') {
+                } else if (target.trim() == 'File Type' || target.trim() == 'File Type') {
                     $('#file_type').val("");
                     $('#modal_file_type .btn').text("Create");
-                    addTokenField($('#modal_file_type form'));
+                    $('#modal_file_type input').prop('readonly', false);
+                    addTokenField($('#modal_file_type form') || target.trim() == 'File_Type');
                     $('#modal_file_type form').attr('action', "{{url('admin/options/file_types')}}");
                     $('#modal_file_type').modal('show');
-                } else if (target.trim() == "Category") {
+                } else if (target.trim() == "Category" || target.trim() == 'File_Category') {
                     $('#modal_category input').val("");
                     $('#modal_category .btn-success').text("Create");
+                    $('#modal_category input').prop('readonly', false);
                     addTokenField($('#modal_category form'));
                     $('#modal_category form').attr('action', "{{url('admin/options/categories')}}");
                     $('#modal_category').modal('show');
-                } else if (target.trim() == "Sub Category") {
+                } else if (target.trim() == "Sub Category" || target.trim() == 'File_Subcategory') {
                     $('#modal_new_subcategory input').val("");
                     $('#modal_new_subcategory .btn-success').text("Create");
+                    $('#modal_new_subcategory input').prop('readonly', false);
                     addTokenField($('#modal_new_subcategory form'));
                     $('#modal_new_subcategory').modal('show');
                 } else if (target.trim() == "Courier") {
                     $('#modal_courier input').val("");
                     $('#modal_courier .btn-success').text("Create");
+                    $('#modal_courier input').prop('readonly', false);
                     addTokenField($('#modal_courier form'));
-                    $('#modal_courier form').attr('action', "{{url('admin/options/ticket_categories')}}");
+                    $('#modal_courier form').attr('action', "{{url('admin/options/couriers')}}");
                     $('#modal_courier').modal('show');
-                } else if (target.trim() == "Ticket Category") {
+                } else if (target.trim() == "Ticket Category" || target.trim() == 'Ticket_Category') {
                     $('#file_type').val("");
                     $('#modal_ticket_category input').val("");
                     $('#modal_ticket_category .btn').text("Create");
+                    $('#modal_ticket_category input').prop('readonly', false);
                     addTokenField($('#modal_ticket_category form'));
                     $('#modal_ticket_category form').attr('action', "{{url('admin/options/ticket_categories')}}");
                     $('#modal_ticket_category').modal('show');
-                } else if (target.trim() == "Legal Template Category") {
+                } else if (target.trim() == "Legal Template Category" || target.trim() == 'Template_Category') {
                     $('#file_type').val("");
                     $('#modal_template_category input').val("");
                     $('#modal_template_category .btn').text("Create");
+                    $('#modal_template_category input').prop('readonly', false);
                     addTokenField($('#modal_template_category form'));
                     $('#modal_template_category form').attr('action', "{{url('admin/options/template_categories')}}");
                     $('#modal_template_category').modal('show');
@@ -96,6 +103,7 @@
                 e.preventDefault();
                 $('#office_name').val($(this).data('name'));
                 $('#office_location').val($(this).data('location'));
+                $('#modal_office input').prop('readonly', false);
                 $('#submit_office').text("Update");
                 addTokenField($('#modal_office form'));
                 $('#modal_office form').attr('action', $(this).data('url'));
@@ -107,6 +115,7 @@
                 e.preventDefault();
                 $('#office_name').val($(this).data('name'));
                 $('#office_location').val($(this).data('location'));
+                $('#modal_office input').prop('readonly', true);
                 $('#submit_office').text("Delete");
                 addTokenField($('#modal_office form'));
                 $('#modal_office form').attr('action', $(this).data('url'));
@@ -117,6 +126,7 @@
             $('.btn_file_type_edit').on('click', function(e){
                 e.preventDefault();
                 $('#file_type').val($(this).data('name'));
+                $('#file_type').prop('readonly', false);
                 $('#modal_file_type .btn').text("Update");
                 addTokenField($('#modal_file_type form'));
                 $('#modal_file_type form').attr('action', $(this).data('url'));
@@ -126,6 +136,7 @@
             $('.btn_file_type_delete').on('click', function(e){
                 e.preventDefault();
                 $('#file_type').val($(this).data('name'));
+                $('#file_type').prop('readonly', true);
                 $('#modal_file_type .btn').text("Delete");
                 addTokenField($('#modal_file_type form'));
                 $('#modal_file_type form').attr('action', $(this).data('url'));
@@ -135,7 +146,8 @@
             // Edit File Category
             $('.btn_category_edit').on('click', function(e){
                 e.preventDefault();
-                $('#modal_category #company_name').val($(this).data('name'));
+                $('#modal_category input').val($(this).data('name'));
+                $('#modal_category input').prop('readonly', false);
                 $('#modal_category .btn-success').text("Update");
                 addTokenField($('#modal_category form'));
                 $('#modal_category form').attr('action', $(this).data('url'));
@@ -144,7 +156,8 @@
             // Delete File Category
             $('.btn_category_delete').on('click', function(e){
                 e.preventDefault();
-                $('#modal_category #company_name').val($(this).data('name'));
+                $('#modal_category input').val($(this).data('name'));
+                $('#modal_category input').prop('readonly', true);
                 $('#modal_category .btn-success').text("Delete");
                 addTokenField($('#modal_category form'));
                 $('#modal_category form').attr('action', $(this).data('url'));
@@ -157,6 +170,9 @@
                 $('#modal_subcategory input').val($(this).data('name'));
                 $('#modal_subcategory #category').val($(this).data('category'));
                 $('#modal_subcategory #categoryID').val($(this).data('category-id'));
+                $('#modal_subcategory input').prop('readonly', false);
+                $('#modal_subcategory #category').prop('readonly', true);
+                $('#modal_subcategory #categoryID').prop('readonly', true);
                 $('#modal_subcategory .btn-success').text("Update");
                 addTokenField($('#modal_subcategory form'));
                 $('#modal_subcategory form').attr('action', $(this).data('url'));
@@ -172,6 +188,7 @@
                 $('#modal_subcategory input').val($(this).data('name'));
                 $('#modal_subcategory #category').val($(this).data('category'));
                 $('#modal_subcategory #categoryID').val($(this).data('category-id'));
+                $('#modal_subcategory input').prop('readonly', true);
                 $('#modal_subcategory .btn-success').text("Delete");
                 addTokenField($('#modal_subcategory form'));
                 $('#modal_subcategory form').attr('action', $(this).data('url'));
@@ -195,6 +212,7 @@
             $('.btn_ticket_category_delete').on('click', function(e){
                 e.preventDefault();
                 $('#modal_ticket_category input').val($(this).data('name'));
+                $('#modal_ticket_category input').prop('readonly', true);
                 $('#modal_ticket_category .btn').text("Delete");
                 $('#modal_ticket_category form').attr('action', $(this).data('url'));
                 addTokenField($('#modal_ticket_category form'));
@@ -214,16 +232,18 @@
             $('.btn_template_category_delete').on('click', function(e){
                 e.preventDefault();
                 $('#modal_template_category input').val($(this).data('name'));
+                $('#modal_template_category input').prop('readonly', true);
                 $('#modal_template_category .btn').text("Delete");
                 $('#modal_template_category form').attr('action', $(this).data('url'));
-                addTokenField($('#modal_ticket_category form'));
-                $('#modal_ticket_category').modal('show');
+                addTokenField($('#modal_template_category form'));
+                $('#modal_template_category').modal('show');
             });
 
             // Edit Courier
             $('.btn_courier_edit').on('click', function(e){
                 e.preventDefault();
                 $('#modal_courier #company_name').val($(this).data('name'));
+                $('#modal_courier input').prop('readonly', false);
                 $('#modal_courier .btn-success').text("Update");
                 addTokenField($('#modal_courier form'));
                 $('#modal_courier form').attr('action', $(this).data('url'));
@@ -233,6 +253,7 @@
             $('.btn_courier_delete').on('click', function(e){
                 e.preventDefault();
                 $('#modal_courier #company_name').val($(this).data('name'));
+                $('#modal_courier input').prop('readonly', true);
                 $('#modal_courier .btn-success').text("Delete");
                 addTokenField($('#modal_courier form'));
                 $('#modal_courier form').attr('action', $(this).data('url'));
@@ -314,32 +335,32 @@
         <div class="panel-body">
             <div class="tabbable nav-tabs-vertical nav-tabs-left">
                 <ul class="nav nav-tabs nav-tabs-highlight">
-                    <li class="active"><a href="#tab-office" data-toggle="tab"> Office</a></li>
-                    <li><a href="#tab-department" data-toggle="tab"> File Type</a></li>
-                    <li><a href="#tab-category" data-toggle="tab"> Category</a></li>
-                    <li><a href="#tab-sub-category" data-toggle="tab"> Sub Category</a></li>
-                    <li><a href="#tab-courier" data-toggle="tab"> Courier</a></li>
-                    <li><a href="#tab-ticket-category" data-toggle="tab"> Ticket Category</a></li>
-                    <li><a href="#tab-template-category" data-toggle="tab"> Legal Template Category</a></li>
+                    <li class="{{ Session::get('tab') == "Office" ? "active" : "" }}"><a href="#tab-office" data-toggle="tab"> Office</a></li>
+                    <li class="{{ Session::get('tab') == "File_Type" ? "active" : "" }}"><a href="#tab-department" data-toggle="tab"> File Type</a></li>
+                    <li class="{{ Session::get('tab') == "File_Category" ? "active" : "" }}"><a href="#tab-category" data-toggle="tab"> Category</a></li>
+                    <li class="{{ Session::get('tab') == "File_Subcategory" ? "active" : "" }}"><a href="#tab-sub-category" data-toggle="tab"> Sub Category</a></li>
+                    <li class="{{ Session::get('tab') == "Courier" ? "active" : "" }}"><a href="#tab-courier" data-toggle="tab"> Courier</a></li>
+                    <li class="{{ Session::get('tab') == "Ticket_Category" ? "active" : "" }}"><a href="#tab-ticket-category" data-toggle="tab"> Ticket Category</a></li>
+                    <li class="{{ Session::get('tab') == "Template_Category" ? "active" : "" }}"><a href="#tab-template-category" data-toggle="tab"> Legal Template Category</a></li>
                 </ul>
 
                 <div class="tab-content">
-                    <div class="tab-pane active" id="tab-office">
+                    <div class="tab-pane {{ Session::get('tab') == "Office" ? "active" : "" }}" id="tab-office">
                         <div class="panel">
                             <table class="table text-nowrap">
                                 <thead>
                                 <tr class="active">
-                                    <th style="width: 50px">ID</th>
+                                    <th style="width: 50px">No</th>
                                     <th>Office Name</th>
                                     <th>Location</th>
                                     <th class="text-center" style="width: 50px;">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($offices as $office)
+                                @foreach($offices as $index => $office)
                                     <tr>
                                         <td class="text-center">
-                                            <h6 class="no-margin">{{$office->office_id}}</h6>
+                                            <h6 class="no-margin">{{$index + 1}}</h6>
                                         </td>
                                         <td>
                                             <span>{{$office->name}}</span>
@@ -363,21 +384,21 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane" id="tab-department">
+                    <div class="tab-pane {{ Session::get('tab') == "File_Type" ? "active" : "" }}" id="tab-department">
                         <div class="panel">
                             <table class="table text-nowrap">
                                 <thead>
                                 <tr class="active">
-                                    <th style="width: 50px"> ID</th>
+                                    <th style="width: 50px"> No</th>
                                     <th> Name</th>
                                     <th class="text-center" style="width: 50px;">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($file_types as $file_type)
+                                @foreach($file_types as $index => $file_type)
                                     <tr>
                                         <td class="text-center">
-                                            <h6 class="no-margin">{{$file_type->type_id}}</h6>
+                                            <h6 class="no-margin">{{$index + 1}}</h6>
                                         </td>
                                         <td>
                                             <span>{{$file_type->name}}</span>
@@ -398,21 +419,21 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane" id="tab-category">
+                    <div class="tab-pane {{ Session::get('tab') == "File_Category" ? "active" : "" }}" id="tab-category">
                         <div class="panel">
                             <table class="table text-nowrap">
                                 <thead>
                                 <tr class="active">
-                                    <th style="width: 50px"> ID</th>
+                                    <th style="width: 50px"> No</th>
                                     <th> Name</th>
                                     <th class="text-center" style="width: 50px;">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($categories as $category)
+                                @foreach($categories as $index => $category)
                                     <tr>
                                         <td class="text-center">
-                                            <h6 class="no-margin">{{$category->category_id}}</h6>
+                                            <h6 class="no-margin">{{ $index + 1 }}</h6>
                                         </td>
                                         <td>
                                             <span>{{$category->name}}</span>
@@ -433,22 +454,22 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane" id="tab-sub-category">
+                    <div class="tab-pane {{ Session::get('tab') == "File_Subcategory" ? "active" : "" }}" id="tab-sub-category">
                         <div class="panel">
                             <table class="table text-nowrap">
                                 <thead>
                                 <tr class="active">
-                                    <th style="width: 50px"> ID</th>
+                                    <th style="width: 50px"> No</th>
                                     <th> Sub Category</th>
                                     <th> Category</th>
                                     <th class="text-center" style="width: 50px;">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($subcategories as $subcategory)
+                                @foreach($subcategories as $index => $subcategory)
                                     <tr>
                                         <td class="text-center">
-                                            <h6 class="no-margin">{{$subcategory->subcategory_id}}</h6>
+                                            <h6 class="no-margin">{{$index + 1}}</h6>
                                         </td>
                                         <td>
                                             <span>{{$subcategory->name}}</span>
@@ -460,8 +481,8 @@
                                             <div class="btn-group btn-group-fade">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Actions <span class="caret pl-15"></span></button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a class="btn_subcategory_edit" data-name="{{$subcategory->name}}" data-category="{{$subcategory->category->name}}" data-category-id="{{$subcategory->category->category_id}}" data-url="{{ url('admin/options/subcategories/' . $subcategory->category_id) }}"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
-                                                    <li><a class="btn_subcategory_delete" data-name="{{$subcategory->name}}" data-category="{{$subcategory->category->name}}" data-category-id="{{$subcategory->category->category_id}}" data-url="{{ url('admin/options/subcategories/' . $subcategory->category_id . '/delete') }}"><i class="icon-cross2 text-danger"></i> Delete</a></li>
+                                                    <li><a class="btn_subcategory_edit" data-name="{{$subcategory->name}}" data-category="{{$subcategory->category->name}}" data-category-id="{{$subcategory->category->category_id}}" data-url="{{ url('admin/options/subcategories/' . $subcategory->subcategory_id) }}"><i class="icon-checkmark3 text-success"></i> Edit</a></li>
+                                                    <li><a class="btn_subcategory_delete" data-name="{{$subcategory->name}}" data-category="{{$subcategory->category->name}}" data-category-id="{{$subcategory->category->category_id}}" data-url="{{ url('admin/options/subcategories/' . $subcategory->subcategory_id . '/delete') }}"><i class="icon-cross2 text-danger"></i> Delete</a></li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -472,22 +493,22 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane" id="tab-courier">
+                    <div class="tab-pane {{ Session::get('tab') == "Courier" ? "active" : "" }}" id="tab-courier">
                         <div class="panel">
                             <table class="table text-nowrap">
                                 <thead>
                                 <tr class="active">
-                                    <th style="width: 50px"> ID</th>
+                                    <th style="width: 50px"> No</th>
                                     <th style="width: 100px"> Logo</th>
                                     <th> Name</th>
                                     <th class="text-center" style="width: 50px;">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($couriers as $courier)
+                                @foreach($couriers as $index => $courier)
                                     <tr>
                                         <td class="text-center">
-                                            <h6 class="no-margin">{{$courier->courier_id}}</h6>
+                                            <h6 class="no-margin">{{ $index + 1 }}</h6>
                                         </td>
                                         <td>
                                             <img class="img-lg img-rounded" src="{{url($courier->logo)}}">
@@ -511,24 +532,24 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane" id="tab-ticket-category">
+                    <div class="tab-pane {{ Session::get('tab') == "Ticket_Category" ? "active" : "" }}" id="tab-ticket-category">
                         <div class="panel">
                             <table class="table text-nowrap">
                                 <thead>
                                 <tr class="active">
-                                    <th style="width: 50px"> ID</th>
+                                    <th style="width: 50px"> No</th>
                                     <th> Name</th>
                                     <th class="text-center" style="width: 50px;">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($ticket_categories as $ticket_category)
+                                @foreach($ticket_categories as $index => $ticket_category)
                                     <tr>
                                         <td class="text-center">
-                                            <h6 class="no-margin">{{$ticket_category->category_id}}</h6>
+                                            <h6 class="no-margin">{{$index + 1}}</h6>
                                         </td>
                                         <td>
-                                            <span>{{ $ticket_category->name }}</span>
+                                            <span>{{$ticket_category->name}}</span>
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group btn-group-fade">
@@ -546,21 +567,21 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane" id="tab-template-category">
+                    <div class="tab-pane {{ Session::get('tab') == "Template_Category" ? "active" : "" }}" id="tab-template-category">
                         <div class="panel">
                             <table class="table text-nowrap">
                                 <thead>
                                 <tr class="active">
-                                    <th style="width: 50px"> ID</th>
+                                    <th style="width: 50px"> No</th>
                                     <th> Name</th>
                                     <th class="text-center" style="width: 50px;">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($template_categories as $template_category)
+                                @foreach($template_categories as $index => $template_category)
                                     <tr>
                                         <td class="text-center">
-                                            <h6 class="no-margin">{{$template_category->category_id}}</h6>
+                                            <h6 class="no-margin">{{$index + 1}}</h6>
                                         </td>
                                         <td>
                                             <span>{{ $template_category->name }}</span>
@@ -644,7 +665,7 @@
 <!-- /New File Type modal -->
 
 <!-- File Category modal -->
-<div id="modal_category" class="modal fade"  >
+<div id="modal_category" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-yellow-800">
@@ -806,7 +827,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Category Name</label>
-                        <input type="text" placeholder="" name="category" class="form-control" required>
+                        <input type="text" placeholder="" name="name" class="form-control" required>
                     </div>
 
                     <div class="form-group">

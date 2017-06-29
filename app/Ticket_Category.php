@@ -12,6 +12,8 @@ class Ticket_Category extends Model
 
     protected $fillable = ['name'];
 
+    public $timestamps = null;
+
     public function tickets()
     {
         return $this->hasMany(Ticket::class, 'category_id', 'category_id');
