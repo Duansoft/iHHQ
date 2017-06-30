@@ -78,6 +78,7 @@
             var hot_checks_values_data = [];
             var subCategoriesData;
             var defaultData;
+            var index = 0;
 
             var cellTable;
             var tableContainer = document.getElementById('activity-table');
@@ -102,6 +103,7 @@
                             data: {"id": id},
                             dataType: 'json',
                             success: function (data) {
+                                subCategoriesData = data;
                                 initializeSubCategory(data);
                                 initTable(data, 0);
                             },
@@ -129,8 +131,9 @@
                 });
                 $('#subcategory').on("select2:select", function (event) {
                     var id = event.currentTarget.value;
-                    $.each(subCategoriesData, function(index, value) {
+                    $.each(subCategoriesData, function(i, value) {
                         if (id == value.id) {
+                            index = i;
                             initTable(subCategoriesData, index);
                         }
                     });
@@ -145,8 +148,6 @@
                 }
 
                 function initTable(data, index) {
-                    subCategoriesData = data;
-
                     try {
                         defaultData = data[index].data;
                         $("#subcategory > option").each(function (index) { // iterate through all options of selectbox
@@ -400,6 +401,8 @@
                     var dic = {no: index, activity: value[1], status: value[2]};
                     template.push(dic);
                 });
+
+                subCategoriesData[index].data = JSON.stringify(template);
                 $('#template').val(JSON.stringify(template));
 
                 // Set File Ref

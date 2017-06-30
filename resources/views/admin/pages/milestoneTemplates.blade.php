@@ -28,6 +28,7 @@
             var subCategoriesData;
             var defaultData;
             var cellTable;
+            var index = 0;
 
             function init() {
                 var id = "{{ isset($subcategories) ? $subcategories[0]->category_id : null }}";
@@ -38,11 +39,11 @@
                         data: {"id": id},
                         dataType: 'json',
                         success: function (data) {
+                            subCategoriesData = data;
                             initializeSubCategory(data);
-                            initTable(data, 0);
+                            initTable(data, index);
                         },
                         error: function (data) {
-                            //console.log('Error:', data);
                         }
                     });
                 }
@@ -66,8 +67,9 @@
             });
             $('#subcategory').on("select2:select", function (event) {
                 var id = event.currentTarget.value;
-                $.each(subCategoriesData, function(index, value) {
+                $.each(subCategoriesData, function(i, value) {
                     if (id == value.id) {
+                        index = i;
                         initTable(subCategoriesData, index);
                     }
                 });
@@ -82,8 +84,6 @@
             }
 
             function initTable(data, index) {
-                subCategoriesData = data;
-
                 try {
                     defaultData = data[index].data;
                     $("#subcategory > option").each(function (index) { // iterate through all options of selectbox
@@ -198,6 +198,8 @@
                     var dic = {no: index, activity: value[1], status: value[2]};
                     template.push(dic);
                 });
+
+                subCategoriesData[index].data = JSON.stringify(template);
                 $('#template').val(JSON.stringify(template));
 
                 var params = $(this).serialize();
