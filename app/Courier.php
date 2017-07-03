@@ -13,4 +13,9 @@ class Courier extends Model
     protected $fillable = ['name', 'logo'];
 
     public $timestamps = null;
+
+    public function dispatches()
+    {
+        return $this->hasMany(Dispatch::class, 'courier_id', 'courier_id');
+    }
 }

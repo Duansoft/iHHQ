@@ -28,6 +28,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         /* User Module */
         Route::post('/users/me/setting', 'RestfulAPIController@postUserProfile');
+        Route::post('/users/me/setting/notification', 'RestfulAPIController@postNotificationSetting');
 
         /* files module */
         Route::get('/files', 'RestfulAPIController@getFiles');
@@ -36,10 +37,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/files/{id}/payments', 'RestfulAPIController@getFilePayments');
         Route::get('/files/{id}/contacts', 'RestfulAPIController@getFileContacts');
         Route::get('/files/{id}/tickets', 'RestfulAPIController@getFileTickets');
+        Route::get('/files/{id}/dispatches', 'RestfulAPIController@getFileDispatches');
 
         /* Dispatch module */
         Route::get('/dispatches', 'RestfulAPIController@getDispatches');
-        Route::post('/dispatches/{id}/scan', 'RestfulAPIController@postQRCode');
+        Route::post('/dispatches/scan', 'RestfulAPIController@postQRCode');
 
         /* Ticket Module */
         Route::get('/tickets', 'RestfulAPIController@getTickets');

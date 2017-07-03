@@ -10,7 +10,7 @@ class File_Document extends Model
 
     protected $primaryKey = "document_id";
 
-    protected $fillable = ['file_ref', 'name', 'created_by', 'path', 'extension'];
+    protected $fillable = ['file_ref', 'name', 'created_by', 'path', 'extension', 'size'];
 
     public function created_by()
     {

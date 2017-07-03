@@ -35,4 +35,9 @@ class Dispatch extends Model
 //            return 'label-warning';
 //        }
 //    }
+
+    public function courier()
+    {
+        return $this->belongsTo(Courier::class, 'courier_id', 'courier_id');
+    }
 }

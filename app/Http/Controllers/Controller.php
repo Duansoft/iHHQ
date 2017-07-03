@@ -18,6 +18,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+
     protected function sendSMS($mobile_number, $message)
     {
         $sid = "AC82d41c29d48f8b91b58ba4796b9c7813";
@@ -219,7 +220,8 @@ class Controller extends BaseController
     protected function responseValidationError($validator)
     {
         $response = [
-            'error' => $validator->errors()->all(),
+//            'error' => $validator->errors()->all(),
+            'error' => $validator->errors()->first(),
         ];
         return response()->json($response)->setStatusCode('422');
     }
