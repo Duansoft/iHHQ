@@ -25,7 +25,7 @@
                     $('#modal_new_ticket').modal('show');
                     $('#title').val("");
                 } else {
-                    alert('Required Subject to Create Ticket');
+                    alert('Required subject to create correspondence');
                 }
             });
 
@@ -42,7 +42,7 @@
         <!-- Header content -->
         <div class="page-header-content">
             <div class="page-title">
-                <h2> Support</h2>
+                <h2> Correspondence</h2>
             </div>
         </div>
         <!-- /header content -->
@@ -85,7 +85,7 @@
                     <div class="panel panel-white">
                         <div class="panel-heading">
                             <div class="input-group">
-                                <input id="title" type="text" class="form-control" placeholder="Create a new ticket" readonly>
+                                <input id="title" type="text" class="form-control" placeholder="Create a new correspondence" readonly>
                                 <span class="input-group-btn">
                                     <button class="btn btn-default pl-20 pr-20"><i class="icon-plus3 text-grey"></i></button>
                                 </span>
@@ -118,7 +118,7 @@
                     <!-- Left annotation position -->
                     <div class="panel panel-white">
                         <div class="panel-heading" style="margin-bottom: 10px; margin-top: 10px;">
-                            <h5 class="panel-title" style="margin-right: 100px;">{{ isset($ticket) ? $ticket->subject : 'Ticket' }}</h5>
+                            <h5 class="panel-title" style="margin-right: 100px;">{{ isset($ticket) ? $ticket->subject : 'Correspondence' }}</h5>
                         </div>
 
                         <div class="panel-body">
@@ -167,7 +167,7 @@
             </div>
         </div>
         @else
-            <h6 class="text-grey text-italic text-size-large">There are no assigned tickets</h6>
+            <h6 class="text-grey text-italic text-size-large">There are no assigned correspondences</h6>
         @endif
         <!-- /highlighted tabs -->
     </div>

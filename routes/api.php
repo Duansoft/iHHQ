@@ -27,8 +27,10 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['jwt.auth', 'jwt.refresh']], function(){
 
         /* User Module */
+        Route::post('/users/me/logout', 'RestfulAPIController@logout');
         Route::post('/users/me/setting', 'RestfulAPIController@postUserProfile');
         Route::post('/users/me/setting/notification', 'RestfulAPIController@postNotificationSetting');
+        Route::get('/users/me/files/file-refs', 'RestfulAPIController@getMyFileRef');
 
         /* files module */
         Route::get('/files', 'RestfulAPIController@getFiles');
@@ -46,6 +48,9 @@ Route::group(['prefix' => 'v1'], function () {
         /* Ticket Module */
         Route::get('/tickets', 'RestfulAPIController@getTickets');
         Route::post('/tickets', 'RestfulAPIController@createTicket');
+        Route::get('/tickets/open', 'RestfulAPIController@getOpenTickets');
+        Route::get('/tickets/close', 'RestfulAPIController@getCloseTickets');
+        Route::get('/tickets/pending', 'RestfulAPIController@getPendingTickets');
         Route::get('/tickets/categories', 'RestfulAPIController@getTicketCategories');
         Route::get('/tickets/{id}/messages', 'RestfulAPIController@getTicketMessages');
         Route::post('/tickets/{id}/messages', 'RestfulAPIController@postTicketMessages');

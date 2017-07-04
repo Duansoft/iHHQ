@@ -20,68 +20,68 @@
                     <!-- Dashboard -->
                     @role('admin')
                     <li class="{{ Request::is('admin/dashboard*')? 'active': '' }}">
-                        <a href="{{URL::to('admin/dashboard')}}"><span>Overview</span></a>
+                        <a href="{{URL::to('admin/dashboard')}}"><span> Overview</span></a>
                     </li>
                     @endrole
 
                     <!-- Main Page -->
                     @role('lawyer')
                     <li class="{{ Request::is('admin/overview*')? 'active': '' }}">
-                        <a href="{{URL::to('admin/overview')}}"><span>Main</span></a>
+                        <a href="{{URL::to('admin/overview')}}"><span> Main</span></a>
                     </li>
                     @endrole
                     @role('staff')
                     <li class="{{ Request::is('admin/overview*')? 'active': '' }}">
-                        <a href="{{URL::to('admin/overview')}}"><span>Main</span></a>
+                        <a href="{{URL::to('admin/overview')}}"><span> Main</span></a>
                     </li>
                     @endrole
 
                     <!-- Users -->
                     @role('admin')
                     <li class="{{ Request::is('admin/users*')? 'active': '' }}">
-                        <a href="{{URL::to('admin/users')}}"><span>Users</span></a>
+                        <a href="{{URL::to('admin/users')}}"><span> Users</span></a>
                     </li>
                     @endrole
 
                     <!-- Files -->
                     @role('admin')
                     <li class="{{ Request::is('admin/files*')? 'active': '' }}">
-                        <a href="{{URL::to('admin/files')}}"><span>Files</span></a>
+                        <a href="{{URL::to('admin/files')}}"><span> Files</span></a>
                     </li>
                     @endrole
 
                     <!-- Logistics Page -->
                     <li class="{{ Request::is('admin/logistics*')? 'active': '' }}">
-                        <a href="{{URL::to('admin/logistics')}}"><span>Logistics</span></a>
+                        <a href="{{URL::to('admin/logistics')}}"><span> Logistics</span></a>
                     </li>
 
                     <!-- Payment Page -->
                     <li class="{{ Request::is('admin/payments*')? 'active': '' }}">
-                        <a href="{{URL::to('admin/payments')}}"><span>Billing & Payment</span></a>
+                        <a href="{{URL::to('admin/payments')}}"><span> Billing & Payment</span></a>
                     </li>
 
                     <!-- Support Page -->
                     <li class="{{ Request::is('admin/tickets*')? 'active': '' }}">
-                        <a href="{{URL::to('admin/tickets/')}}"><span>Support</span></a>
+                        <a href="{{URL::to('admin/tickets/')}}"><span> Correspondence</span></a>
                         {{--<a href="{{URL::to('admin/tickets/')}}"><span>Tickets<span class="badge bg-warning">5</span></span></a>--}}
                     </li>
 
                     <!-- Announcements -->
                     @role('admin')
                     <li class="{{ Request::is('admin/announcements*')? 'active': '' }}">
-                        <a href="{{URL::to('admin/announcements')}}"><span>Announcements</span></a>
+                        <a href="{{URL::to('admin/announcements')}}"><span> Announcements</span></a>
                     </li>
                     @endrole
 
                     <!-- Templates -->
                     <li class="{{ Request::is('admin/templates*')? 'active': '' }}">
-                        <a href="{{URL::to('admin/templates')}}"><span>Legal Templates</span></a>
+                        <a href="{{URL::to('admin/templates')}}"><span> Legal Templates</span></a>
                     </li>
 
                     <!-- options -->
                     @role('admin')
                     <li class="{{ Request::is('admin/options*')? 'active': '' }}">
-                        <a href="{{URL::to('admin/options')}}"><span>Options</span></a>
+                        <a href="{{URL::to('admin/options')}}"><span> Options</span></a>
                     </li>
                     @endrole
 

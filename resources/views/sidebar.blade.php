@@ -35,7 +35,7 @@
                     <!-- Support Page -->
                     <li class="{{ Request::is('support*')? 'active': '' }}">
                         {{--<a href="{{URL::to('support')}}"><span>Support<span class="badge bg-warning">5</span></span></a>--}}
-                        <a href="{{URL::to('support')}}"><span>Support</span></a>
+                        <a href="{{URL::to('support')}}"><span>Correspondence</span></a>
                     </li>
 
                     <!-- Legal Tempates Page -->

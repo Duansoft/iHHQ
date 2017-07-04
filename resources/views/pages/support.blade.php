@@ -70,7 +70,7 @@
         <!-- Header content -->
         <div class="page-header-content">
             <div class="page-title">
-                <h2>Support Tickets</h2>
+                <h2>Correspondence</h2>
             </div>
         </div>
         <!-- /header content -->
@@ -112,7 +112,7 @@
                 <div class="panel panel-white">
                     <div class="panel-heading">
                         <div class="input-group">
-                            <button class="form-control btn btn-default btn-create"> <span class="text-muted">Create a new ticket</span></button>
+                            <button class="form-control btn btn-default btn-create"> <span class="text-muted">Create a new correspondence</span></button>
                             <span class="input-group-btn">
                                 <button class="btn btn-default pl-20 pr-20 btn-create" type="button" data-toggle="modal"><i class="icon-plus3 text-grey"></i></button>
                             </span>
@@ -144,7 +144,7 @@
                 <!-- Left annotation position -->
                 <div class="panel panel-white">
                     <div class="panel-heading mt-10">
-                        <h5 class="panel-title">{{ isset($ticket) ? $ticket->subject : 'Ticket' }}</h5>
+                        <h5 class="panel-title">{{ isset($ticket) ? $ticket->subject : 'Correspondence' }}</h5>
                     </div>
 
                     @if(sizeof($messages) > 0)
@@ -207,7 +207,7 @@
         <div class="modal-content">
             <div class="modal-header bg-yellow-800">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h5 class="modal-title">New Support Ticket</h5>
+                <h5 class="modal-title">New Support Correspondence</h5>
             </div>
 
             <form id="create_ticket_form" class="form-horizontal" action="{{url('support/tickets/create')}}" method="post" enctype="multipart/form-data">
@@ -260,7 +260,7 @@
                 <div class="form-group bg-grey-F8FAFC no-margin p-10 text-grey-300">
                     <label class="control-label col-md-8">Messages are kept confidential</label>
                     <div class="col-md-4">
-                        <button type="submit" class="btn btn-success form-control">Create Ticket</button>
+                        <button type="submit" class="btn btn-success form-control">Create Correspondence</button>
                     </div>
                 </div>
             </form>

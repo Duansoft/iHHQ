@@ -19,7 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'email', 'password', 'passport_no', 'mobile', 'country_id', 'verified', 'is_allow', 'is_review', 'is_enable_push', 'is_enable_email', 'address',
-        'department_id', 'office_id', 'company_number'
+        'department_id', 'office_id', 'company_number', 'device_type', 'device_token'
     ];
 
     /**

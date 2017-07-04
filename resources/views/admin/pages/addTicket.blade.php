@@ -19,7 +19,7 @@
     <div class="page-header">
         <div class="page-header-content col-lg-11">
             <div class="page-title">
-                <h2><span class="text-semibold">Support</span></h2>
+                <h2><span class="text-semibold"> Correspondence</span></h2>
             </div>
 
             <div class="heading-elements">
@@ -66,14 +66,14 @@
                 <!-- Navigation -->
                 <div class="panel panel-flat">
                     <div class="panel-heading">
-                        <h6 class="panel-title">Tickets</h6>
+                        <h6 class="panel-title"> Correspondence</h6>
                     </div>
 
                     <div class="list-group no-border mb-5">
-                        <a href="{{ url('admin/tickets/') }}" class="list-group-item"><i class="icon-lifebuoy"></i> Active Tickets<span class="badge badge-success pull-right">{{ $activeTickets }}</span></a>
-                        <a href="{{ url('admin/tickets/pending') }}" class="list-group-item"><i class="icon-question3"></i> Pending Tickets<span class="badge badge-danger pull-right">{{ $pendingTickets }}</span></a>
+                        <a href="{{ url('admin/tickets/') }}" class="list-group-item"><i class="icon-lifebuoy"></i> Active Correspondence<span class="badge badge-success pull-right">{{ $activeTickets }}</span></a>
+                        <a href="{{ url('admin/tickets/pending') }}" class="list-group-item"><i class="icon-question3"></i> Pending Correspondence<span class="badge badge-danger pull-right">{{ $pendingTickets }}</span></a>
                         <div class="list-group-divider"></div>
-                        <a href="{{ url('admin/tickets/complete') }}" class="list-group-item"><i class="icon-close2"></i> Completed Tickets<span class="badge badge-default pull-right">{{ $completedTickets }}</span></a>
+                        <a href="{{ url('admin/tickets/complete') }}" class="list-group-item"><i class="icon-close2"></i> Completed Correspondence<span class="badge badge-default pull-right">{{ $completedTickets }}</span></a>
                     </div>
                 </div>
                 <!-- /navigation -->
@@ -82,7 +82,7 @@
             <div class="col-lg-9">
                 <div class="panel panel-flat">
                     <div class="panel-heading">
-                        <h5 class="panel-title">Create Ticket</h5>
+                        <h5 class="panel-title">Create Correspondence</h5>
                     </div>
                     <div class="panel-body">
                         <form class="form-horizontal" action="{{url('admin/tickets/create')}}" method="post">
@@ -126,7 +126,7 @@
                                 </div>
                             </fieldset>
                             <div class="text-right">
-                                <button type="submit" class="btn btn-primary"> Create Ticket<i class="icon-arrow-right14 position-right"></i></button>
+                                <button type="submit" class="btn btn-primary"> Create Correspondence<i class="icon-arrow-right14 position-right"></i></button>
                             </div>
                         </form>
                     </div>

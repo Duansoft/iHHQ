@@ -99,6 +99,18 @@ class RestfulAPIController extends Controller
         return $this->responseSuccess();
     }
 
+    public function logout()
+    {
+        $me = JWTAuth::parseToken()->authenticate();
+        $me->device_type = "";
+        $me->device_token = "";
+        $me->save();
+
+        //JWTAuth::invalidate(JWTAuth::getToken());
+
+        return $this->responseSuccess();
+    }
+
     public function postUserProfile()
     {
         $me = JWTAuth::parseToken()->authenticate();
@@ -134,6 +146,19 @@ class RestfulAPIController extends Controller
         $me->save();
 
         return response()->json($me);
+    }
+
+    public function getMyFileRef()
+    {
+        $me = JWTAuth::parseToken()->authenticate();
+
+        $file_refs = File::select('files.file_ref')
+            ->join('file_users', 'file_users.file_ref', 'files.file_ref')
+            ->where('file_users.user_id', $me->id)
+            ->where('status', 0)
+            ->get();
+
+        return $this->responseSuccess($file_refs);
     }
 
     /**
@@ -421,6 +446,150 @@ class RestfulAPIController extends Controller
         return $this->responseSuccess($tickets);
     }
 
+    public function getOpenTickets()
+    {
+        $me = JWTAuth::parseToken()->authenticate();
+
+        $data = Input::all();
+        $pageSize = empty(Input::get('per_page')) ? 60 : Input::get('per_page');
+        $sort = $item = $this->getSortItem(Input::get('sort'));
+        $search = Input::get('q');
+
+        if ($me->hasRole('admin')) {
+            $query = Ticket::with(['client' => function($query){
+                $query->select('id', 'photo', 'name');
+            }])
+                ->select('tickets.*', 'ticket_categories.name AS category')
+                ->join('ticket_categories', 'ticket_categories.category_id', 'tickets.category_id')
+                ->where('status_id', 2);
+        } else if ($me->hasRole('client')) {
+            $query = Ticket::with(['client' => function($query){
+                $query->select('id', 'photo', 'name');
+            }])
+                ->select('tickets.*', 'ticket_categories.name AS category')
+                ->join('ticket_categories', 'ticket_categories.category_id', 'tickets.category_id')
+                ->where('status_id', 2)
+                ->where('client_id', $me->id);
+        } else {
+            $query = Ticket::with(['client' => function($query){
+                $query->select('id', 'photo', 'name');
+            }])
+                ->select('tickets.*', 'ticket_categories.name AS category')
+                ->join('ticket_categories', 'ticket_categories.category_id', 'tickets.category_id')
+                ->where('status_id', 2)
+                ->where('staff_id', $me->id);
+        }
+
+        if (!empty($search)) {
+            $query->where(function($query) use ($search){
+                $query->orWhere('subject', 'LIKE', "%$search%");
+                $query->orWhere('file_ref', 'LIKE', "%$search%");
+            });
+        }
+
+        $tickets = $query->orderBy($sort[0], $sort[1])
+            ->paginate($pageSize)
+            ->appends($data);
+
+        return $this->responseSuccess($tickets);
+    }
+
+    public function getCloseTickets()
+    {
+        $me = JWTAuth::parseToken()->authenticate();
+
+        $data = Input::all();
+        $pageSize = empty(Input::get('per_page')) ? 60 : Input::get('per_page');
+        $sort = $item = $this->getSortItem(Input::get('sort'));
+        $search = Input::get('q');
+
+        if ($me->hasRole('admin')) {
+            $query = Ticket::with(['client' => function($query){
+                $query->select('id', 'photo', 'name');
+            }])
+                ->select('tickets.*', 'ticket_categories.name AS category')
+                ->join('ticket_categories', 'ticket_categories.category_id', 'tickets.category_id')
+                ->where('status_id', 0);
+        } else if ($me->hasRole('client')) {
+            $query = Ticket::with(['client' => function($query){
+                $query->select('id', 'photo', 'name');
+            }])
+                ->select('tickets.*', 'ticket_categories.name AS category')
+                ->join('ticket_categories', 'ticket_categories.category_id', 'tickets.category_id')
+                ->where('status_id', 0)
+                ->where('client_id', $me->id);
+        } else {
+            $query = Ticket::with(['client' => function($query){
+                $query->select('id', 'photo', 'name');
+            }])
+                ->select('tickets.*', 'ticket_categories.name AS category')
+                ->join('ticket_categories', 'ticket_categories.category_id', 'tickets.category_id')
+                ->where('status_id', 0)
+                ->where('staff_id', $me->id);
+        }
+
+        if (!empty($search)) {
+            $query->where(function($query) use ($search){
+                $query->orWhere('subject', 'LIKE', "%$search%");
+                $query->orWhere('file_ref', 'LIKE', "%$search%");
+            });
+        }
+
+        $tickets = $query->orderBy($sort[0], $sort[1])
+            ->paginate($pageSize)
+            ->appends($data);
+
+        return $this->responseSuccess($tickets);
+    }
+
+    public function getPendingTickets()
+    {
+        $me = JWTAuth::parseToken()->authenticate();
+
+        $data = Input::all();
+        $pageSize = empty(Input::get('per_page')) ? 60 : Input::get('per_page');
+        $sort = $item = $this->getSortItem(Input::get('sort'));
+        $search = Input::get('q');
+
+        if ($me->hasRole('admin')) {
+            $query = Ticket::with(['client' => function($query){
+                $query->select('id', 'photo', 'name');
+            }])
+                ->select('tickets.*', 'ticket_categories.name AS category')
+                ->join('ticket_categories', 'ticket_categories.category_id', 'tickets.category_id')
+                ->where('status_id', 1);
+        } else if ($me->hasRole('client')) {
+            $query = Ticket::with(['client' => function($query){
+                $query->select('id', 'photo', 'name');
+            }])
+                ->select('tickets.*', 'ticket_categories.name AS category')
+                ->join('ticket_categories', 'ticket_categories.category_id', 'tickets.category_id')
+                ->where('status_id', 1)
+                ->where('client_id', $me->id);
+        } else {
+            $query = Ticket::with(['client' => function($query){
+                $query->select('id', 'photo', 'name');
+            }])
+                ->select('tickets.*', 'ticket_categories.name AS category')
+                ->join('ticket_categories', 'ticket_categories.category_id', 'tickets.category_id')
+                ->where('status_id', 1)
+                ->where('staff_id', $me->id);
+        }
+
+        if (!empty($search)) {
+            $query->where(function($query) use ($search){
+                $query->orWhere('subject', 'LIKE', "%$search%");
+                $query->orWhere('file_ref', 'LIKE', "%$search%");
+            });
+        }
+
+        $tickets = $query->orderBy($sort[0], $sort[1])
+            ->paginate($pageSize)
+            ->appends($data);
+
+        return $this->responseSuccess($tickets);
+    }
+
     public function getTicketCategories()
     {
         $categories = Ticket_Category::all();
@@ -434,11 +603,11 @@ class RestfulAPIController extends Controller
         $data = Input::all();
 
         if (!$me->hasRole('client')) {
-            return $this->responseAccessDeniedError();
+            return $this->responseAccessDeniedError('client or admin only can create ticket');
         }
 
         $validator = Validator::make($data, [
-            'department_id' => 'required|max:255',
+            'category_id' => 'required|max:255',
             'subject' => 'required|max:500',
             'message' => 'required|max:4048',
             'file_ref' => 'max:50'
@@ -498,7 +667,7 @@ class RestfulAPIController extends Controller
         $messages = Ticket_Message::where('ticket_id', $ticket->ticket_id)
             ->select('ticket_messages.*', 'users.name', 'users.photo')
             ->join('users', 'users.id', 'ticket_messages.sender_id')
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->paginate($pageSize)
             ->appends($data);
 
@@ -523,7 +692,7 @@ class RestfulAPIController extends Controller
         // Create Ticket message
         $message = new Ticket_Message();
         $message->ticket_id = $ticket->ticket_id;
-        $message->client_id = $me->id;
+        $message->client_id = $ticket->client_id;
         $message->sender_id = $me->id;
 
         $content = [];

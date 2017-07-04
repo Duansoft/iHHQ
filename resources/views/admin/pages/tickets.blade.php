@@ -88,12 +88,12 @@
     <div class="page-header">
         <div class="page-header-content col-lg-11">
             <div class="page-title">
-                <h2><span> Support</span></h2>
+                <h2><span> Correspondence</span></h2>
             </div>
 
             @role('admin')
             <div class="heading-elements">
-                <a href="{{url('admin/tickets/create')}}"><button type="button" class="btn btn-default heading-btn"><i class="icon-add position-left"></i> New Ticket</button></a>
+                <a href="{{url('admin/tickets/create')}}"><button type="button" class="btn btn-default heading-btn"><i class="icon-add position-left"></i> New Correspondence</button></a>
             </div>
             @endrole
         </div>
@@ -135,25 +135,25 @@
                 <!-- Navigation -->
                 <div class="panel panel-flat">
                     <div class="panel-heading">
-                        <h6 class="panel-title">Tickets</h6>
+                        <h6 class="panel-title"> Correspondences</h6>
                     </div>
 
                     <div class="list-group no-border mb-5">
                         @if(isset($isCompletedTickets))
-                            <a href="{{ url('admin/tickets/') }}" class="list-group-item"><i class="icon-lifebuoy"></i> Active Tickets<span class="badge badge-success pull-right">{{ $activeTickets }}</span></a>
-                            <a href="{{ url('admin/tickets/pending') }}" class="list-group-item"><i class="icon-question3"></i> Pending Tickets<span class="badge badge-danger pull-right">{{ $pendingTickets }}</span></a>
+                            <a href="{{ url('admin/tickets/') }}" class="list-group-item"><i class="icon-lifebuoy"></i> Active Correspondences<span class="badge badge-success pull-right">{{ $activeTickets }}</span></a>
+                            <a href="{{ url('admin/tickets/pending') }}" class="list-group-item"><i class="icon-question3"></i> Pending Correspondences<span class="badge badge-danger pull-right">{{ $pendingTickets }}</span></a>
                             <div class="list-group-divider"></div>
-                            <a href="{{ url('admin/tickets/complete') }}" class="list-group-item active"><i class="icon-close2"></i> Completed Tickets<span class="badge badge-default pull-right">{{ $completedTickets }}</span></a>
+                            <a href="{{ url('admin/tickets/complete') }}" class="list-group-item active"><i class="icon-close2"></i> Completed Correspondences<span class="badge badge-default pull-right">{{ $completedTickets }}</span></a>
                         @elseif(isset($isPendingTickets))
-                            <a href="{{ url('admin/tickets/') }}" class="list-group-item"><i class="icon-lifebuoy"></i> Active Tickets<span class="badge badge-success pull-right">{{ $activeTickets }}</span></a>
-                            <a href="{{ url('admin/tickets/pending') }}" class="list-group-item active"><i class="icon-question3"></i> Pending Tickets<span class="badge badge-danger pull-right">{{ $pendingTickets }}</span></a>
+                            <a href="{{ url('admin/tickets/') }}" class="list-group-item"><i class="icon-lifebuoy"></i> Active Correspondences<span class="badge badge-success pull-right">{{ $activeTickets }}</span></a>
+                            <a href="{{ url('admin/tickets/pending') }}" class="list-group-item active"><i class="icon-question3"></i> Pending Correspondences<span class="badge badge-danger pull-right">{{ $pendingTickets }}</span></a>
                             <div class="list-group-divider"></div>
-                            <a href="{{ url('admin/tickets/complete') }}" class="list-group-item"><i class="icon-close2"></i> Completed Tickets<span class="badge badge-default pull-right">{{ $completedTickets }}</span></a>
+                            <a href="{{ url('admin/tickets/complete') }}" class="list-group-item"><i class="icon-close2"></i> Completed Correspondences<span class="badge badge-default pull-right">{{ $completedTickets }}</span></a>
                         @else
-                            <a href="{{ url('admin/tickets/') }}" class="list-group-item active"><i class="icon-lifebuoy"></i> Active Tickets<span class="badge badge-success pull-right">{{ $activeTickets }}</span></a>
-                            <a href="{{ url('admin/tickets/pending') }}" class="list-group-item"><i class="icon-question3"></i> Pending Tickets<span class="badge badge-danger pull-right">{{ $pendingTickets }}</span></a>
+                            <a href="{{ url('admin/tickets/') }}" class="list-group-item active"><i class="icon-lifebuoy"></i> Active Correspondences<span class="badge badge-success pull-right">{{ $activeTickets }}</span></a>
+                            <a href="{{ url('admin/tickets/pending') }}" class="list-group-item"><i class="icon-question3"></i> Pending Correspondences<span class="badge badge-danger pull-right">{{ $pendingTickets }}</span></a>
                             <div class="list-group-divider"></div>
-                            <a href="{{ url('admin/tickets/complete') }}" class="list-group-item"><i class="icon-close2"></i> Completed Tickets<span class="badge badge-default pull-right">{{ $completedTickets }}</span></a>
+                            <a href="{{ url('admin/tickets/complete') }}" class="list-group-item"><i class="icon-close2"></i> Completed Correspondences<span class="badge badge-default pull-right">{{ $completedTickets }}</span></a>
                         @endif
                     </div>
                 </div>
@@ -214,7 +214,7 @@
                     <!-- Left annotation position -->
                     <div class="panel panel-white">
                         <div class="panel-heading">
-                            <h5 class="panel-title" style="margin-right: 100px;">{{ isset($ticket) ? $ticket->subject : 'Ticket' }}</h5>
+                            <h5 class="panel-title" style="margin-right: 100px;">{{ isset($ticket) ? $ticket->subject : 'Correspondence' }}</h5>
                             <div class="heading-elements">
                                 <div class="heading-btn no-margin-left">
                                     <div class="btn-group">
